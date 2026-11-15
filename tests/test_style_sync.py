@@ -1,14 +1,34 @@
-"""style.json and STYLE.md must agree on the values the tools read."""
+"""The JSON twins must agree with the docs: core.json <-> STYLE.md (shared rules) and, for every style,
+styles/<name>/style.json <-> styles/<name>/STYLE.md (the look)."""
+import json
 import re
 
-from server.paths import REPO
-from server.style import load_style
+import pytest
 
-STYLE_MD = (REPO / "STYLE.md").read_text()
+from server.paths import CORE_JSON, REPO, STYLES
+from server.style import available_styles, load_style
+
+STYLE_MD = (REPO / "STYLE.md").read_text()          # shared rules
 S = load_style()
+STYLES_ALL = available_styles()
 
 
-def test_budgets_match():
+def style_md(name):
+    return (STYLES / name / "STYLE.md").read_text()
+
+
+def test_core_and_styles_do_not_overlap():
+    core = set(json.loads(CORE_JSON.read_text())) - {"_comment"}
+    for name in STYLES_ALL:
+        st = set(json.loads((STYLES / name / "style.json").read_text())) - {"_comment"}
+        assert not core & st, (name, core & st)
+        assert load_style(name)["style"] == name
+        assert f"`{name}`" in STYLE_MD, f"style {name} missing from the table in STYLE.md"
+
+
+@pytest.mark.parametrize("name", STYLES_ALL)
+def test_budgets_match(name):
+    S, STYLE_MD = load_style(name), style_md(name)
     b = S["budget"]
     assert f"| Character complete | {b['character']['target'][0]:,}–{b['character']['target'][1]:,} tris | {b['character']['hard']:,} |" in STYLE_MD
     assert f"| Head incl. hair/headwear | ≤ {b['head']['target']:,} | {b['head']['hard']:,} |" in STYLE_MD
@@ -17,24 +37,33 @@ def test_budgets_match():
     assert f"| Prop (later) | ≤ {b['prop']['target']:,} | {b['prop']['hard']:,} |" in STYLE_MD
 
 
-def test_archetypes_match():
-    for name, a in S["archetypes"].items():
+@pytest.mark.parametrize("name", STYLES_ALL)
+def test_archetypes_match(name):
+    S, STYLE_MD = load_style(name), style_md(name)
+    for arch, a in S["archetypes"].items():
         lo, hi = a["height"]
-        assert re.search(rf"\| `{name}`[^|]*\| {lo}–{hi} \|", STYLE_MD), name
-    assert "at most 60 %" in STYLE_MD and S["headwear_max_ratio"] == 0.6
+        assert re.search(rf"\| `{arch}`[^|]*\| {lo}–{hi} \|", STYLE_MD), arch
+    assert f"at most {round(S['headwear_max_ratio'] * 100)} %" in STYLE_MD
 
 
-def test_palette_and_roles_match():
+@pytest.mark.parametrize("name", [n for n in STYLES_ALL if load_style(n).get("surface") == "palette"])
+def test_palette_matches(name):
+    S, md = load_style(name), style_md(name)
     p = S["palette"]
-    assert f"{p['size']} × {p['size']} px, {p['grid']} × {p['grid']} grid" in STYLE_MD
+    assert f"{p['size']} × {p['size']} px, {p['grid']} × {p['grid']} grid" in md
     assert len(p["colors"]) == p["grid"] ** 2
-    assert f"Max. **{p['max_colors']} different colours**" in STYLE_MD
+    assert f"Max. **{p['max_colors']} different colours**" in md
+
+
+def test_roles_match():
     roles_md = ", ".join(f"`{i} {r}`" for i, r in enumerate(S["roles"]))
     assert roles_md.replace("`8 dark`", "`8 dark` (mouth, inner sleeves, soles)").replace(
         "`9 special`", "`9 special` (glow, crystals)") in STYLE_MD
 
 
-def test_shading_matches():
+@pytest.mark.parametrize("name", STYLES_ALL)
+def test_shading_matches(name):
+    S, STYLE_MD = load_style(name), style_md(name)
     sh = S["shading"]
     assert sh["mode"] == "smooth_by_angle"
     assert f"**Smooth by angle, {sh['crease_deg']}°**" in STYLE_MD
@@ -63,3 +92,9 @@ def test_animation_mapping_matches():
 def test_blender_version_pinned_everywhere():
     v = S["blender"]["version"]
     assert v in (REPO / "README.md").read_text()
+
+
+def test_unknown_style_is_rejected():
+    from server.style import StyleError, style_name
+    with pytest.raises(StyleError):
+        style_name("no-such-style")

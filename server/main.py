@@ -17,8 +17,10 @@ from .tools import project as T_project
 from .tools import qa as T_qa
 
 INSTRUCTIONS = """\
-Headless tool for Kenney-style low-poly characters (Blender + GLB for three.js).
-STYLE.md is the law; read it with get_style. Characters live in workspace/<name>/.
+Headless tool for stylised low-poly game characters (Blender + GLB for three.js).
+STYLE.md (shared rules) + styles/<style>/STYLE.md (the look) are the law; read them with get_style.
+A character's spec names its style (spec.style); parts belong to a style (pass style= to part tools).
+Characters live in workspace/<name>/.
 Build a character: get_style -> init_character -> add_reference -> list_parts /
 render_parts_catalog (build missing parts with build_part) -> assemble_from_parts -> validate ->
 compare_reference (max. 3 correction rounds, then ask the human) -> export.
@@ -41,10 +43,11 @@ def _safe(fn):
 
 @mcp.tool()
 @_safe
-def get_style() -> dict:
-    """Return style.json: budgets, units, archetypes, palette (64 colours), colour roles, slots,
+def get_style(style: str | None = None) -> dict:
+    """Return the merged style (core.json + styles/<style>/style.json; default style if omitted):
+    budgets, units, archetypes, surface/palette, colour roles, slots,
     skeleton (bone names/parents) and animation names. Read this before building anything."""
-    return T_project.get_style()
+    return T_project.get_style(style)
 
 
 @mcp.tool()
@@ -113,9 +116,10 @@ def add_reference(name: str, image: str, views: dict, top_y: float, floor_y: flo
 
 @mcp.tool()
 @_safe
-def build_part(part: str, script: str, archetype: str | None = None, overwrite: bool = False) -> dict:
+def build_part(part: str, script: str, archetype: str | None = None, overwrite: bool = False,
+               style: str | None = None) -> dict:
     """Build a library part '<slot>-<variant>' (e.g. 'headwear-wizard-hat') from a bpy script run
-    against the archetype's proportion template. Saved to library/parts/<slot>/ (.blend, .py, .json,
+    against the archetype's proportion template. Saved to styles/<style>/parts/<slot>/ (.blend, .py, .json,
     .png) only if it passes the hard checks (roles on every face, closed shells, budget, allowed bones).
     In the script: P = builder (P.loft(rings, role), P.ring(center, rx, ry, n, axis), P.rect(...),
     P.rrect(center, sx, sy, r, seg, axis), P.box(lo, hi, role), P.rbox(lo, hi, role, r, bevel, seg, axis)
@@ -125,21 +129,21 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
     handslot.r, ...), bones = {name: (head, tail)}, guides, Vector, Matrix, math.
     Model in metres, -Y forward, +Z up, T-pose; left side is +X. Follow the STYLE.md §3 segment & bevel
     guide (12-16 sides for round shapes, bevelled boxes). Look at the returned preview."""
-    return T_parts.build_part(part, script, archetype, overwrite)
+    return T_parts.build_part(part, script, archetype, overwrite, style)
 
 
 @mcp.tool()
 @_safe
-def list_parts(slot: str | None = None) -> dict:
-    """List library parts per slot (name, archetypes, tris, roles)."""
-    return T_parts.list_parts(slot)
+def list_parts(slot: str | None = None, style: str | None = None) -> dict:
+    """List a style's library parts per slot (name, archetypes, tris, roles)."""
+    return T_parts.list_parts(slot, style)
 
 
 @mcp.tool()
 @_safe
-def render_parts_catalog(slot: str | None = None, parts: list[str] | None = None) -> dict:
+def render_parts_catalog(slot: str | None = None, parts: list[str] | None = None, style: str | None = None) -> dict:
     """Preview sheet of library parts (one row per part: front, side, 3/4), in stats.rows order."""
-    return T_parts.render_parts_catalog(slot, parts)
+    return T_parts.render_parts_catalog(slot, parts, style)
 
 
 @mcp.tool()

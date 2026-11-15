@@ -1,4 +1,4 @@
-"""Check the open .blend against every rule in style.json (STYLE.md §12).
+"""Check the open .blend against every rule in the merged style (core.json + style) (STYLE.md §12).
 
 args: { spec?: {...} }   -> { ok, valid, hard: [...], soft: [...], info: [...], stats }
 `ok` means the job ran; `valid` means no hard violations.

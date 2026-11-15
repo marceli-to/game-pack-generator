@@ -1,4 +1,4 @@
-"""Generate library/palette.png from style.json (pure Python, no Pillow).
+"""Generate a style's palette.png from its style.json (pure Python, no Pillow).
 
     python -m server.palette
 """
@@ -45,8 +45,8 @@ def write_png(path: Path, rows: list[list[tuple[int, int, int]]]) -> None:
     path.write_bytes(png)
 
 
-def make_palette(out: Path | None = None) -> Path:
-    style = load_style()
+def make_palette(out: Path | None = None, style: str | None = None) -> Path:
+    style = load_style(style)
     out = out or REPO / style["palette"]["file"]
     out.parent.mkdir(parents=True, exist_ok=True)
     write_png(out, palette_pixels(style))

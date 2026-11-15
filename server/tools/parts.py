@@ -9,7 +9,7 @@ from pathlib import Path
 
 from ..blender import run_job
 from ..paths import REPO, workspace
-from ..style import load_style
+from ..style import load_style, style_name
 
 VARIANT_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 
@@ -18,8 +18,8 @@ class PartError(ValueError):
     pass
 
 
-def parts_dir() -> Path:
-    return REPO / load_style()["parts"]["dir"]
+def parts_dir(style: str | None = None) -> Path:
+    return REPO / load_style(style)["parts"]["dir"]
 
 
 def split(part: str) -> tuple[str, str]:
@@ -30,17 +30,20 @@ def split(part: str) -> tuple[str, str]:
                     f"slot one of {load_style()['slots']}")
 
 
-def build_part(part: str, script: str, archetype: str | None = None, overwrite: bool = False) -> dict:
+def build_part(part: str, script: str, archetype: str | None = None, overwrite: bool = False,
+               style: str | None = None) -> dict:
     slot, _ = split(part)
-    style = load_style()
+    style = load_style(style)
     archetype = archetype or style["default_archetype"]
-    lib_dir = parts_dir() / slot
+    lib_dir = parts_dir(style["style"]) / slot
     blend = lib_dir / f"{part}.blend"
     if blend.exists() and not overwrite:
         raise PartError(f"part {part!r} exists (pass overwrite=true to replace it)")
-    scratch = workspace() / "_parts" / part
+    if archetype not in style["archetypes"] or "template" not in style["archetypes"][archetype]:
+        raise PartError(f"style {style['style']!r} has no template for archetype {archetype!r}")
+    scratch = workspace() / "_parts" / style["style"] / part
     r = run_job("build_part", {"part": part, "script": script, "archetype": archetype,
-                               "out_dir": str(scratch), "save": True})
+                               "out_dir": str(scratch), "save": True}, style=style["style"])
     if not r.get("ok"):
         return r
     lib_dir.mkdir(parents=True, exist_ok=True)
@@ -50,7 +53,7 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
     script = script.rstrip() + "\n"  # stored as-is; script_sha256 is the hash of this file
     (lib_dir / f"{part}.py").write_text(script)
     meta = {
-        "part": part, "slot": slot, "archetypes": [archetype],
+        "part": part, "slot": slot, "style": style["style"], "archetypes": [archetype],
         "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
         "built": dt.date.today().isoformat(), "blender": style["blender"]["version"],
         **{k: r["stats"][k] for k in ("tris", "verts", "roles", "shells", "bbox")},
@@ -62,24 +65,26 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
     return r
 
 
-def list_parts(slot: str | None = None) -> dict:
+def list_parts(slot: str | None = None, style: str | None = None) -> dict:
     out = {}
-    for meta in sorted(parts_dir().glob("*/*.json")):
+    for meta in sorted(parts_dir(style).glob("*/*.json")):
         m = json.loads(meta.read_text())
         if slot and m["slot"] != slot:
             continue
         out.setdefault(m["slot"], []).append({k: m[k] for k in ("part", "archetypes", "tris", "roles")})
-    return {"ok": True, "parts": out}
+    return {"ok": True, "style": style_name(style), "parts": out}
 
 
-def render_parts_catalog(slot: str | None = None, parts: list[str] | None = None) -> dict:
+def render_parts_catalog(slot: str | None = None, parts: list[str] | None = None,
+                         style: str | None = None) -> dict:
+    style = style_name(style)
     if parts is None:
-        listing = list_parts(slot)["parts"]
+        listing = list_parts(slot, style)["parts"]
         parts = [p["part"] for s in load_style()["slots"] for p in listing.get(s, [])]
     for p in parts:
         split(p)
     if not parts:
         raise PartError(f"no parts{' in slot ' + slot if slot else ''} yet")
-    out_dir = workspace() / "_catalog" / (slot or "all")
-    r = run_job("parts_catalog", {"parts": parts, "out_dir": str(out_dir)}, timeout=600)
+    out_dir = workspace() / "_catalog" / style / (slot or "all")
+    r = run_job("parts_catalog", {"parts": parts, "out_dir": str(out_dir)}, timeout=600, style=style)
     return r

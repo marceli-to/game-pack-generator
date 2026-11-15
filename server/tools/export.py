@@ -12,12 +12,13 @@ from ..style import load_style
 
 def export(name: str) -> dict:
     blend = C.require(name)
+    st = C.style_of(name)
     out_dir = character_dir(name) / "export"
     glb = out_dir / f"character-{name}.glb"
     shot = out_dir / f"character-{name}-testload.png"
 
-    check = run_job("validate", {"spec": C.load_spec(name)}, blend=blend)
-    r = run_job("export_glb", {"out": str(glb)}, blend=blend)
+    check = run_job("validate", {"spec": C.load_spec(name)}, blend=blend, style=st)
+    r = run_job("export_glb", {"out": str(glb)}, blend=blend, style=st)
     if not r.get("ok"):
         return r
     gv = node.gltf_validate(glb)
@@ -26,7 +27,7 @@ def export(name: str) -> dict:
     tl = node.test_load(glb, shot, anim)
 
     problems = []
-    if gv["errors"] > load_style()["export"]["max_validator_errors"]:
+    if gv["errors"] > load_style(st)["export"]["max_validator_errors"]:
         problems.append(f"glTF validator: {gv['errors']} errors")
     if not tl.get("ok"):
         problems.append("three.js test load failed")

@@ -5,7 +5,8 @@ import os
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
-STYLE_JSON = REPO / "style.json"
+CORE_JSON = REPO / "core.json"
+STYLES = REPO / "styles"
 JOBS = REPO / "jobs"
 LIBRARY = REPO / "library"
 NODE = REPO / "node"

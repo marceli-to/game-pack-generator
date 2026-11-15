@@ -1,7 +1,7 @@
 # PLAN.md — Headless Avatar Tool for Agents
 
 ## Goal
-A headless tool that lets agents create low-poly, rigged, animated game characters in the style of Kenney packs. No UI. Blender (headless) is the engine. A thin MCP server is the interface. `STYLE.md` defines the look and the technical rules. Every output is checked automatically and approved by a human.
+A headless tool that lets agents create low-poly, rigged, animated game characters in the style of Kenney packs. No UI. Blender (headless) is the engine. A thin MCP server is the interface. `STYLE.md` defines the shared technical rules; each look is a **style** (`styles/<name>/`). Every output is checked automatically and approved by a human.
 
 **Input:** generated reference images (turnaround: front, side, back) and/or a character spec (JSON)
 **Output:** asset packs like Kenney's: GLB (for three.js), one palette texture, preview images, manifest, licence
@@ -17,7 +17,7 @@ A headless tool that lets agents create low-poly, rigged, animated game characte
 
 ## Principles
 1. **Blender does the work, the wrapper stays thin.** No custom 3D engine; every operation is a `bpy` script.
-2. **STYLE.md is the law.** Every tool reads its constants (budget, scale, palette, skeleton) from `style.json` (generated from STYLE.md), never hardcoded.
+2. **The specs are the law.** Every tool reads its constants from `core.json` (shared: skeleton, roles, slots, export) merged with `styles/<name>/style.json` (the look: budget, shading, surface, archetypes), never hardcoded.
 3. **The quality ceiling = the base parts.** Agents mostly combine, recolour and adjust parameters; they rarely model from scratch.
 4. **Every step produces something visible.** Each tool returns stats + a preview render path, so the agent can see what it did.
 5. **Deterministic.** Same spec + same seed → same output. Specs are versioned in git.
@@ -46,8 +46,13 @@ Blender headless  ──►  workspace/   (.blend files, GLBs, renders)
 ### Repo structure
 ```
 game-pack-generator/
-  STYLE.md                  # human-readable spec
-  style.json                # machine-readable constants (generated/kept in sync)
+  STYLE.md                  # shared rules (skeleton, roles, slots, topology, export, approval)
+  core.json                 # machine-readable twin of STYLE.md
+  styles/<name>/            # one folder per look (e.g. clean, painted)
+    STYLE.md, style.json    #   the look: visual style, archetypes, budget, surface, shading, previews
+    proportions/            #   rest-pose joint positions per archetype (human.json, chibi.json, …)
+    parts/                  #   base parts per slot, with their build scripts
+    palette.png             #   palette surface only
   server/                   # MCP server (Python)
     main.py
     tools/                  # one module per tool group
@@ -56,9 +61,6 @@ game-pack-generator/
   library/
     skeleton.blend          # standard rig (adopted from the CC0 animation library)
     animations.blend        # actions: idle, walk, run, … (CC0 source, see CREDITS.md)
-    proportions/            # rest-pose joint positions per archetype (human.json, dwarf.json, …)
-    parts/                  # base parts per slot (heads, torsos, …)
-    palette.png
   specs/                    # character specs (JSON), versioned
   workspace/                # work files (gitignored)
   packs/                    # finished packs
@@ -74,7 +76,7 @@ game-pack-generator/
 |---|---|
 | `init_character(name, spec?)` | creates `workspace/<name>/`, empty .blend, links the style |
 | `add_reference(name, image, views, top_y, floor_y)` | stores a turnaround sheet, cuts same-scale front/side/back crops (scale from skull-top and floor rows) |
-| `get_style()` | returns style.json (agents read the rules from here) |
+| `get_style(style?)` | returns the merged style (core.json + style.json; agents read the rules from here) |
 | `import_glb(name, path)` | imports an existing GLB into the character's workspace (for checks, references, CC0 parts) |
 
 ### Generation (procedural)
@@ -106,7 +108,7 @@ game-pack-generator/
 | `stats(name)` | tris, verts, materials, height, non-manifold, bone count, UV outside palette cells |
 | `render_preview(name, views?)` | turnaround sheet (front/side/back/¾) as in STYLE.md |
 | `compare_reference(name, arms_down_deg?, hide_slots?)` | sheet: reference / render at the same scale / silhouette overlay, IoU per view |
-| `validate(name)` | checks every rule in style.json → list of violations (hard/soft) |
+| `validate(name)` | checks every rule of the character's style → list of violations (hard/soft) |
 
 ### Export
 | Tool | Purpose |

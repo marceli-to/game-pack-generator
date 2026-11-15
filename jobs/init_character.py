@@ -1,4 +1,4 @@
-"""Create an empty character .blend (scene units/fps from style.json).  args: { out }"""
+"""Create an empty character .blend (scene units/fps from core.json).  args: { out }"""
 from lib import scene as SC
 
 

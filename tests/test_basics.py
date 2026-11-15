@@ -3,14 +3,15 @@ import pytest
 from server import character as C
 from server.blender import BlenderError, run_job
 from server.palette import hex_to_rgb, palette_pixels, write_png
-from server.paths import LIBRARY
+from server.paths import REPO
 from server.style import dump_style, load_style
 
 
 def test_palette_png_is_up_to_date(tmp_path):
     out = tmp_path / "p.png"
-    write_png(out, palette_pixels(load_style()))
-    assert out.read_bytes() == (LIBRARY / "palette.png").read_bytes()
+    s = load_style("clean")
+    write_png(out, palette_pixels(s))
+    assert out.read_bytes() == (REPO / s["palette"]["file"]).read_bytes()
 
 
 def test_palette_layout_row0_is_top():

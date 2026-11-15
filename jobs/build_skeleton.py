@@ -59,12 +59,12 @@ def run(args):
     missing = sorted(set(want) - set(have))
     extra = sorted(set(have) - set(want))
     if missing or extra:
-        raise RuntimeError(f"bone mismatch vs style.json: missing={missing} extra={extra}")
+        raise RuntimeError(f"bone mismatch vs core.json: missing={missing} extra={extra}")
     for n, spec in want.items():
         b = have[n]
         parent = b.parent.name if b.parent else None
         if parent != spec["parent"]:
-            raise RuntimeError(f"bone {n}: parent {parent}, style.json says {spec['parent']}")
+            raise RuntimeError(f"bone {n}: parent {parent}, core.json says {spec['parent']}")
         b.use_deform = spec["deform"]
 
     out = S.repo_path(args.get("out", "library/skeleton.blend"))

@@ -1,23 +1,20 @@
-# STYLE.md — Character Style & Technical Spec
+# STYLE.md — Character Spec (shared rules)
 
-This file is the binding spec for every character. Every value marked `→ style.json` also lives in `style.json` and is read by the tools. Change values here first, then regenerate style.json.
+This file is the binding spec for every character, in every style. Every value marked `→ core.json` also lives in `core.json` and is read by the tools. Change values here first, then core.json.
+
+**Styles.** The look is a pluggable **style** (`styles/<name>/`: its own `STYLE.md`, `style.json`, proportion templates, parts and, for the `palette` surface, `palette.png`). A style fills in the sections marked *per style* below, with the same section numbers. A character spec names its style (`"style": "clean"`; specs without one use `core.json` `default_style`); a pack is always one style. Tools merge `core.json` with the style's `style.json`.
+
+| Style | Look | Status |
+|---|---|---|
+| `clean` | flat palette colours, smooth by angle, Kenney-like but rounder | in use (mage) |
 
 ---
 
-## 1. Visual style
+## 1. Visual style → per style
 
-**In one sentence:** chunky, friendly low-poly characters with flat colours, a clear silhouette and no surface details. Kenney's character packs are the visual reference.
+Defined by each style in `styles/<name>/STYLE.md` §1 (look, proportions, details, mood).
 
-- **Proportions:** stylised, 3–4.5 heads tall. Large head, compact torso, short legs, slightly oversized hands and feet.
-- **Shapes:** simple, readable volumes (boxes and cylinders with light bevels). Prefer clear facets to smooth rounding.
-- **Silhouette:** identifiable as a black shape from the front and the side. Every character has at least one distinctive silhouette feature (headwear, weapon, cape, hairstyle).
-- **Face:** minimal. Eyes as simple dark shapes (geometry or a palette cell), optional eyebrows/mouth. No nose, or a very simple one.
-- **Details:** only through geometry and colour areas, never through texture detail. No outlines, no gradients, no baked shadows.
-- **Mood:** friendly, slightly toy-like, nothing realistic or grim.
-
-**Not allowed:** photo textures, normal maps, gradients, transparency (except deliberate special cases), realistic proportions, more than one material.
-
-## 2. Units & orientation → style.json
+## 2. Units & orientation → core.json
 
 | Property | Value |
 |---|---|
@@ -30,67 +27,29 @@ This file is the binding spec for every character. Every value marked `→ style
 | Transforms | applied before export (location 0, rotation 0, scale 1) |
 | Rest pose | **T-pose** (arms straight out along ±X), legs straight below the hips — the library rig's rest pose (§7) |
 
-## 2a. Archetypes & height → style.json
+## 2a. Archetypes & height → per style
 
-Every character has an `archetype`. It sets the body height range and the proportion template (§7a). Height is always measured to the top of the head mesh (§2). Hair, headwear and accessories never count.
+Defined by each style in `styles/<name>/STYLE.md` §2a (archetypes, height ranges, headwear limit).
 
-| Archetype | Body height | Heads tall (approx.) |
-|---|---|---|
-| `child` | 1.0–1.3 | 3 |
-| `dwarf` | 1.2–1.45 | 3.5 (wide) |
-| `human` (default) | 1.7–1.9 | 4.4 |
-| `tall` (elf, giant-ish) | 1.9–2.2 | 4.5 |
+## 3. Polygon budget → per style
 
-Headwear may add at most 60 % of body height on top (the wizard hat is fine, a 2 m tall hat is not).
+Defined by each style in `styles/<name>/STYLE.md` §3 (triangle budgets and the segment & bevel guide).
 
-## 3. Polygon budget → style.json
+## 4. Colours, roles & surface → core.json + per style
 
-| Asset | Target | Hard limit |
-|---|---|---|
-| Character complete | 1,500–2,500 tris | 3,000 |
-| Head incl. hair/headwear | ≤ 700 | 1,000 |
-| Hand-held accessory (weapon, tool) | ≤ 300 | 500 |
-| Back accessory (cape, backpack) | ≤ 300 | 500 |
-| Prop (later) | ≤ 1,000 | 1,600 |
+How a role becomes a visible surface is the style's **surface mode** (`styles/<name>/STYLE.md` §4; e.g. `palette`: one flat colour per role). The roles themselves are shared:
 
-Raised on 2026-11-15 from 600–1,000 (Kenney-chunky) to match the softer low-poly look of the references: still faceted and flat-shaded, but rounder. Spend the triangles on silhouette and on the face/hands, not on hidden geometry.
-
-**Segment & bevel guide** (for part authors):
-- Round, visible shapes (hats, robes, sleeves, limbs): 12–16 sides; small round things (staff, fingers): 6–8.
-- Boxy shapes (head, hands, boots, belts, pouches): bevel every edge (`P.rbox`, corner radius ≈ 10–20 % of the smaller side); no sharp 90° box corners on base parts. Corners in 45° steps (`seg=1–2`) stay crisp under the §5 smoothing; 30° steps (`seg=3`) shade round (use that for heads and beards).
-- Silhouette curves (hat brim droop, robe flare, beard) get extra rings rather than one straight span.
-
-## 4. Colours & material → style.json
-
-- **One material** per character: `M_Palette`, Principled BSDF, base colour = `palette.png`, roughness 1.0, metallic 0.0 (metal is suggested by colour only).
-- **palette.png:** 256 × 256 px, 8 × 8 grid → 64 cells of 32 × 32 px each. Every cell one flat colour. Texture filter: Closest (no blurring).
-- **UV rule:** every face lies entirely inside one cell; UVs are collapsed to the cell centre (prevents bleeding at mip levels).
-- **Palette index** = row × 8 + column (row 0 = indices 0–7, row 5 = 40–47, row 7 = 56–63).
-- **Palette rows (proposal):**
-  - Row 0: skin tones (6) + 2 greys
-  - Row 1: hair (brown, black, blond, red, grey, white, 2 fantasy)
-  - Row 2: reds/oranges
-  - Row 3: yellows/greens
-  - Row 4: blues/purples
-  - Row 5: metal 40–44 (iron, steel, gold, bronze, copper) + leather 45–47
-  - Row 6: neutrals 48–55 (48 white → 55 black)
-  - Row 7: 56–63 eyes and special colours (56 eye dark, 57 eye light, 58–63 glow/crystal colours)
-- **Colour roles:** every face of every part carries a **role**, never a colour. The character spec maps roles to palette indices.
+- **Colour roles:** every face of every part carries a **role**, never a colour. The character spec maps roles to surface values (palette indices in the `palette` mode).
   - Roles (fixed enum, stored as integers): `0 skin`, `1 hair`, `2 primary`, `3 secondary`, `4 accent`, `5 metal`, `6 leather`, `7 eyes`, `8 dark` (mouth, inner sleeves, soles), `9 special` (glow, crystals)
   - Stored as a face attribute on the mesh: `role`, domain FACE, type INT. Part authors (agents or humans) set it when building the part.
-  - `apply_palette` resolves per face: `role` → `spec.colors[role]` → palette index → UV cell centre.
-  - A part never contains palette indices or UVs of its own; recolouring a character only means changing `spec.colors`.
+  - A part never contains colours, UVs or textures of its own; recolouring a character only means changing `spec.colors`.
   - A spec must define a colour for every role used by its parts (otherwise hard error).
-- Max. **8 different colours** per character (readability), counted as distinct palette indices actually used on faces. Roles defined in `spec.colors` but not used by any part do not count.
 
-## 5. Shading & normals
+## 5. Shading & normals → per style
 
-- **Smooth by angle, 40°** (changed 2026-11-15 from flat shading, which read too hard): every face is smooth-shaded; edges where faces meet at more than 40° are marked sharp. Curved shapes (robe, sleeves, hat) shade round, creases and bevels (boots, belts, buckles, box corners) stay crisp. Applied at assembly; the GLB carries the split normals, so it looks the same in any engine.
-- Want a curve to read round? Give it steps under 40° (≥ 10 sides for a full circle). Want an edge crisp? Make it sharper than 40° (a 45° bevel is crisp).
-- Normals consistently outward; no flipped faces.
-- No vertex colours (everything via the palette).
+Defined by each style in `styles/<name>/STYLE.md` §5 (shading rule; normals always consistently outward, no vertex colours).
 
-## 6. Topology rules → style.json (validated)
+## 6. Topology rules → core.json (validated)
 
 - Manifold geometry per part (no holes, no inner faces); parts may overlap (e.g. helmet over head).
 - No zero-area faces, no duplicate vertices (merge distance 0.0001).
@@ -102,7 +61,7 @@ Raised on 2026-11-15 from 600–1,000 (Kenney-chunky) to match the softer low-po
 - Every part is modelled against the proportion template (§7a): joints sit at the template's joint positions.
 - Mesh after assembly: one object `Character`, parented to the armature.
 
-## 7. Standard skeleton → style.json
+## 7. Standard skeleton → core.json
 
 Every character uses one armature (`library/skeleton.blend`), **adopted from KayKit Character Animations 1.1, `Rig_Medium`** (CC0, Kay Lousberg; see §8). Clips play on it without retargeting. Bone names are KayKit's and binding (animations depend on them).
 
@@ -138,12 +97,12 @@ root                          (floor, between the feet)
 - Bone roll consistent (Blender "Recalculate Roll → Global +Z" for spine/legs).
 - Proportions adapt by changing rest-pose bone lengths per the proportion template and `spec.proportions` (§7a); hierarchy and names never change.
 
-## 7a. Proportion templates → style.json
+## 7a. Proportion templates → core.json
 
-A proportion template = the rest-pose joint positions of the skeleton for one archetype (`library/proportions/<archetype>.json`): world positions of hips, head base (top of `chest`), head top, shoulders (`upperarm` heads), elbows, wrists, knees, ankles, plus the attachment slots.
+A proportion template = the rest-pose joint positions of the skeleton for one archetype (`styles/<name>/proportions/<archetype>.json`): world positions of hips, head base (top of `chest`), head top, shoulders (`upperarm` heads), elbows, wrists, knees, ankles, plus the attachment slots.
 
-- Defined in Phase 1, **before any part exists**. Generated by `python -m server.build_library` from the targets in style.json (`archetypes.<name>.targets`) and saved with a mannequin preview (`library/proportions/<archetype>_preview.png`).
-- **`human` (approved by Marcel, 2026-11-15):** calibrated on the blue-wizard turnaround (`specs/mage/reference/turnaround.webp`). 1.80 m body; head 0.41 m tall (4.4 heads), 0.32 × 0.34 m; head joint at 1.39 m; shoulders at x ±0.21; shoulder-to-wrist 0.49 m; torso guide 0.38 × 0.26 m; hip joints at 0.82 m (x ±0.11) and ankles at 0.12 m (both estimated, hidden by the robe); feet 0.29 m ankle-to-toe + 0.07 m heel, 0.19 m wide, 0.14 m high.
+- Defined in Phase 1, **before any part exists**. Generated by `python -m server.build_library` from the targets in style.json (`archetypes.<name>.targets`) and saved with a mannequin preview (`<archetype>_preview.png` next to it).
+- Template **values** (target joint positions per archetype) are per style: `styles/<name>/STYLE.md` §7a, files in `styles/<name>/proportions/`.
 - Besides joints, a template carries **volume guides** (head, torso, feet) as a reference for part sizes.
 - Every part is modelled to fit the template of its archetype (e.g. a sleeve ends at the wrist joint, a boot top sits below the knee).
 - `spec.proportions` changes **rest-pose bone lengths** (edit bones in Edit Mode), e.g. `legs: 0.9` shortens the upper and lower leg bones and moves child joints accordingly. Parts follow via their bone attachment, not via free scaling of the mesh.
@@ -155,7 +114,7 @@ A proportion template = the rest-pose joint positions of the skeleton for one ar
   - `pose_test` includes a foot-contact check on walk/run (feet within ±2 cm of the floor at contact frames).
 - A part may support several archetypes only if it was checked against each template.
 
-## 8. Animations → style.json
+## 8. Animations → core.json
 
 **Source: KayKit Character Animations 1.1** (Kay Lousberg, CC0, `License.txt` in the download dated 10/12/2025; https://kaylousberg.itch.io/kaykit-character-animations), `Rig_Medium` clips. Recorded in `library/CREDITS.md`. Agents keyframing through bpy produces stiff motion; this is the biggest quality risk of the tool.
 
@@ -191,19 +150,19 @@ The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for 
 - Objects in Blender: `Character`, `Armature`, part objects before joining: `part_<slot>`
 - Files: `character-<name>.glb|fbx|obj`, previews `character-<name>.png`
 
-## 9a. Parts → style.json
+## 9a. Parts → core.json
 
-- A part is one mesh object `part_<slot>` in `library/parts/<slot>/<part>.blend`, next to its build script (`.py`, the source of truth: same script → same part), metadata (`.json`: archetypes, tris, roles, script hash) and preview (`.png`).
+- A part is one mesh object `part_<slot>` in `styles/<name>/parts/<slot>/<part>.blend`, next to its build script (`.py`, the source of truth: same script → same part), metadata (`.json`: archetypes, tris, roles, script hash) and preview (`.png`).
 - Built only through `build_part`: an agent-written script runs against the proportion template of one archetype, in world space (metres, −Y forward, T-pose, left = +X). It must give every face a role. Parts carry roles, never UVs or materials.
 - Hard checks (part is not saved): faces without a valid role, open or non-manifold shells, inside-out shells, tris over the slot group's hard limit (§3), weights to bones the slot may not use.
-- Soft checks: tris above target, n-gons, asymmetry of base parts, **fit** to the template (e.g. head top at the head joint's tip, feet on the floor, arms reaching the wrists, hand accessories through their handslot; tolerance `parts.fit_tolerance`).
+- Soft checks: tris above target, n-gons, asymmetry of base parts, **fit** to the template (e.g. head top at the head joint's tip, feet on the floor, arms reaching the wrists, hand accessories through their handslot; tolerance `parts.fit_tolerance` in the style).
 - Separate closed shells may overlap (helmet over head, belt over robe); hidden geometry still counts towards the budget.
 - **Weights:** rigid. A part may weight vertices to its slot's bones (`skeleton.part_bones`); `assemble_from_parts` gives every other vertex its nearest allowed bone. Headwear is weighted to `head`, hand accessories to `hand.l/r`: the deforming parents of the slot bones, because slot bones don't deform (revisit with skinning in Phase 3).
 - **Hand accessories** have a grip mode, set per character in `spec.grip` (`{slot: mode}`, default `weapon`):
   - `weapon`: modelled along the handslot's bone axis (KayKit convention, −Y in the T-pose); swings with the hand in every clip (swords, axes, tools).
   - `upright`: modelled along world +Z in the rest pose, grip at the handslot; in the clips the slot keeps its rest orientation and only follows the hand's position, so the item stays vertical (staffs, banners, lanterns). Applied when clips are added (Phase 3).
 
-## 10. Export → style.json
+## 10. Export → core.json
 
 Target is **three.js only**; the only format is **GLB**.
 
@@ -216,14 +175,9 @@ Target is **three.js only**; the only format is **GLB**.
 - Every GLB must pass the Khronos glTF validator with no errors.
 - Test load: headless Chromium via Playwright opens `viewer.html` with the GLB; it must load without console errors, play `idle`, and produce a screenshot. (Plain Node + GLTFLoader fails on embedded textures without image polyfills, so it is not used.)
 
-## 11. Preview renders → style.json
+## 11. Preview renders → per style
 
-- Engine: Workbench (fast) or Eevee, flat lighting, no shadows or a soft contact shadow only.
-- Camera: orthographic for the turnaround sheet; perspective ¾ view for the hero render.
-- Views: front, side (left), back, ¾ front-right.
-- Background: neutral light grey `#E8E8E8`, transparent PNG optionally.
-- Resolution: 512 × 512 per view; sheet 2048 × 512.
-- Comparison sheet: reference (top) vs. render (bottom), same views.
+Defined by each style in `styles/<name>/STYLE.md` §11 (engine, lighting, views, sizes).
 
 ## 12. QA thresholds (`validate`)
 

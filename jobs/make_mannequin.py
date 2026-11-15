@@ -1,7 +1,7 @@
 """Build a blocky mannequin character on the standard skeleton from a proportion template.
 
 Used as the template preview (STYLE.md §7a) and as the test fixture for QA/export.
-args: { out: <path.blend>, template?: "library/proportions/human.json",
+args: { out: <path.blend>, template?: <the style's default archetype template>,
         colors?: {role: palette_index}, animations?: true, hair?: true, defects?: [..] }
 defects (tests only): "flipped_normals", "second_material", "no_role", "too_tall", "open_mesh"
 """

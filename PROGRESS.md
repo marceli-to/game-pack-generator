@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-15 — Phase 2 done, mage approved by Marcel (uncommitted). Next: Phase 3._
+_Last updated: 2026-11-15 — Phase 2 and the style profiles refactor are committed and pushed. Next: painted-style spike._
 
 ---
 
@@ -12,8 +12,8 @@ _Last updated: 2026-11-15 — Phase 2 done, mage approved by Marcel (uncommitted
 | Phase (PLAN.md) | Status |
 |---|---|
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
-| 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (uncommitted) |
-| 3 — Skinning & animation | ⏭ next |
+| 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
+| 3 — Skinning & animation | after the painted spike |
 | 4 — Parts library | — |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
@@ -34,19 +34,24 @@ _Last updated: 2026-11-15 — Phase 2 done, mage approved by Marcel (uncommitted
 - 46 pytest tests (incl. `test_mage_approval_still_valid`).
 - Viewer default look: soft room lighting + neutral tone mapping (`?look=basic` for the old one); `testload.mjs` takes an extra viewer query.
 
-## Next step: Phase 3 — skinning & animation (the mage)
+### Style profiles (committed after `21656d4`, see git log)
+- One look = one **style**: `styles/<name>/` with `STYLE.md` ↔ `style.json` (archetypes, budget, shading, surface, palette, parts, previews), `proportions/`, `parts/`, `palette.png`. Shared rules: root `STYLE.md` ↔ `core.json` (skeleton, roles, slots, topology, animations, export, approval). Section numbers are the same in both.
+- Loader merges core + style (`server/style.py`, `jobs/lib/style.py`); `run_job(..., style=)` → env `GPG_STYLE`. `spec.style` picks it; specs without one use `core.json` `default_style` (`clean`). Part tools and `get_style` take `style=`.
+- Current look moved to `styles/clean` (mage unchanged, approval still valid). 49 tests.
 
-Rebuild the mage: `init_character("mage", <specs/mage/spec.json>)` + `assemble_from_parts("mage")`.
+## Next step: painted-style spike (Marcel chose "painted")
 
-1. `skin`: the long robe is the hard case (rigid per part fails: it spans hips + both legs). Smooth weights hips/upperleg on the robe below the belt; rigid elsewhere.
-2. `apply_animations`: clips from `library/animations.blend` + clip mapping for a mage (`attack` → `Ranged_Magic_Shoot`?).
-3. **Upright grip** (`spec.grip.accessory_hand_r = "upright"`, STYLE.md §9a): staff weighted to `handslot.r`, slot keeps its rest orientation in every clip (bake: world rotation locked, position follows the hand). Slot bones don't deform today → decide: make `handslot.*` deforming, or a staff-only bone.
-4. `pose_test` + edge-loop check at joints + foot contact; viewer plays clips.
-5. Re-approval: any spec/part change voids the approval (spec hash + part script hashes).
+Reference: the skeleton knight turnaround (front / side / back + sword, painted chibi style). Not in the repo yet: local copy at
+`/Users/marceli.to/.t3/userdata/attachments/046983b0-3b17-4a96-acfa-8b613d5f5fe8-bf392dba-c4fc-4d3c-89bc-1cf4964775d5.png`.
+**Open question for Marcel:** is it his to publish (→ `specs/knight/reference/`) or local only (→ `workspace/`, gitignored)?
+1. `styles/painted/`: STYLE.md + style.json (surface mode `painted`, `chibi` archetype ≈ 2.5 heads, budget ~4–6k).
+2. `chibi` proportion template on the same skeleton (calibrate on the knight sheet).
+3. Build the knight's head + helmet, then compare two surface approaches side by side:
+   a. auto-paint: per-character UVs + baked texture (AO, edge wear by curvature, gradient, noise, role-driven masks: rust/cracks/scuffs);
+   b. projection of the concept art's front/side/back views onto the mesh (uses the `compare_reference` alignment).
+4. Marcel picks → write the painted surface mode properly.
 
-Open:
-- `spec.proportions` ≠ 1 is refused for now (Phase 4).
-- Headwear weighted to `head` (fine: `headslot` has no clip keys).
+Later: Phase 3 (skinning & animation) — style-independent, then for the mage and the knight.
 
 ## Decisions (with reasons)
 
@@ -67,6 +72,8 @@ Open:
 - **Budget raised** (Marcel, 2026-11-15) from 600–1,000 (Kenney-chunky, looked too edgy) to **1,500–2,500, hard 3,000**; head group ≤ 700 / 1,000; accessories ≤ 300 / 500. Segment & bevel guide in STYLE.md §3.
 - **Smooth by angle, 40°** replaces flat shading (Marcel, 2026-11-15): flat shading was what read as 'hard', not the triangle count (tested: same GLB, smoothed normals looked soft). Applied at assembly (`jobs/lib/shading.py`), split normals go into the GLB; `validate` warns on flat faces / unmarked creases. Round things use < 40° steps (heads/beards: 30° corner steps).
 - Reference images in the repo only when Marcel says they're his to publish (the mage is).
+- **Style profiles** (Marcel, 2026-11-15): packs may need different looks (clean now, painted next, others later). The shared pipeline (skeleton, roles, parts mechanics, QA, export) stays one; the look is a folder. Roles are the bridge: palette colour in `clean`, material treatment in `painted`.
+- The mage spec has no `style` key (adding one would change its hash and void the approval) → it relies on `default_style = clean`. Add `"style": "clean"` at the next re-approval.
 
 ## Environment & gotchas
 
@@ -89,6 +96,7 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-15** — Phase 2 committed + pushed (`21656d4`). Style profiles refactor (`core.json` + `styles/clean/`) committed + pushed. Session ends here; next session starts the painted spike.
 - **2026-11-15** — Staff switched to upright grip; mage approved by Marcel (spec + part hashes in `specs/mage/spec.json`). Phase 2 done.
 - **2026-11-15** — Shading switched to smooth by angle 40°; viewer gets soft lighting by default; head/beard corners at 30° steps (2,380 tris).
 - **2026-11-15** — Budget raised to 1,500–2,500 tris; builder got `P.rrect`/`P.rbox`; mage parts reworked (2,364 tris).

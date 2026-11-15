@@ -1,20 +1,55 @@
-"""Load style.json (the machine-readable twin of STYLE.md)."""
+"""Load the merged style: core.json (shared rules) + styles/<name>/style.json (the look).
+
+The style is picked explicitly (`load_style("clean")`), else from the env var GPG_STYLE, else
+core.json `default_style`. Blender jobs get the same name through GPG_STYLE (server/blender.py).
+"""
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 
-from .paths import STYLE_JSON
+from .paths import CORE_JSON, STYLES
+
+
+class StyleError(ValueError):
+    pass
 
 
 @lru_cache(maxsize=1)
-def load_style() -> dict:
-    return json.loads(STYLE_JSON.read_text())
+def load_core() -> dict:
+    return json.loads(CORE_JSON.read_text())
 
 
-def reload_style() -> dict:
-    load_style.cache_clear()
-    return load_style()
+def available_styles() -> list[str]:
+    return sorted(p.parent.name for p in STYLES.glob("*/style.json"))
+
+
+def style_name(name: str | None = None) -> str:
+    name = name or os.environ.get("GPG_STYLE") or load_core()["default_style"]
+    if not (STYLES / name / "style.json").exists():
+        raise StyleError(f"unknown style {name!r}; available: {available_styles()}")
+    return name
+
+
+@lru_cache(maxsize=16)
+def _merged(name: str) -> dict:
+    core = load_core()
+    style = json.loads((STYLES / name / "style.json").read_text())
+    clash = (set(core) & set(style)) - {"_comment"}
+    if clash:
+        raise StyleError(f"styles/{name}/style.json redefines core keys {sorted(clash)}")
+    return {**core, **{k: v for k, v in style.items() if k != "_comment"}, "style": name}
+
+
+def load_style(name: str | None = None) -> dict:
+    return _merged(style_name(name))
+
+
+def reload_style(name: str | None = None) -> dict:
+    load_core.cache_clear()
+    _merged.cache_clear()
+    return load_style(name)
 
 
 def dump_style(style: dict) -> str:

@@ -1,5 +1,7 @@
-"""style.json access inside Blender."""
+"""Style access inside Blender: core.json merged with styles/<GPG_STYLE>/style.json
+(the runner sets GPG_STYLE; default: core.json default_style). Same merge as server/style.py."""
 import json
+import os
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent.parent
@@ -9,7 +11,10 @@ _cache = None
 def load():
     global _cache
     if _cache is None:
-        _cache = json.loads((REPO / "style.json").read_text())
+        core = json.loads((REPO / "core.json").read_text())
+        name = os.environ.get("GPG_STYLE") or core["default_style"]
+        style = json.loads((REPO / "styles" / name / "style.json").read_text())
+        _cache = {**core, **{k: v for k, v in style.items() if k != "_comment"}, "style": name}
     return _cache
 
 

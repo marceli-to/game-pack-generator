@@ -5,7 +5,7 @@ import struct
 import pytest
 
 from server.blender import run_job, run_job_checked
-from server.paths import LIBRARY
+from server.paths import REPO
 from server.style import load_style
 
 from .conftest import needs_blender
@@ -27,7 +27,7 @@ def test_version_pin_is_enforced(monkeypatch):
 
 def test_template_hits_targets():
     s = load_style()
-    t = json.loads((LIBRARY / "proportions" / "human.json").read_text())
+    t = json.loads((REPO / load_style()["archetypes"]["human"]["template"]).read_text())
     tg = s["archetypes"]["human"]["targets"]
     lm = t["landmarks"]
     assert lm["hip.l"][2] == pytest.approx(tg["hip_z"], abs=1e-3)

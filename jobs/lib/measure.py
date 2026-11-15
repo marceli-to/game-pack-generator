@@ -46,7 +46,7 @@ def _islands(bm):
 
 
 def _palette_matches(img):
-    """True if `img` has the same pixels as library/palette.png."""
+    """True if `img` has the same pixels as the style's palette.png."""
     lib = bpy.data.images.load(str(S.repo_path(S.load()["palette"]["file"])), check_existing=False)
     try:
         if tuple(img.size) != tuple(lib.size):
@@ -356,7 +356,7 @@ def violations(m, spec=None):
         W("material_name", f"material is {mats[0]!r}, expected {style['palette']['material']!r}")
     if len(m["images"]) != 1 or not m["palette_texture_ok"]:
         H("texture", f"texture must be palette.png; found {m['images'] or 'none'}"
-                     + ("" if m["palette_texture_ok"] in (None, True) else " (pixels differ from library/palette.png)"))
+                     + ("" if m["palette_texture_ok"] in (None, True) else f" (pixels differ from {style['palette']['file']})"))
     if m["uv_missing"]:
         H("uv_missing", "mesh has no UV map")
     if m["uv_outside"]:
@@ -397,7 +397,7 @@ def violations(m, spec=None):
         if sk["missing"] or sk["extra"] or sk["wrong_parent"]:
             H("skeleton", f"skeleton differs from the standard: missing={sk['missing']} extra={sk['extra']} wrong_parent={sk['wrong_parent']}")
         if sk["deform_mismatch"]:
-            W("deform_flags", f"deform flags differ from style.json: {sk['deform_mismatch']}")
+            W("deform_flags", f"deform flags differ from core.json: {sk['deform_mismatch']}")
     if m["weights_over_2_bones"]:
         W("weights", f"{m['weights_over_2_bones']} vertices weighted to more than 2 bones")
     if sk.get("present") and m["unweighted_verts"]:

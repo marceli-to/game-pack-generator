@@ -6,7 +6,7 @@ from pathlib import Path
 from .. import character as C
 from ..blender import run_job
 from ..paths import REPO
-from ..style import load_style
+from ..style import available_styles, load_style, style_name
 
 
 def init_character(name: str, spec: dict | None = None, overwrite: bool = False) -> dict:
@@ -16,18 +16,21 @@ def init_character(name: str, spec: dict | None = None, overwrite: bool = False)
         raise C.CharacterError(f"character {name!r} already exists (pass overwrite=true to replace it)")
     spec = dict(spec or {})
     spec.setdefault("name", name)
-    spec.setdefault("archetype", load_style()["default_archetype"])
-    if spec["archetype"] not in load_style()["archetypes"]:
-        raise C.CharacterError(f"unknown archetype {spec['archetype']!r}")
+    spec.setdefault("style", style_name())
+    style = load_style(spec["style"])
+    spec.setdefault("archetype", style["default_archetype"])
+    if spec["archetype"] not in style["archetypes"]:
+        raise C.CharacterError(f"unknown archetype {spec['archetype']!r} in style {spec['style']!r}: "
+                               f"{sorted(style['archetypes'])}")
     C.save_spec(name, spec)
-    r = run_job("init_character", {"out": str(blend)})
+    r = run_job("init_character", {"out": str(blend)}, style=spec["style"])
     r["outputs"] = [str(blend), str(C.spec_path(name))]
     r["stats"] = {"spec_hash": C.spec_hash(spec)}
     return r
 
 
-def get_style() -> dict:
-    return load_style()
+def get_style(style: str | None = None) -> dict:
+    return {**load_style(style), "available_styles": available_styles()}
 
 
 def import_glb(name: str, path: str, normalize: bool = False) -> dict:
@@ -35,7 +38,7 @@ def import_glb(name: str, path: str, normalize: bool = False) -> dict:
     p = Path(path).expanduser().resolve()
     if not p.exists() or p.suffix.lower() not in (".glb", ".gltf"):
         raise C.CharacterError(f"not a .glb/.gltf file: {p}")
-    return run_job("import_glb", {"path": str(p), "out": str(blend), "normalize": normalize}, blend=blend)
+    return run_job("import_glb", {"path": str(p), "out": str(blend), "normalize": normalize}, blend=blend, style=C.style_of(name))
 
 
 def add_reference(name: str, image: str, views: dict, top_y: float, floor_y: float,
@@ -51,7 +54,9 @@ def add_reference(name: str, image: str, views: dict, top_y: float, floor_y: flo
     src = src.resolve()
     if not src.exists():
         raise C.CharacterError(f"reference image not found: {image}")
-    allowed = set(load_style()["preview"]["views"])
+    st = C.style_of(name)
+    style = load_style(st)
+    allowed = set(style["preview"]["views"])
     bad = [v for v in views if v not in allowed or v == "three_quarter"]
     if bad or not views:
         raise C.CharacterError(f"views must be a subset of front/side/back, got {list(views)}")
@@ -59,7 +64,7 @@ def add_reference(name: str, image: str, views: dict, top_y: float, floor_y: flo
         raise C.CharacterError("floor_y must be below top_y (pixel rows grow downwards)")
     spec = C.load_spec(name) or {}
     if height_m is None:
-        arch = load_style()["archetypes"][spec.get("archetype", load_style()["default_archetype"])]
+        arch = style["archetypes"][spec.get("archetype", style["default_archetype"])]
         height_m = sum(arch["height"]) / 2
     ref_dir = C.character_dir(name) / "reference"
     ref_dir.mkdir(parents=True, exist_ok=True)
@@ -67,9 +72,9 @@ def add_reference(name: str, image: str, views: dict, top_y: float, floor_y: flo
     shutil.copyfile(src, dst)
     views = {v: (d if isinstance(d, dict) else {"center_x": d}) for v, d in views.items()}
     args = {"image": str(dst), "out_dir": str(ref_dir), "top_y": top_y, "floor_y": floor_y,
-            "height_m": height_m, "extent_m": extent_m, "size": load_style()["preview"]["view_size"],
+            "height_m": height_m, "extent_m": extent_m, "size": style["preview"]["view_size"],
             "views": views}
-    r = run_job("crop_reference", args)
+    r = run_job("crop_reference", args, style=st)
     if not r.get("ok"):
         return r
     st = r["stats"]

@@ -12,12 +12,12 @@ def assemble_from_parts(name: str, spec: dict | None = None) -> dict:
     if spec is not None:
         spec = {**(C.load_spec(name) or {}), **spec}
         spec.setdefault("name", name)
-        spec.setdefault("archetype", load_style()["default_archetype"])
+        spec.setdefault("archetype", load_style(spec.get("style"))["default_archetype"])
         C.save_spec(name, spec)
     spec = C.load_spec(name)
     if spec is None:
         raise C.CharacterError(f"character {name!r} has no spec; call init_character first")
-    r = run_job("assemble", {"spec": spec, "out": str(C.blend_path(name))})
+    r = run_job("assemble", {"spec": spec, "out": str(C.blend_path(name))}, style=C.style_of(name))
     if r.get("ok"):
         r["stats"]["spec_hash"] = C.spec_hash(spec)
     return r
@@ -26,11 +26,13 @@ def assemble_from_parts(name: str, spec: dict | None = None) -> dict:
 def apply_palette(name: str) -> dict:
     spec = C.load_spec(name) or {}
     blend = C.require(name)
-    return run_job("apply_palette", {"colors": spec.get("colors") or {}, "out": str(blend)}, blend=blend)
+    return run_job("apply_palette", {"colors": spec.get("colors") or {}, "out": str(blend)}, blend=blend, style=C.style_of(name))
 
 
 def recolor(name: str, role: str, palette_index: int) -> dict:
-    style = load_style()
+    style = load_style(C.style_of(name))
+    if style.get("surface") != "palette":
+        raise C.CharacterError(f"recolor works on the palette surface; style {style['style']!r} uses {style.get('surface')!r}")
     if role not in style["roles"]:
         raise C.CharacterError(f"unknown role {role!r}; roles: {style['roles']}")
     n = style["palette"]["grid"] ** 2

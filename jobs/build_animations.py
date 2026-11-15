@@ -1,4 +1,4 @@
-"""Build library/animations.blend from the KayKit clips mapped in style.json (STYLE.md §8).
+"""Build library/animations.blend from the KayKit clips mapped in core.json (STYLE.md §8).
 
 args: { source_dir: <KayKit_Character_Animations_1.1>, out: "library/animations.blend" }
 Clips keep their source length (imported at the style fps). Scale keys and root-bone

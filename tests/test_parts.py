@@ -1,6 +1,5 @@
 """Phase 2: parts, assembly, palette, reference comparison."""
 import json
-import shutil
 
 import pytest
 
@@ -119,7 +118,7 @@ def test_parts_catalog_lists_library():
     assert {p for p in spec["parts"].values() if p} <= have
     for slot, ps in listing.items():
         for p in ps:
-            assert (REPO / "library" / "parts" / slot / f"{p['part']}.py").exists()
+            assert (REPO / load_style()["parts"]["dir"] / slot / f"{p['part']}.py").exists()
 
 
 @needs_blender
@@ -138,5 +137,5 @@ def test_mage_approval_still_valid():
     assert ap["spec_hash"] == C.spec_hash(spec), "spec changed since approval"
     for slot, part in spec["parts"].items():
         if part:
-            script = (REPO / "library" / "parts" / slot / f"{part}.py").read_bytes()
+            script = (REPO / load_style()["parts"]["dir"] / slot / f"{part}.py").read_bytes()
             assert ap["parts"][part] == "sha256:" + hashlib.sha256(script).hexdigest(), f"{part} rebuilt since approval"

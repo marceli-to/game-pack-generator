@@ -7,12 +7,14 @@ Every job gets its args as a JSON file and writes its result as a JSON file
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import tempfile
 import time
 from pathlib import Path
 
 from .paths import JOBS, blender_bin
+from .style import style_name
 
 
 class BlenderError(RuntimeError):
@@ -20,8 +22,9 @@ class BlenderError(RuntimeError):
 
 
 def run_job(job: str, args: dict | None = None, blend: str | Path | None = None,
-            timeout: float = 180.0) -> dict:
-    """Run jobs/<job>.py inside Blender. Opens `blend` first if given."""
+            timeout: float = 180.0, style: str | None = None) -> dict:
+    """Run jobs/<job>.py inside Blender. Opens `blend` first if given. `style` selects the style the
+    job sees (default: GPG_STYLE / core.json default_style)."""
     if not (JOBS / f"{job}.py").exists():
         raise BlenderError(f"unknown job: {job}")
     with tempfile.TemporaryDirectory(prefix="gpg-") as tmp:
@@ -35,7 +38,8 @@ def run_job(job: str, args: dict | None = None, blend: str | Path | None = None,
                 job, str(args_path), str(result_path)]
         t0 = time.monotonic()
         try:
-            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout)
+            env = {**os.environ, "GPG_STYLE": style_name(style)}
+            proc = subprocess.run(cmd, capture_output=True, text=True, timeout=timeout, env=env)
         except subprocess.TimeoutExpired as e:
             raise BlenderError(f"job {job} timed out after {timeout}s") from e
         except FileNotFoundError as e:
@@ -55,8 +59,8 @@ def run_job(job: str, args: dict | None = None, blend: str | Path | None = None,
 
 
 def run_job_checked(job: str, args: dict | None = None, blend: str | Path | None = None,
-                    timeout: float = 180.0) -> dict:
-    result = run_job(job, args, blend, timeout)
+                    timeout: float = 180.0, style: str | None = None) -> dict:
+    result = run_job(job, args, blend, timeout, style)
     if not result.get("ok"):
         raise BlenderError(result.get("error", "job failed") + ("\n" + result["log"] if result.get("log") else ""))
     return result

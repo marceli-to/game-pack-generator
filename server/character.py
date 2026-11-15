@@ -48,6 +48,12 @@ def save_spec(name: str, spec: dict) -> Path:
     return p
 
 
+def style_of(name: str) -> str:
+    """The character's style (spec.style; specs without one use core.json default_style)."""
+    from .style import style_name
+    return style_name((load_spec(name) or {}).get("style"))
+
+
 def spec_hash(spec: dict) -> str:
     """STYLE.md §14: SHA-256 of the spec JSON without the approval block, keys sorted."""
     body = {k: v for k, v in spec.items() if k != "approval"}

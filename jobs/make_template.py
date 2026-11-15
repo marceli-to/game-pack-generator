@@ -1,6 +1,6 @@
 """Compute a proportion template from the skeleton + archetype targets (STYLE.md §7a).
 
-args: { archetype: "human", out?: "library/proportions/<archetype>.json" }
+args: { archetype: "human", out?: the archetype's template path in the style }
 Writes the full rest layout (bone head/tail/roll), landmarks, segment factors and the
 per-bone offset factors used to scale clip location keys.
 """
@@ -51,7 +51,7 @@ def run(args):
         "landmarks": landmarks,
         "bones": {n: {"head": _r(h), "tail": _r(t), "roll": round(r, 6)} for n, (h, t, r) in layout.items()},
     }
-    out = S.repo_path(args.get("out", f"library/proportions/{arch}.json"))
+    out = S.repo_path(args.get("out", style["archetypes"][arch]["template"]))
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, indent=1) + "\n")
     return {"outputs": [str(out)], "stats": {"factors": data["factors"], "body_height": data["body_height"]}}

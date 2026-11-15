@@ -1,6 +1,6 @@
 """Parts: the builder API for agent-written part scripts, part checks, and loading parts.
 
-A part is one mesh object `part_<slot>` in library/parts/<slot>/<part>.blend, modelled in the
+A part is one mesh object `part_<slot>` in <style parts dir>/<slot>/<part>.blend, modelled in the
 world space of a proportion template (STYLE.md §7a), with a FACE INT attribute `role` on every
 face and optional rigid bone weights (vertex groups named after deforming bones).
 
@@ -22,7 +22,6 @@ from mathutils.kdtree import KDTree
 
 from . import style as S
 
-PARTS_DIR = "library/parts"
 
 
 def split_part_name(part):
@@ -36,7 +35,7 @@ def split_part_name(part):
 
 def part_path(part, ext=".blend"):
     slot, _ = split_part_name(part)
-    return S.repo_path(f"{PARTS_DIR}/{slot}/{part}{ext}")
+    return S.repo_path(f"{S.load()['parts']['dir']}/{slot}/{part}{ext}")
 
 
 def mirror_bone(name):

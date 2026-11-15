@@ -26,7 +26,7 @@ def main():
         want = os.environ.get("GPG_PIN_BLENDER_OVERRIDE") or style["blender"]["version"]  # override: tests only
         have = ".".join(str(v) for v in bpy.app.version)
         if have != want:
-            raise RuntimeError(f"Blender {have} does not match the pinned version {want} (style.json)")
+            raise RuntimeError(f"Blender {have} does not match the pinned version {want} (core.json)")
         args = json.loads(args_path.read_text())
         module = importlib.import_module(job)
         out = module.run(args) or {}
