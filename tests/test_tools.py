@@ -12,7 +12,9 @@ from server.tools import qa as T_qa
 
 from .conftest import needs_blender, needs_node
 
-PHASE1_TOOLS = {"get_style", "init_character", "import_glb", "stats", "render_preview", "validate", "export"}
+PHASE1_TOOLS = {"get_style", "init_character", "import_glb", "stats", "render_preview", "validate", "export",
+                "add_reference", "build_part", "list_parts", "render_parts_catalog", "assemble_from_parts",
+                "apply_palette", "recolor", "compare_reference"}
 
 
 def test_mcp_lists_phase1_tools():

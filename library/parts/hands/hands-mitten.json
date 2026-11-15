@@ -1,0 +1,29 @@
+{
+ "part": "hands-mitten",
+ "slot": "hands",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "1cff038e9278125fb15820b0a3015c9c26541d9a31d796b449c3937f6cfd5f9c",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 240,
+ "verts": 128,
+ "roles": [
+  "skin"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.825,
+   -0.098,
+   1.2169
+  ],
+  [
+   0.825,
+   0.062,
+   1.3059
+  ]
+ ],
+ "warnings": []
+}

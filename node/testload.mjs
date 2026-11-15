@@ -9,7 +9,7 @@ import { chromium } from "playwright";
 
 const here = dirname(fileURLToPath(import.meta.url));
 // anim "-" = static model: only check that it loads without errors.
-const [glb, shot, anim = "idle"] = process.argv.slice(2);
+const [glb, shot, anim = "idle", extra = ""] = process.argv.slice(2);  // extra: more viewer query, e.g. "look=soft"
 const viewerDir = resolve(here, "..", "viewer");
 const threeDir = resolve(here, "node_modules", "three");
 
@@ -39,7 +39,7 @@ try {
   page.on("console", (m) => { if (m.type() === "error") result.console_errors.push(m.text()); });
   page.on("pageerror", (e) => result.page_errors.push(String(e)));
   const q = anim === "-" ? "" : `&anim=${encodeURIComponent(anim)}`;
-  await page.goto(`http://127.0.0.1:${port}/viewer.html?model=/model.glb${q}`);
+  await page.goto(`http://127.0.0.1:${port}/viewer.html?model=/model.glb${q}${extra ? "&" + extra : ""}`);
   await page.waitForFunction(() => window.__viewer && (window.__viewer.loaded || window.__viewer.error), null, { timeout: 30000 });
   await page.waitForFunction(() => window.__viewer.time > 0.6 || window.__viewer.frames > 40, null, { timeout: 30000 }).catch(() => {});
   const st = await page.evaluate(() => window.__viewer);

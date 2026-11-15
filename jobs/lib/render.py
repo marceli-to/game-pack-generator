@@ -48,6 +48,7 @@ def setup(size):
     sh.light = "STUDIO"
     sh.color_type = "TEXTURE"
     sh.show_shadows = False
+    sh.show_specular_highlight = False
     sh.show_cavity = False
     sh.show_object_outline = False
     if sc.world is None:
@@ -134,3 +135,39 @@ def compose_row(paths, out, size):
     sheet.file_format = "PNG"
     sheet.save()
     bpy.data.images.remove(sheet)
+
+
+def load_rgba(path):
+    """Image as a top-down H x W x 4 float array."""
+    img = bpy.data.images.load(str(path), check_existing=False)
+    w, h = img.size
+    px = np.array(img.pixels[:], dtype=np.float32).reshape(h, w, img.channels)
+    bpy.data.images.remove(img)
+    if px.shape[2] == 3:
+        px = np.concatenate([px, np.ones((h, w, 1), dtype=np.float32)], axis=2)
+    return px[::-1].copy()
+
+
+def save_rgba(arr, path):
+    """Write a top-down H x W x 4 float array as PNG."""
+    h, w = arr.shape[:2]
+    img = bpy.data.images.new("out", w, h, alpha=True)
+    img.pixels = np.ascontiguousarray(arr[::-1], dtype=np.float32).ravel()
+    img.filepath_raw = str(path)
+    img.file_format = "PNG"
+    img.save()
+    bpy.data.images.remove(img)
+    return str(path)
+
+
+def resample(arr, size):
+    """Nearest-neighbour resample of a square H x W x C array to size x size."""
+    h, w = arr.shape[:2]
+    ys = (np.arange(size) * h / size).astype(int)
+    xs = (np.arange(size) * w / size).astype(int)
+    return arr[ys][:, xs]
+
+
+def mask(arr, bg, threshold=0.12):
+    """Foreground mask: pixels that differ from the background colour."""
+    return np.abs(arr[..., :3] - np.asarray(bg, dtype=np.float32)[:3]).sum(axis=2) > threshold

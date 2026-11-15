@@ -1,0 +1,30 @@
+{
+ "part": "headwear-wizard-hat",
+ "slot": "headwear",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "a04ee1db1dd3b60d275c3d78039e09241c4d5531645ef7b4ce34c59ebe3a2e95",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 214,
+ "verts": 109,
+ "roles": [
+  "dark",
+  "primary"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.4009,
+   -0.4026,
+   1.5172
+  ],
+  [
+   0.4009,
+   0.387,
+   2.2351
+  ]
+ ],
+ "warnings": []
+}

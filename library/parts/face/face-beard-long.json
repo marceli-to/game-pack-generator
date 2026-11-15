@@ -1,0 +1,30 @@
+{
+ "part": "face-beard-long",
+ "slot": "face",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "a3a1063ce3a6dc504ad7675fdee7169047a05792f3ff70ebe4a9ee4d4c0fdb7f",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 228,
+ "verts": 128,
+ "roles": [
+  "eyes",
+  "hair"
+ ],
+ "shells": 7,
+ "bbox": [
+  [
+   -0.172,
+   -0.21,
+   1.31
+  ],
+  [
+   0.172,
+   0.15,
+   1.672
+  ]
+ ],
+ "warnings": []
+}

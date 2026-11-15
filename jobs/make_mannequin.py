@@ -12,6 +12,7 @@ from mathutils import Matrix, Vector
 from lib import palette as P
 from lib import rig as R
 from lib import scene as SC
+from lib import shading as SH
 from lib import style as S
 
 DEFAULT_COLORS = {"skin": 2, "hair": 8, "primary": 33, "secondary": 45, "accent": 42, "metal": 41,
@@ -108,8 +109,7 @@ def run(args):
     bpy.context.scene.collection.objects.link(obj)
     for bone, g in sorted(groups.items(), key=lambda kv: kv[1]):
         obj.vertex_groups.new(name=bone)
-    for p in mesh.polygons:
-        p.use_smooth = False
+    SH.apply(mesh)
     used, missing = P.apply_roles(obj, colors)
     if "no_role" in defects:
         mesh.attributes.remove(mesh.attributes["role"])

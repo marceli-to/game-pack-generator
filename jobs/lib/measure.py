@@ -12,6 +12,7 @@ from mathutils import Vector
 from mathutils.kdtree import KDTree
 
 from . import scene as SC
+from . import shading as SH
 from . import style as S
 
 
@@ -89,7 +90,7 @@ def measure(spec=None):
         "non_manifold_edges": 0, "boundary_edges": 0, "wire_edges": 0,
         "flipped_faces": 0, "inverted_islands": 0,
         "zero_area_faces": 0, "duplicate_verts": 0, "ngons_over_max": 0,
-        "smooth_faces": 0, "vertex_color_layers": 0,
+        "flat_faces": 0, "unmarked_creases": 0, "vertex_color_layers": 0,
         "asymmetric_verts": 0, "symmetry_checked_verts": 0,
         "weights_over_2_bones": 0, "unweighted_verts": 0,
         "z_min": None, "body_top": None, "headwear_top": None, "total_top": None,
@@ -110,7 +111,9 @@ def measure(spec=None):
         m["faces"] += len(mesh.polygons)
         m["tris"] += sum(len(p.vertices) - 2 for p in mesh.polygons)
         m["vertex_color_layers"] += len(mesh.color_attributes)
-        m["smooth_faces"] += sum(1 for p in mesh.polygons if p.use_smooth)
+        flat, unmarked = SH.check(o.data)
+        m["flat_faces"] += flat
+        m["unmarked_creases"] += unmarked
 
         used_mats = {p.material_index for p in mesh.polygons}
         for i in used_mats:
@@ -376,8 +379,10 @@ def violations(m, spec=None):
         W("duplicate_verts", f"{m['duplicate_verts']} duplicate vertices (merge distance {style['topology']['merge_distance']})")
     if m["ngons_over_max"]:
         W("ngons", f"{m['ngons_over_max']} n-gons with more than {style['topology']['max_ngon']} vertices")
-    if m["smooth_faces"]:
-        W("smooth_shading", f"{m['smooth_faces']} faces are smooth-shaded (flat shading required)")
+    if m["flat_faces"]:
+        W("flat_shading", f"{m['flat_faces']} faces are flat-shaded (smooth by angle required, STYLE.md §5)")
+    if m["unmarked_creases"]:
+        W("unmarked_creases", f"{m['unmarked_creases']} edges sharper than {style['shading']['crease_deg']}° are not marked sharp")
     if m["vertex_color_layers"]:
         W("vertex_colors", "mesh has vertex colours (everything goes through the palette)")
     if m["symmetry_checked_verts"] and m["asymmetric_verts"]:

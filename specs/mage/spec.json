@@ -1,0 +1,58 @@
+{
+  "approval": {
+    "by": "marcel",
+    "date": "2026-11-15",
+    "parts": {
+      "accessory_hand_r-staff-crystal": "sha256:92cefecf54bada6aa2b5705a2fc6c02fc8fbd7743e5932aed50ab81e0cbee72c",
+      "accessory_waist-pouch": "sha256:87999b07f52fbba65b89c55e0059a2d9e2e5d11c422c67d434e04d4bc6e75cba",
+      "arms-sleeves-wide": "sha256:5268cfc92498d645eccaf95838d5af0781a6ad34d1a304754f4c71ff2841eeb9",
+      "face-beard-long": "sha256:a3a1063ce3a6dc504ad7675fdee7169047a05792f3ff70ebe4a9ee4d4c0fdb7f",
+      "feet-boots-tall": "sha256:13758043e463b5f17746a20f996ea71991962a7523d6f57ed94a13bc9c7cc9d4",
+      "hair-grey-back": "sha256:d29f1b65e719133a9cd27e1b8e6da365982955ff10886d788d47b71c8bc8f6de",
+      "hands-mitten": "sha256:1cff038e9278125fb15820b0a3015c9c26541d9a31d796b449c3937f6cfd5f9c",
+      "head-round": "sha256:3e83511998dd760a03d0a93dcf53fb64b4e72d2cfc502144d1b2573defaadc92",
+      "headwear-wizard-hat": "sha256:a04ee1db1dd3b60d275c3d78039e09241c4d5531645ef7b4ce34c59ebe3a2e95",
+      "torso-robe-long": "sha256:dc4f3611c0eb26070cd4ad028e8bc32c155a255d7818794c1419aa94c4c4d851"
+    },
+    "spec_hash": "sha256:f66b6cdbc49d8300e979affe94f70ddf044fe43af48ef1ac063570b419e6d6d4"
+  },
+  "archetype": "human",
+  "colors": {
+    "accent": 42,
+    "dark": 54,
+    "eyes": 54,
+    "hair": 50,
+    "leather": 46,
+    "metal": 54,
+    "primary": 34,
+    "secondary": 47,
+    "skin": 1,
+    "special": 39
+  },
+  "compare": {
+    "arms_down_deg": 62,
+    "hide_slots": [
+      "accessory_hand_r"
+    ]
+  },
+  "grip": {
+    "accessory_hand_r": "upright"
+  },
+  "name": "mage",
+  "parts": {
+    "accessory_hand_r": "accessory_hand_r-staff-crystal",
+    "accessory_waist": "accessory_waist-pouch",
+    "arms": "arms-sleeves-wide",
+    "face": "face-beard-long",
+    "feet": "feet-boots-tall",
+    "hair": "hair-grey-back",
+    "hands": "hands-mitten",
+    "head": "head-round",
+    "headwear": "headwear-wizard-hat",
+    "legs": null,
+    "torso": "torso-robe-long"
+  },
+  "proportions": {},
+  "reference": "specs/mage/reference/turnaround.webp",
+  "seed": 1
+}

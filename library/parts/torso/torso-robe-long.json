@@ -1,0 +1,33 @@
+{
+ "part": "torso-robe-long",
+ "slot": "torso",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "dc4f3611c0eb26070cd4ad028e8bc32c155a255d7818794c1419aa94c4c4d851",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 498,
+ "verts": 257,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "metal",
+  "primary"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.3536,
+   -0.239,
+   0.3
+  ],
+  [
+   0.3536,
+   0.28,
+   1.4
+  ]
+ ],
+ "warnings": []
+}

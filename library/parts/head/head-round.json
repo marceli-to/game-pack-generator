@@ -1,0 +1,29 @@
+{
+ "part": "head-round",
+ "slot": "head",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "3e83511998dd760a03d0a93dcf53fb64b4e72d2cfc502144d1b2573defaadc92",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 208,
+ "verts": 112,
+ "roles": [
+  "skin"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.19,
+   -0.205,
+   1.39
+  ],
+  [
+   0.19,
+   0.17,
+   1.8
+  ]
+ ],
+ "warnings": []
+}

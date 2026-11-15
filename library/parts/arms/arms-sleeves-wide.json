@@ -1,0 +1,31 @@
+{
+ "part": "arms-sleeves-wide",
+ "slot": "arms",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "5268cfc92498d645eccaf95838d5af0781a6ad34d1a304754f4c71ff2841eeb9",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 376,
+ "verts": 192,
+ "roles": [
+  "accent",
+  "dark",
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.665,
+   -0.1449,
+   1.119
+  ],
+  [
+   0.665,
+   0.1449,
+   1.4088
+  ]
+ ],
+ "warnings": []
+}

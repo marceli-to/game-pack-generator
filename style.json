@@ -44,25 +44,30 @@
   "headwear_max_ratio": 0.6,
   "budget": {
     "character": {
-      "target": [600, 1000],
-      "hard": 1500
+      "target": [1500, 2500],
+      "hard": 3000
     },
     "head": {
-      "target": 300,
-      "hard": 450,
+      "target": 700,
+      "hard": 1000,
       "slots": ["head", "hair", "headwear", "face"]
     },
     "accessory_hand": {
-      "target": 150,
-      "hard": 250,
+      "target": 300,
+      "hard": 500,
       "slots": ["accessory_hand_l", "accessory_hand_r"]
     },
     "accessory_back": {
-      "target": 150,
-      "hard": 250,
+      "target": 300,
+      "hard": 500,
       "slots": ["accessory_back"]
     },
-    "prop": { "target": 500, "hard": 800 }
+    "prop": { "target": 1000, "hard": 1600 }
+  },
+  "shading": {
+    "_comment": "STYLE.md §5: smooth faces, edges sharper than crease_deg marked sharp",
+    "mode": "smooth_by_angle",
+    "crease_deg": 40
   },
   "palette": {
     "file": "library/palette.png",
@@ -90,9 +95,9 @@
   "roles": ["skin", "hair", "primary", "secondary", "accent", "metal", "leather", "eyes", "dark", "special"],
   "slots": [
     "head", "hair", "headwear", "face", "torso", "arms", "hands", "legs", "feet", "accessory_back",
-    "accessory_hand_l", "accessory_hand_r"
+    "accessory_hand_l", "accessory_hand_r", "accessory_waist"
   ],
-  "height_excluded_slots": ["hair", "headwear", "accessory_back", "accessory_hand_l", "accessory_hand_r"],
+  "height_excluded_slots": ["hair", "headwear", "accessory_back", "accessory_hand_l", "accessory_hand_r", "accessory_waist"],
   "topology": { "merge_distance": 0.0001, "max_ngon": 6, "min_face_area": 1e-08 },
   "skeleton": {
     "source": "KayKit Character Animations 1.1, Animations/gltf/Rig_Medium (CC0, Kay Lousberg)",
@@ -130,6 +135,39 @@
       "accessory_back": "backslot",
       "accessory_hand_l": "handslot.l",
       "accessory_hand_r": "handslot.r"
+    },
+    "part_bones": {
+      "_comment": "bones a part of each slot may be weighted to; vertices without weights get the nearest of these at assembly (rigid, STYLE.md §9a)",
+      "head": ["head"],
+      "hair": ["head"],
+      "headwear": ["head"],
+      "face": ["head"],
+      "torso": ["hips", "spine", "chest"],
+      "arms": ["upperarm.l", "lowerarm.l", "upperarm.r", "lowerarm.r"],
+      "hands": ["wrist.l", "hand.l", "wrist.r", "hand.r"],
+      "legs": ["upperleg.l", "lowerleg.l", "upperleg.r", "lowerleg.r"],
+      "feet": ["foot.l", "toes.l", "foot.r", "toes.r"],
+      "accessory_back": ["chest"],
+      "accessory_hand_l": ["hand.l"],
+      "accessory_hand_r": ["hand.r"],
+      "accessory_waist": ["hips"]
+    }
+  },
+  "parts": {
+    "_comment": "part library (STYLE.md §9a)",
+    "dir": "library/parts",
+    "fit_tolerance": 0.03,
+    "preview_colors": {
+      "skin": 1,
+      "hair": 12,
+      "primary": 34,
+      "secondary": 47,
+      "accent": 41,
+      "metal": 40,
+      "leather": 45,
+      "eyes": 56,
+      "dark": 54,
+      "special": 58
     }
   },
   "animations": {

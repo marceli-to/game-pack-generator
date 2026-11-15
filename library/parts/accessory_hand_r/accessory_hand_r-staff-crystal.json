@@ -1,0 +1,30 @@
+{
+ "part": "accessory_hand_r-staff-crystal",
+ "slot": "accessory_hand_r",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "92cefecf54bada6aa2b5705a2fc6c02fc8fbd7743e5932aed50ab81e0cbee72c",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 168,
+ "verts": 94,
+ "roles": [
+  "leather",
+  "special"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.8529,
+   -0.0517,
+   0.4549
+  ],
+  [
+   -0.7109,
+   0.0517,
+   2.5549
+  ]
+ ],
+ "warnings": []
+}

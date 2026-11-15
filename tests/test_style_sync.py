@@ -10,10 +10,11 @@ S = load_style()
 
 def test_budgets_match():
     b = S["budget"]
-    assert f"| Character complete | {b['character']['target'][0]}–{b['character']['target'][1]:,} tris | {b['character']['hard']:,} |" in STYLE_MD
-    assert f"| Head incl. hair/headwear | ≤ {b['head']['target']} | {b['head']['hard']} |" in STYLE_MD
-    assert f"| Hand-held accessory (weapon, tool) | ≤ {b['accessory_hand']['target']} | {b['accessory_hand']['hard']} |" in STYLE_MD
-    assert f"| Back accessory (cape, backpack) | ≤ {b['accessory_back']['target']} | {b['accessory_back']['hard']} |" in STYLE_MD
+    assert f"| Character complete | {b['character']['target'][0]:,}–{b['character']['target'][1]:,} tris | {b['character']['hard']:,} |" in STYLE_MD
+    assert f"| Head incl. hair/headwear | ≤ {b['head']['target']:,} | {b['head']['hard']:,} |" in STYLE_MD
+    assert f"| Hand-held accessory (weapon, tool) | ≤ {b['accessory_hand']['target']:,} | {b['accessory_hand']['hard']:,} |" in STYLE_MD
+    assert f"| Back accessory (cape, backpack) | ≤ {b['accessory_back']['target']:,} | {b['accessory_back']['hard']:,} |" in STYLE_MD
+    assert f"| Prop (later) | ≤ {b['prop']['target']:,} | {b['prop']['hard']:,} |" in STYLE_MD
 
 
 def test_archetypes_match():
@@ -31,6 +32,12 @@ def test_palette_and_roles_match():
     roles_md = ", ".join(f"`{i} {r}`" for i, r in enumerate(S["roles"]))
     assert roles_md.replace("`8 dark`", "`8 dark` (mouth, inner sleeves, soles)").replace(
         "`9 special`", "`9 special` (glow, crystals)") in STYLE_MD
+
+
+def test_shading_matches():
+    sh = S["shading"]
+    assert sh["mode"] == "smooth_by_angle"
+    assert f"**Smooth by angle, {sh['crease_deg']}°**" in STYLE_MD
 
 
 def test_slots_match():

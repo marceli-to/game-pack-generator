@@ -1,0 +1,31 @@
+{
+ "part": "feet-boots-tall",
+ "slot": "feet",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "13758043e463b5f17746a20f996ea71991962a7523d6f57ed94a13bc9c7cc9d4",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 272,
+ "verts": 144,
+ "roles": [
+  "secondary"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.25,
+   -0.2052,
+   0.0
+  ],
+  [
+   0.25,
+   0.1448,
+   0.36
+  ]
+ ],
+ "warnings": [
+  "fit: feet end at y -0.205, template toe tip at -0.255"
+ ]
+}

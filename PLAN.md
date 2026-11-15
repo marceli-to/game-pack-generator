@@ -73,7 +73,7 @@ game-pack-generator/
 | Tool | Purpose |
 |---|---|
 | `init_character(name, spec?)` | creates `workspace/<name>/`, empty .blend, links the style |
-| `add_reference(name, images[])` | stores turnaround images, creates a reference sheet |
+| `add_reference(name, image, views, top_y, floor_y)` | stores a turnaround sheet, cuts same-scale front/side/back crops (scale from skull-top and floor rows) |
 | `get_style()` | returns style.json (agents read the rules from here) |
 | `import_glb(name, path)` | imports an existing GLB into the character's workspace (for checks, references, CC0 parts) |
 
@@ -81,7 +81,8 @@ game-pack-generator/
 | Tool | Purpose |
 |---|---|
 | `assemble_from_parts(name, spec)` | builds the character: loads the archetype's proportion template, scales bones per `spec.proportions`, attaches parts to their bones |
-| `build_part(name, slot, archetype, script)` | creates a new part with an agent-written bpy snippet against the proportion template; must set the per-face `role` attribute (validated) |
+| `build_part(part, script, archetype?)` | creates library part `<slot>-<variant>` with an agent-written bpy snippet (builder API `P`) against the proportion template; must set the per-face `role` attribute (validated, STYLE.md §9a) |
+| `list_parts(slot?)` | parts per slot with tris and roles |
 | `render_parts_catalog(slot?)` | preview sheet of all parts per slot, so agents can choose visually |
 
 *Later (Phase 6):* `image_to_3d` + `cleanup_mesh` for the image route.
@@ -104,7 +105,7 @@ game-pack-generator/
 |---|---|
 | `stats(name)` | tris, verts, materials, height, non-manifold, bone count, UV outside palette cells |
 | `render_preview(name, views?)` | turnaround sheet (front/side/back/¾) as in STYLE.md |
-| `compare_reference(name)` | sheet: reference next to render, same views |
+| `compare_reference(name, arms_down_deg?, hide_slots?)` | sheet: reference / render at the same scale / silhouette overlay, IoU per view |
 | `validate(name)` | checks every rule in style.json → list of violations (hard/soft) |
 
 ### Export

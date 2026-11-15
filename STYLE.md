@@ -47,11 +47,18 @@ Headwear may add at most 60 % of body height on top (the wizard hat is fine, a 2
 
 | Asset | Target | Hard limit |
 |---|---|---|
-| Character complete | 600–1,000 tris | 1,500 |
-| Head incl. hair/headwear | ≤ 300 | 450 |
-| Hand-held accessory (weapon, tool) | ≤ 150 | 250 |
-| Back accessory (cape, backpack) | ≤ 150 | 250 |
-| Prop (later) | ≤ 500 | 800 |
+| Character complete | 1,500–2,500 tris | 3,000 |
+| Head incl. hair/headwear | ≤ 700 | 1,000 |
+| Hand-held accessory (weapon, tool) | ≤ 300 | 500 |
+| Back accessory (cape, backpack) | ≤ 300 | 500 |
+| Prop (later) | ≤ 1,000 | 1,600 |
+
+Raised on 2026-11-15 from 600–1,000 (Kenney-chunky) to match the softer low-poly look of the references: still faceted and flat-shaded, but rounder. Spend the triangles on silhouette and on the face/hands, not on hidden geometry.
+
+**Segment & bevel guide** (for part authors):
+- Round, visible shapes (hats, robes, sleeves, limbs): 12–16 sides; small round things (staff, fingers): 6–8.
+- Boxy shapes (head, hands, boots, belts, pouches): bevel every edge (`P.rbox`, corner radius ≈ 10–20 % of the smaller side); no sharp 90° box corners on base parts. Corners in 45° steps (`seg=1–2`) stay crisp under the §5 smoothing; 30° steps (`seg=3`) shade round (use that for heads and beards).
+- Silhouette curves (hat brim droop, robe flare, beard) get extra rings rather than one straight span.
 
 ## 4. Colours & material → style.json
 
@@ -78,7 +85,8 @@ Headwear may add at most 60 % of body height on top (the wizard hat is fine, a 2
 
 ## 5. Shading & normals
 
-- Flat shading (each face flat); Auto Smooth off.
+- **Smooth by angle, 40°** (changed 2026-11-15 from flat shading, which read too hard): every face is smooth-shaded; edges where faces meet at more than 40° are marked sharp. Curved shapes (robe, sleeves, hat) shade round, creases and bevels (boots, belts, buckles, box corners) stay crisp. Applied at assembly; the GLB carries the split normals, so it looks the same in any engine.
+- Want a curve to read round? Give it steps under 40° (≥ 10 sides for a full circle). Want an edge crisp? Make it sharper than 40° (a 45° bevel is crisp).
 - Normals consistently outward; no flipped faces.
 - No vertex colours (everything via the palette).
 
@@ -178,9 +186,22 @@ The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for 
 
 - Characters: `character-<name>` (kebab-case), e.g. `character-knight`
 - Parts: `<slot>-<variant>`, the slot name exactly as listed below, e.g. `head-round`, `torso-armor`, `feet-boots-chunky`, `headwear-wizard-hat`, `accessory_hand_r-staff-crystal`
-- Slots: `head`, `hair`, `headwear`, `face`, `torso`, `arms`, `hands`, `legs`, `feet`, `accessory_back`, `accessory_hand_l`, `accessory_hand_r`
+- Slots: `head`, `hair`, `headwear`, `face`, `torso`, `arms`, `hands`, `legs`, `feet`, `accessory_back`, `accessory_hand_l`, `accessory_hand_r`, `accessory_waist`
+  - `face`: eyes, brows, moustache and beard. `torso`: also long robes/skirts down to the boots (then `legs` may be empty) and symmetric belts. `accessory_waist`: one-sided belt items (pouch, scabbard), rigid on `hips`. New slots are only ever appended (the `slot` attribute stores the index).
 - Objects in Blender: `Character`, `Armature`, part objects before joining: `part_<slot>`
 - Files: `character-<name>.glb|fbx|obj`, previews `character-<name>.png`
+
+## 9a. Parts → style.json
+
+- A part is one mesh object `part_<slot>` in `library/parts/<slot>/<part>.blend`, next to its build script (`.py`, the source of truth: same script → same part), metadata (`.json`: archetypes, tris, roles, script hash) and preview (`.png`).
+- Built only through `build_part`: an agent-written script runs against the proportion template of one archetype, in world space (metres, −Y forward, T-pose, left = +X). It must give every face a role. Parts carry roles, never UVs or materials.
+- Hard checks (part is not saved): faces without a valid role, open or non-manifold shells, inside-out shells, tris over the slot group's hard limit (§3), weights to bones the slot may not use.
+- Soft checks: tris above target, n-gons, asymmetry of base parts, **fit** to the template (e.g. head top at the head joint's tip, feet on the floor, arms reaching the wrists, hand accessories through their handslot; tolerance `parts.fit_tolerance`).
+- Separate closed shells may overlap (helmet over head, belt over robe); hidden geometry still counts towards the budget.
+- **Weights:** rigid. A part may weight vertices to its slot's bones (`skeleton.part_bones`); `assemble_from_parts` gives every other vertex its nearest allowed bone. Headwear is weighted to `head`, hand accessories to `hand.l/r`: the deforming parents of the slot bones, because slot bones don't deform (revisit with skinning in Phase 3).
+- **Hand accessories** have a grip mode, set per character in `spec.grip` (`{slot: mode}`, default `weapon`):
+  - `weapon`: modelled along the handslot's bone axis (KayKit convention, −Y in the T-pose); swings with the hand in every clip (swords, axes, tools).
+  - `upright`: modelled along world +Z in the rest pose, grip at the handslot; in the clips the slot keeps its rest orientation and only follows the hand's position, so the item stays vertical (staffs, banners, lanterns). Applied when clips are added (Phase 3).
 
 ## 10. Export → style.json
 
@@ -239,3 +260,4 @@ A character is approved when:
    "approval": { "by": "marcel", "date": "2026-11-15", "spec_hash": "sha256:…" }
    ```
    Any later change to the spec changes its hash and voids the approval. `spec_hash` = SHA-256 of the spec JSON without the `approval` block, keys sorted.
+   The block also records `parts`: the `script_sha256` of every part used (from its `.json`). Rebuilding a part with a different script voids the approval too, even though the spec is unchanged.

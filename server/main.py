@@ -10,15 +10,19 @@ import traceback
 
 from mcp.server.mcpserver import MCPServer
 
+from .tools import assemble as T_assemble
 from .tools import export as T_export
+from .tools import parts as T_parts
 from .tools import project as T_project
 from .tools import qa as T_qa
 
 INSTRUCTIONS = """\
 Headless tool for Kenney-style low-poly characters (Blender + GLB for three.js).
 STYLE.md is the law; read it with get_style. Characters live in workspace/<name>/.
-Typical Phase-1 flow: get_style -> init_character -> import_glb -> stats / validate ->
-render_preview (look at the sheet) -> export (GLB + glTF validator + three.js test load).
+Build a character: get_style -> init_character -> add_reference -> list_parts /
+render_parts_catalog (build missing parts with build_part) -> assemble_from_parts -> validate ->
+compare_reference (max. 3 correction rounds, then ask the human) -> export.
+Check an existing model: init_character -> import_glb -> stats / validate -> render_preview -> export.
 Every result lists preview images: open them to see what you did.
 """
 
@@ -92,6 +96,83 @@ def export(name: str) -> dict:
     validator and a headless three.js test load (plays 'idle', screenshot). ok=false if the
     validator reports errors or the test load fails. Style violations are reported, not blocking."""
     return T_export.export(name)
+
+
+@mcp.tool()
+@_safe
+def add_reference(name: str, image: str, views: dict, top_y: float, floor_y: float,
+                  height_m: float | None = None, extent_m: float = 2.6) -> dict:
+    """Store a turnaround sheet and cut square, same-scale crops per view into
+    workspace/<name>/reference/ (used by compare_reference).
+    views: {"front": {"center_x": px, "x_range": [x0, x1]}, "side": ..., "back": ...}; center_x is the
+    column of the body axis, x_range keeps neighbouring views out of the crop.
+    top_y / floor_y: pixel rows of the skull top and the floor; together = height_m (default: middle of
+    the archetype's height range). extent_m: width/height of each crop in metres."""
+    return T_project.add_reference(name, image, views, top_y, floor_y, height_m, extent_m)
+
+
+@mcp.tool()
+@_safe
+def build_part(part: str, script: str, archetype: str | None = None, overwrite: bool = False) -> dict:
+    """Build a library part '<slot>-<variant>' (e.g. 'headwear-wizard-hat') from a bpy script run
+    against the archetype's proportion template. Saved to library/parts/<slot>/ (.blend, .py, .json,
+    .png) only if it passes the hard checks (roles on every face, closed shells, budget, allowed bones).
+    In the script: P = builder (P.loft(rings, role), P.ring(center, rx, ry, n, axis), P.rect(...),
+    P.rrect(center, sx, sy, r, seg, axis), P.box(lo, hi, role), P.rbox(lo, hi, role, r, bevel, seg, axis)
+    (bevelled box), P.cylinder(a, b, r, n, role), P.mirror_x(faces), P.transform(faces, M),
+    P.set_role(faces, role), P.set_bone(faces, bone), P.bm raw bmesh), lm = template landmarks
+    (Vector: head_top, head_base, shoulder.l, elbow.l, wrist.l, hip.l, knee.l, ankle.l, toes.l,
+    handslot.r, ...), bones = {name: (head, tail)}, guides, Vector, Matrix, math.
+    Model in metres, -Y forward, +Z up, T-pose; left side is +X. Follow the STYLE.md §3 segment & bevel
+    guide (12-16 sides for round shapes, bevelled boxes). Look at the returned preview."""
+    return T_parts.build_part(part, script, archetype, overwrite)
+
+
+@mcp.tool()
+@_safe
+def list_parts(slot: str | None = None) -> dict:
+    """List library parts per slot (name, archetypes, tris, roles)."""
+    return T_parts.list_parts(slot)
+
+
+@mcp.tool()
+@_safe
+def render_parts_catalog(slot: str | None = None, parts: list[str] | None = None) -> dict:
+    """Preview sheet of library parts (one row per part: front, side, 3/4), in stats.rows order."""
+    return T_parts.render_parts_catalog(slot, parts)
+
+
+@mcp.tool()
+@_safe
+def assemble_from_parts(name: str, spec: dict | None = None) -> dict:
+    """Build the character from spec.parts ({slot: part}) on the standard skeleton: slot attribute,
+    rigid weights, one 'Character' mesh, palette from spec.colors. spec (optional) is merged into
+    the saved spec.json first."""
+    return T_assemble.assemble_from_parts(name, spec)
+
+
+@mcp.tool()
+@_safe
+def apply_palette(name: str) -> dict:
+    """Re-apply spec.colors (role -> palette index) to the character's faces."""
+    return T_assemble.apply_palette(name)
+
+
+@mcp.tool()
+@_safe
+def recolor(name: str, role: str, palette_index: int) -> dict:
+    """Set one role's palette index in the spec and re-apply the palette."""
+    return T_assemble.recolor(name, role, palette_index)
+
+
+@mcp.tool()
+@_safe
+def compare_reference(name: str, arms_down_deg: float | None = None, hide_slots: list[str] | None = None) -> dict:
+    """Sheet: reference crops (top) / renders at the same scale (middle) / silhouette overlay (bottom:
+    red = only in the reference, blue = only in the render). stats.iou per view.
+    arms_down_deg: lower the T-pose arms to match an A-pose drawing (default spec.compare.arms_down_deg).
+    hide_slots: slots left out of the render, e.g. a staff drawn beside the character."""
+    return T_qa.compare_reference(name, arms_down_deg, hide_slots)
 
 
 def main() -> None:

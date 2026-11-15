@@ -26,6 +26,8 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+import { toCreasedNormals } from "three/addons/utils/BufferGeometryUtils.js";
 
 const params = new URLSearchParams(location.search);
 const state = window.__viewer = { loaded: false, error: null, animations: [], playing: null, time: 0, frames: 0 };
@@ -38,15 +40,32 @@ document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xe8e8e8);
-scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9a9a, 2.2));
-const sun = new THREE.DirectionalLight(0xffffff, 1.6);
-sun.position.set(2, 4, 3);
-scene.add(sun);
+// Default look: soft image-based room lighting + one key light, neutral tone mapping (what Marcel
+// approves). ?look=basic: the old hemisphere + sun setup.
+if (params.get("look") !== "basic") {
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.55;
+  const key = new THREE.DirectionalLight(0xffffff, 1.1);
+  key.position.set(2, 4, 3);
+  scene.add(key);
+} else {
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9a9a, 2.2));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+  sun.position.set(2, 4, 3);
+  scene.add(sun);
+}
+// ?crease=<deg>: re-smooth normals in the viewer (debug only; GLBs carry their own normals)
+// ?crease=<deg>: smooth normals across edges flatter than <deg>, keep sharper edges hard
+const crease = params.get("crease") ? THREE.MathUtils.degToRad(+params.get("crease")) : null;
+
 const grid = new THREE.GridHelper(4, 8, 0xbbbbbb, 0xd0d0d0);
 scene.add(grid);
 
 const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.05, 100);
 camera.position.set(2.2, 1.6, 3.6);
+if (params.get("cam") === "front") camera.position.set(0.9, 1.3, 4.2);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 0.9, 0);
 controls.update();
@@ -72,6 +91,7 @@ function load(url) {
     if (model) scene.remove(model);
     model = gltf.scene;
     model.traverse((o) => {
+      if (o.isMesh && crease !== null) o.geometry = toCreasedNormals(o.geometry, crease);
       if (o.isMesh && o.material.map) {
         o.material.map.magFilter = THREE.NearestFilter;
         o.material.map.minFilter = THREE.NearestFilter;

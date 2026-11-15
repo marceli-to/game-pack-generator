@@ -1,0 +1,29 @@
+{
+ "part": "hair-grey-back",
+ "slot": "hair",
+ "archetypes": [
+  "human"
+ ],
+ "script_sha256": "d29f1b65e719133a9cd27e1b8e6da365982955ff10886d788d47b71c8bc8f6de",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 44,
+ "verts": 24,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.174,
+   -0.115,
+   1.44
+  ],
+  [
+   0.174,
+   0.197,
+   1.615
+  ]
+ ],
+ "warnings": []
+}

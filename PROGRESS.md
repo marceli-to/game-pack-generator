@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-15 — Phase 1 done, Phase 2 not started._
+_Last updated: 2026-11-15 — Phase 2 done, mage approved by Marcel (uncommitted). Next: Phase 3._
 
 ---
 
@@ -12,8 +12,8 @@ _Last updated: 2026-11-15 — Phase 1 done, Phase 2 not started._
 | Phase (PLAN.md) | Status |
 |---|---|
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
-| 2 — First static character (the mage) | ⏭ next |
-| 3 — Skinning & animation | — |
+| 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (uncommitted) |
+| 3 — Skinning & animation | ⏭ next |
 | 4 — Parts library | — |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
@@ -26,22 +26,27 @@ _Last updated: 2026-11-15 — Phase 1 done, Phase 2 not started._
 - `library/`: `palette.png`, `skeleton.blend` (KayKit Rig_Medium + `headslot`/`backslot`), `animations.blend` (8 clips), `proportions/human.json` (+ preview), `CREDITS.md`. Rebuilt by `python -m server.build_library --source <KayKit folder>`.
 - 33 pytest tests; fixtures (mannequin + planted defects) are generated at run time by `jobs/make_mannequin.py`.
 
-## Next step: Phase 2 — the mage as a static GLB
+### Phase 2 delivered
+- New MCP tools: `add_reference`, `build_part`, `list_parts`, `render_parts_catalog`, `assemble_from_parts`, `apply_palette`, `recolor`, `compare_reference` (15 tools total).
+- Part builder API (`jobs/lib/parts.py`, `P.loft/ring/rect/box/cylinder/mirror_x/transform/set_role/set_bone`) + part checks (STYLE.md §9a). Parts in `library/parts/<slot>/` with their build script (`.py` = source of truth), meta and preview.
+- `compare_reference`: reference crops / same-scale renders / silhouette overlay + IoU per view; arms lowered for A-pose drawings (`spec.compare.arms_down_deg`), staff hidden (`hide_slots`).
+- Mage: `specs/mage/spec.json`, 10 parts, **2,380 tris** (v2, rounder: 12–19-sided rings, bevelled boxes via `P.rbox`; smooth by angle 40°), 8 colours, height 1.80 m, `validate` clean (no hard, no soft), IoU front 0.84 / side 0.85 / back 0.81, GLB passes glTF validator (0/0) and three.js test load (no clips yet).
+- 46 pytest tests (incl. `test_mage_approval_still_valid`).
+- Viewer default look: soft room lighting + neutral tone mapping (`?look=basic` for the old one); `testload.mjs` takes an extra viewer query.
 
-Target: `specs/mage/reference/turnaround.webp` (Marcel's own image, OK to publish). Done when the mage goes from reference to GLB with no manual modelling and Marcel approves it.
+## Next step: Phase 3 — skinning & animation (the mage)
 
-To build (PLAN.md tool list):
-1. `add_reference(name, images)` — store/crop the turnaround (front/side/back) into the character workspace.
-2. `build_part(name, slot, archetype, script)` — agent-written bpy snippet → part `.blend` in `library/parts/<slot>/`, validated: per-face `role` set, fits the `human` template (joints + volume guides), manifold, budget.
-3. `assemble_from_parts(name, spec)` — template → skeleton → parts attached to bones, join to `Character`, write `role` + `slot` face attributes, rigid weights per part.
-4. `apply_palette(name)` / `recolor(name, role, index)` — `jobs/lib/palette.py:apply_roles` already exists.
-5. `render_parts_catalog(slot?)`.
-6. `compare_reference(name)` — reference vs render at the same scale (fixed framing already supported: `render_preview` arg `frame`; scale of the mage sheet: skull top y=260, floor y=1003 → 743 px = 1.80 m).
-7. Mage spec in `specs/mage/spec.json`; parts needed: head, hair/beard, headwear (wizard hat), torso (robe), arms (wide sleeves), hands, legs/feet (boots), accessory_hand_r (crystal staff), belt + pouch.
+Rebuild the mage: `init_character("mage", <specs/mage/spec.json>)` + `assemble_from_parts("mage")`.
 
-Open questions for Phase 2:
-- Robe: one long torso part over the legs (static is fine) — skinning approach decided in Phase 3.
-- Beard: its own slot (`face`?) or part of `hair`? STYLE.md §9 slots don't name it yet.
+1. `skin`: the long robe is the hard case (rigid per part fails: it spans hips + both legs). Smooth weights hips/upperleg on the robe below the belt; rigid elsewhere.
+2. `apply_animations`: clips from `library/animations.blend` + clip mapping for a mage (`attack` → `Ranged_Magic_Shoot`?).
+3. **Upright grip** (`spec.grip.accessory_hand_r = "upright"`, STYLE.md §9a): staff weighted to `handslot.r`, slot keeps its rest orientation in every clip (bake: world rotation locked, position follows the hand). Slot bones don't deform today → decide: make `handslot.*` deforming, or a staff-only bone.
+4. `pose_test` + edge-loop check at joints + foot contact; viewer plays clips.
+5. Re-approval: any spec/part change voids the approval (spec hash + part script hashes).
+
+Open:
+- `spec.proportions` ≠ 1 is refused for now (Phase 4).
+- Headwear weighted to `head` (fine: `headslot` has no clip keys).
 
 ## Decisions (with reasons)
 
@@ -53,7 +58,14 @@ Open questions for Phase 2:
 - **Colour = per-face `role`** (+ `slot` attribute after assembly); spec maps roles → palette indices. 8-colour rule counts indices actually used.
 - **Body height** = floor to top of the head mesh, without hair/headwear; ranges per archetype.
 - **`human` template** calibrated on the blue-wizard reference: 1.80 m, 4.4 heads; hips (0.82) and ankles (0.12) estimated (hidden by the robe). Approved by Marcel 2026-11-15.
-- **Approval** binds to the spec hash (STYLE.md §14).
+- **Approval** binds to the spec hash **and each part's script hash** (STYLE.md §14): parts are referenced by name, so a rebuilt part must void the approval too.
+- **Staff: upright grip** (Marcel): modelled along world +Z through the hand; Phase 3 keeps the slot upright in clips. `weapon` grip (KayKit axis) stays the default for swords/tools.
+- **Beard = `face` slot**, robe = one long `torso` part (`legs` empty), pouch = new slot **`accessory_waist`** (appended, so slot indices stay stable): keeps base parts symmetric.
+- **Rigid weights by nearest allowed bone** (`skeleton.part_bones`) at assembly; parts may set bones explicitly.
+- **Caps** of rings with > 6 points are quad fans (n−2 tris), not centre fans.
+- Preview renders: specular highlight off (washed-out robe fronts).
+- **Budget raised** (Marcel, 2026-11-15) from 600–1,000 (Kenney-chunky, looked too edgy) to **1,500–2,500, hard 3,000**; head group ≤ 700 / 1,000; accessories ≤ 300 / 500. Segment & bevel guide in STYLE.md §3.
+- **Smooth by angle, 40°** replaces flat shading (Marcel, 2026-11-15): flat shading was what read as 'hard', not the triangle count (tested: same GLB, smoothed normals looked soft). Applied at assembly (`jobs/lib/shading.py`), split normals go into the GLB; `validate` warns on flat faces / unmarked creases. Round things use < 40° steps (heads/beards: 30° corner steps).
 - Reference images in the repo only when Marcel says they're his to publish (the mage is).
 
 ## Environment & gotchas
@@ -77,4 +89,8 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-15** — Staff switched to upright grip; mage approved by Marcel (spec + part hashes in `specs/mage/spec.json`). Phase 2 done.
+- **2026-11-15** — Shading switched to smooth by angle 40°; viewer gets soft lighting by default; head/beard corners at 30° steps (2,380 tris).
+- **2026-11-15** — Budget raised to 1,500–2,500 tris; builder got `P.rrect`/`P.rbox`; mage parts reworked (2,364 tris).
+- **2026-11-15** — Phase 2 built: part builder + 8 tools, mage assembled from 10 parts (990 tris, IoU ≈ 0.85), awaiting approval.
 - **2026-11-15** — Plan + style spec reviewed and revised (roles, archetypes, proportion templates, CC0 animation library). Repo created, Blender 5.2.4 pinned. Animation libraries compared (retarget test) → KayKit. Phase 1 built and pushed; `human` template calibrated on the mage reference and approved.
