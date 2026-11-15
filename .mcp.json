@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "game-pack-generator": {
+      "command": ".venv/bin/python",
+      "args": ["-m", "server.main"],
+      "env": {}
+    }
+  }
+}

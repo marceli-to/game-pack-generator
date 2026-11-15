@@ -1,0 +1,170 @@
+{
+  "_comment": "Machine-readable twin of STYLE.md. Change STYLE.md first, then this file; tests/test_style_sync.py checks they agree. Sections marked 'generated' are written by `python -m server.build_library`.",
+  "version": 1,
+  "blender": { "version": "5.2.4" },
+  "units": { "unit_m": 1.0, "forward_blender": "-Y", "up_blender": "+Z", "rest_pose": "T" },
+  "archetypes": {
+    "child": {
+      "height": [1.0, 1.3],
+      "heads": 3
+    },
+    "dwarf": {
+      "height": [1.2, 1.45],
+      "heads": 3.5
+    },
+    "human": {
+      "height": [1.7, 1.9],
+      "heads": 4.4,
+      "template": "library/proportions/human.json",
+      "targets": {
+        "_comment": "rest pose (T-pose) joint targets and volume guides in metres (STYLE.md §7a); calibrated on the blue-wizard reference, hip_z and ankle_z estimated (hidden by the robe)",
+        "hip_z": 0.82,
+        "head_base_z": 1.39,
+        "head_top_z": 1.8,
+        "arm_length": 0.49,
+        "shoulder_x": 0.21,
+        "hip_x": 0.11,
+        "ankle_z": 0.12,
+        "foot_length": 0.29,
+        "head_width": 0.32,
+        "head_depth": 0.34,
+        "torso_width": 0.38,
+        "torso_depth": 0.26,
+        "foot_width": 0.19,
+        "foot_height": 0.14,
+        "foot_heel": 0.07
+      }
+    },
+    "tall": {
+      "height": [1.9, 2.2],
+      "heads": 4.5
+    }
+  },
+  "default_archetype": "human",
+  "headwear_max_ratio": 0.6,
+  "budget": {
+    "character": {
+      "target": [600, 1000],
+      "hard": 1500
+    },
+    "head": {
+      "target": 300,
+      "hard": 450,
+      "slots": ["head", "hair", "headwear", "face"]
+    },
+    "accessory_hand": {
+      "target": 150,
+      "hard": 250,
+      "slots": ["accessory_hand_l", "accessory_hand_r"]
+    },
+    "accessory_back": {
+      "target": 150,
+      "hard": 250,
+      "slots": ["accessory_back"]
+    },
+    "prop": { "target": 500, "hard": 800 }
+  },
+  "palette": {
+    "file": "library/palette.png",
+    "size": 256,
+    "grid": 8,
+    "cell": 32,
+    "material": "M_Palette",
+    "max_colors": 8,
+    "rows": [
+      "skin + greys", "hair", "reds/oranges", "yellows/greens", "blues/purples",
+      "metal 40-44 + leather 45-47", "neutrals 48 white -> 55 black",
+      "eyes 56-57 + glow/crystal 58-63"
+    ],
+    "colors": [
+      "#FFE0C7", "#F5C6A0", "#E0A47A", "#C68458", "#9C6440", "#6E4630", "#9A9A9A", "#6C6C6C",
+      "#6B4428", "#2B2420", "#E8C46A", "#B5482A", "#8E8E8E", "#F2F0EA", "#5B8DEF", "#C25FD9",
+      "#E04040", "#B02A2A", "#7A1E1E", "#FF7A3D", "#E0581E", "#FFA26B", "#F28CA8", "#C24F72",
+      "#FFD23F", "#E8A317", "#B7D84B", "#6FBF3B", "#3E8E3A", "#23602C", "#4FC9A6", "#2E8A74",
+      "#5AA9F0", "#2F6FD1", "#1F428F", "#16285C", "#8F6BE0", "#5E3FB0", "#3A2672", "#7FD6F0",
+      "#8A8F99", "#C3CAD4", "#F2C230", "#C07A35", "#C9663B", "#A0673A", "#7A4A28", "#4E2F1A",
+      "#FFFFFF", "#E6E6E6", "#C2C2C2", "#999999", "#6E6E6E", "#4A4A4A", "#2A2A2A", "#121212",
+      "#1C1C24", "#F4F4FF", "#5CFFE6", "#FFE45C", "#FF5CD6", "#7CFF5C", "#5C9DFF", "#FF8A3D"
+    ]
+  },
+  "roles": ["skin", "hair", "primary", "secondary", "accent", "metal", "leather", "eyes", "dark", "special"],
+  "slots": [
+    "head", "hair", "headwear", "face", "torso", "arms", "hands", "legs", "feet", "accessory_back",
+    "accessory_hand_l", "accessory_hand_r"
+  ],
+  "height_excluded_slots": ["hair", "headwear", "accessory_back", "accessory_hand_l", "accessory_hand_r"],
+  "topology": { "merge_distance": 0.0001, "max_ngon": 6, "min_face_area": 1e-08 },
+  "skeleton": {
+    "source": "KayKit Character Animations 1.1, Animations/gltf/Rig_Medium (CC0, Kay Lousberg)",
+    "armature_object": "Armature",
+    "mesh_object": "Character",
+    "bones": [
+      { "name": "root", "parent": null, "deform": false },
+      { "name": "hips", "parent": "root", "deform": true },
+      { "name": "spine", "parent": "hips", "deform": true },
+      { "name": "chest", "parent": "spine", "deform": true },
+      { "name": "head", "parent": "chest", "deform": true },
+      { "name": "headslot", "parent": "head", "deform": false, "added": true },
+      { "name": "backslot", "parent": "chest", "deform": false, "added": true },
+      { "name": "upperarm.l", "parent": "chest", "deform": true },
+      { "name": "lowerarm.l", "parent": "upperarm.l", "deform": true },
+      { "name": "wrist.l", "parent": "lowerarm.l", "deform": true },
+      { "name": "hand.l", "parent": "wrist.l", "deform": true },
+      { "name": "handslot.l", "parent": "hand.l", "deform": false },
+      { "name": "upperarm.r", "parent": "chest", "deform": true },
+      { "name": "lowerarm.r", "parent": "upperarm.r", "deform": true },
+      { "name": "wrist.r", "parent": "lowerarm.r", "deform": true },
+      { "name": "hand.r", "parent": "wrist.r", "deform": true },
+      { "name": "handslot.r", "parent": "hand.r", "deform": false },
+      { "name": "upperleg.l", "parent": "hips", "deform": true },
+      { "name": "lowerleg.l", "parent": "upperleg.l", "deform": true },
+      { "name": "foot.l", "parent": "lowerleg.l", "deform": true },
+      { "name": "toes.l", "parent": "foot.l", "deform": true },
+      { "name": "upperleg.r", "parent": "hips", "deform": true },
+      { "name": "lowerleg.r", "parent": "upperleg.r", "deform": true },
+      { "name": "foot.r", "parent": "lowerleg.r", "deform": true },
+      { "name": "toes.r", "parent": "foot.r", "deform": true }
+    ],
+    "slot_bones": {
+      "headwear": "headslot",
+      "accessory_back": "backslot",
+      "accessory_hand_l": "handslot.l",
+      "accessory_hand_r": "handslot.r"
+    }
+  },
+  "animations": {
+    "fps": 30,
+    "source": "KayKit Character Animations 1.1, Animations/gltf/Rig_Medium (CC0, Kay Lousberg)",
+    "root_motion": false,
+    "clips": [
+      { "name": "idle", "source": "Idle_A", "file": "Rig_Medium_General.glb", "loop": true, "frames": 32 },
+      { "name": "walk", "source": "Walking_A", "file": "Rig_Medium_MovementBasic.glb", "loop": true, "frames": 32 },
+      { "name": "run", "source": "Running_A", "file": "Rig_Medium_MovementBasic.glb", "loop": true, "frames": 24 },
+      {
+        "name": "jump",
+        "source": "Jump_Full_Short",
+        "file": "Rig_Medium_MovementBasic.glb",
+        "loop": false,
+        "frames": 35
+      },
+      {
+        "name": "attack",
+        "source": "Melee_1H_Attack_Chop",
+        "file": "Rig_Medium_CombatMelee.glb",
+        "loop": false,
+        "frames": 32
+      },
+      { "name": "hit", "source": "Hit_A", "file": "Rig_Medium_General.glb", "loop": false, "frames": 20 },
+      { "name": "die", "source": "Death_A", "file": "Rig_Medium_General.glb", "loop": false, "frames": 24 },
+      { "name": "interact", "source": "Interact", "file": "Rig_Medium_General.glb", "loop": false, "frames": 39 }
+    ]
+  },
+  "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0 },
+  "preview": {
+    "engine": "BLENDER_WORKBENCH",
+    "views": ["front", "side", "back", "three_quarter"],
+    "view_size": 512,
+    "background": "#E8E8E8"
+  },
+  "foot_contact_tolerance": 0.02
+}

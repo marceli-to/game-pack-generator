@@ -30,7 +30,7 @@ A headless tool that lets agents create low-poly, rigged, animated game characte
 Agent (Claude Code)
    │  MCP (stdio)
    ▼
-avatar-mcp  (Python, FastMCP)
+game-pack-generator MCP server  (Python, MCP SDK 2.x MCPServer)
    │  spawns per call:  blender -b <file.blend> -P jobs/<job>.py -- <args.json>
    ▼
 Blender headless  ──►  workspace/   (.blend files, GLBs, renders)
@@ -39,7 +39,7 @@ Blender headless  ──►  workspace/   (.blend files, GLBs, renders)
 ```
 
 - **One Blender process per tool call** (simple and robust, ~1–2 s overhead). Later optimisation if needed: a persistent Blender process with a socket server.
-- Each job script gets JSON args and returns JSON on stdout: `{ ok, outputs: [...], stats: {...}, previews: [...], warnings: [...] }`.
+- Each job script gets JSON args and writes a JSON result file (stdout is too noisy to parse): `{ ok, outputs: [...], stats: {...}, previews: [...], warnings: [...] }`. Entry point `jobs/_entry.py` checks the pinned Blender version first.
 - Work state lives in `.blend` files per character; every tool call reads and writes a file → no hidden state, easy to undo (git or versioned files).
 - Blender path via env var `BLENDER_BIN`.
 

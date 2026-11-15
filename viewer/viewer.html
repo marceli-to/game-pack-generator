@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>game-pack-generator viewer</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #e8e8e8; font: 13px system-ui, sans-serif; overflow: hidden; }
+  #ui { position: absolute; top: 10px; left: 10px; display: flex; gap: 8px; align-items: center; }
+  #ui select, #ui input { font: inherit; }
+  #status { position: absolute; bottom: 10px; left: 10px; color: #555; }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.180.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.180.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="ui">
+  <input id="file" type="file" accept=".glb">
+  <select id="anim"></select>
+</div>
+<div id="status">drop a .glb or pass ?model=…</div>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+const params = new URLSearchParams(location.search);
+const state = window.__viewer = { loaded: false, error: null, animations: [], playing: null, time: 0, frames: 0 };
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(devicePixelRatio);
+renderer.setSize(innerWidth, innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.body.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xe8e8e8);
+scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9a9a, 2.2));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6);
+sun.position.set(2, 4, 3);
+scene.add(sun);
+const grid = new THREE.GridHelper(4, 8, 0xbbbbbb, 0xd0d0d0);
+scene.add(grid);
+
+const camera = new THREE.PerspectiveCamera(35, innerWidth / innerHeight, 0.05, 100);
+camera.position.set(2.2, 1.6, 3.6);
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.target.set(0, 0.9, 0);
+controls.update();
+
+let mixer = null, model = null, clips = [];
+const clock = new THREE.Clock();
+const select = document.getElementById("anim");
+const status = document.getElementById("status");
+
+function play(name) {
+  if (!mixer) return;
+  const clip = clips.find((c) => c.name === name);
+  if (!clip) return;
+  mixer.stopAllAction();
+  mixer.clipAction(clip).reset().play();
+  state.playing = name;
+  select.value = name;
+}
+select.onchange = () => play(select.value);
+
+function load(url) {
+  new GLTFLoader().load(url, (gltf) => {
+    if (model) scene.remove(model);
+    model = gltf.scene;
+    model.traverse((o) => {
+      if (o.isMesh && o.material.map) {
+        o.material.map.magFilter = THREE.NearestFilter;
+        o.material.map.minFilter = THREE.NearestFilter;
+        o.material.map.generateMipmaps = false;
+        o.material.map.needsUpdate = true;
+      }
+    });
+    scene.add(model);
+    clips = gltf.animations;
+    mixer = new THREE.AnimationMixer(model);
+    select.innerHTML = clips.map((c) => `<option>${c.name}</option>`).join("");
+    state.animations = clips.map((c) => c.name);
+    state.loaded = true;
+    const box = new THREE.Box3().setFromObject(model);
+    state.height = +(box.max.y - box.min.y).toFixed(3);
+    status.textContent = `${url.split("/").pop()} — ${clips.length} animations — height ${state.height} m`;
+    play(params.get("anim") || (state.animations.includes("idle") ? "idle" : state.animations[0]));
+  }, undefined, (err) => { state.error = String(err && err.message || err); status.textContent = "error: " + state.error; console.error(err); });
+}
+
+document.getElementById("file").onchange = (e) => { const f = e.target.files[0]; if (f) load(URL.createObjectURL(f)); };
+addEventListener("dragover", (e) => e.preventDefault());
+addEventListener("drop", (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) load(URL.createObjectURL(f)); });
+addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+
+renderer.setAnimationLoop(() => {
+  const dt = clock.getDelta();
+  if (mixer) { mixer.update(dt); state.time += dt; }
+  state.frames++;
+  renderer.render(scene, camera);
+});
+if (params.get("model")) load(params.get("model"));
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "game-pack-generator-node",
+  "private": true,
+  "type": "module",
+  "description": "Node side of the export checks: Khronos glTF validator and the Playwright test load of viewer.html",
+  "dependencies": {
+    "gltf-validator": "^2.0.0-dev.3.10",
+    "playwright": "^1.50.0",
+    "three": "^0.180.0"
+  }
+}
