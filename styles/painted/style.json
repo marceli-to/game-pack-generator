@@ -65,12 +65,12 @@
       "neutrals 48 white -> 55 black", "eyes 56-57 + glow/crystal 58-63"
     ],
     "colors": [
-      "#FFE0C7", "#F5C6A0", "#E0A47A", "#C68458", "#9C6440", "#6E4630", "#E3CFA3", "#B89A6C",
+      "#FFE0C7", "#F5C6A0", "#E0A47A", "#C68458", "#9C6440", "#6E4630", "#F0C99C", "#B89A6C",
       "#6B4428", "#2B2420", "#E8C46A", "#B5482A", "#8E8E8E", "#F2F0EA", "#5B8DEF", "#C25FD9",
       "#E04040", "#C8323A", "#7A1E1E", "#FF7A3D", "#E0581E", "#FFA26B", "#F28CA8", "#C24F72",
       "#FFD23F", "#E8A317", "#B7D84B", "#6FBF3B", "#3E8E3A", "#23602C", "#4FC9A6", "#2E8A74",
       "#5AA9F0", "#2F6FD1", "#1F428F", "#16285C", "#8F6BE0", "#5E3FB0", "#3A2672", "#7FD6F0",
-      "#76637F", "#A6A9B4", "#E0A43A", "#B0702E", "#C2603A", "#8E5636", "#6E4128", "#4A2A18",
+      "#74566B", "#A6A9B4", "#DE8C30", "#B0702E", "#C2603A", "#8E5636", "#6E4128", "#4A2A18",
       "#FFFFFF", "#E6E6E6", "#C2C2C2", "#999999", "#6E6E6E", "#4A4A4A", "#2A2A2A", "#121212",
       "#1C1C24", "#F4F4FF", "#5CFFE6", "#FFE45C", "#FF5CD6", "#7CFF5C", "#5C9DFF", "#FF8A3D"
     ]
@@ -80,58 +80,98 @@
     "texture_size": 1024,
     "uv_margin_px": 4,
     "material": "M_Painted",
+    "unlit": true,
     "approaches": ["auto", "projection"],
     "auto": {
       "light_dir": [-0.45, -0.55, 0.9],
-      "shadow": 0.7,
-      "highlight": 1.12,
-      "shadow_tint": "#6A5A9A",
-      "shadow_tint_amount": 0.3,
-      "gradient": [0.86, 1.06],
       "ao_distance": 0.12,
-      "ao_strength": 0.45,
       "crease_min_deg": 25,
       "edge_width": 0.012,
       "dirt_width": 0.02,
-      "brush_scale": 10,
-      "brush_amount": 0.12,
       "roles": {
         "metal": {
-          "edge_highlight": 0.45,
-          "highlight_color": "#C9B3C9",
+          "edge_highlight": 0.5,
+          "highlight_color": "#E0B0BC",
           "dirt": 0.5,
-          "rust": 0.45,
+          "rust": 0.6,
           "scratches": 0.25,
           "cracks": 1.0,
-          "crack_scale": 4,
-          "mottle": 0.6,
-          "mottle_color": "#A27896"
+          "crack_scale": 2.5,
+          "mottle": 0.35,
+          "mottle_color": "#9A6E86",
+          "ramp": { "light_hue": 10, "light_hue_amt": 0.35, "light_v": 0.75, "light_sat": 0.9 },
+          "edge_shadow": 0.6,
+          "rust_color": "#C8682C",
+          "rust_scale": 6,
+          "rust_lo": 0.85,
+          "crack_sparse": 0.74,
+          "crack_width": 0.025,
+          "crack_density_scale": 3
         },
         "accent": {
-          "edge_highlight": 0.7,
-          "highlight_color": "#FFE7A0",
+          "edge_highlight": 0.9,
+          "highlight_color": "#FFE9A8",
           "dirt": 0.4,
           "dirt_color": "#5A3212",
-          "rust": 0.35,
-          "mottle": 0.5,
-          "mottle_color": "#F2B544"
+          "rust": 0.6,
+          "mottle": 0.4,
+          "mottle_color": "#F0A63A",
+          "ramp": { "shadow_hue": 10, "shadow_hue_amt": 0.4, "shadow_v": 0.5, "light_v": 0.4 },
+          "edge_shadow": 0.7,
+          "rust_color": "#9A4A1E",
+          "rust_scale": 8,
+          "rust_lo": 0.72,
+          "edge_width": 0.02
         },
         "skin": {
-          "edge_highlight": 0.25,
-          "highlight_color": "#FFF6DD",
-          "dirt": 0.6,
-          "dirt_color": "#5B3A22",
-          "cracks": 0.6,
-          "crack_scale": 9,
-          "mottle": 0.4,
-          "mottle_color": "#F0DDB5"
+          "edge_highlight": 0.35,
+          "highlight_color": "#FFF0D2",
+          "dirt": 0.5,
+          "dirt_color": "#6B3A1E",
+          "cracks": 0.5,
+          "crack_scale": 6,
+          "mottle": 0.3,
+          "mottle_color": "#F7DDB4",
+          "ramp": {
+            "shadow_hue": 15,
+            "shadow_hue_amt": 0.4,
+            "shadow_v": 0.35,
+            "shadow_sat": 1.6,
+            "light_v": 0.15
+          },
+          "edge_shadow": 0.5,
+          "crack_sparse": 0.6
         },
         "leather": { "edge_highlight": 0.25, "highlight_color": "#C98A5E", "dirt": 0.4, "scratches": 0.3 },
         "primary": { "edge_highlight": 0.15, "dirt": 0.4 },
         "secondary": { "edge_highlight": 0.15, "dirt": 0.4 },
-        "dark": { "dirt": 0.2 },
-        "special": { "glow": 0.35 }
-      }
+        "dark": {
+          "dirt": 0.2,
+          "ramp": { "shadow_v": 0.3, "light_v": 0.3 }
+        },
+        "special": { "glow": 0.25, "core": 0.7, "core_color": "#DFFBFF" }
+      },
+      "light": { "key": 0.8, "gradient": 0.45, "bias": -0.05, "ao": 0.8 },
+      "ramp": {
+        "shadow_v": 0.6,
+        "shadow_sat": 1.2,
+        "shadow_hue": 345,
+        "shadow_hue_amt": 0.25,
+        "light_v": 0.55,
+        "light_sat": 0.85,
+        "light_hue": 45,
+        "light_hue_amt": 0.2
+      },
+      "brush": {
+        "dab_scale": 22,
+        "stretch": [1.0, 1.0, 0.6],
+        "dab_amount": 0.18,
+        "wobble_scale": 9,
+        "wobble_amount": 0.12,
+        "bands": 4,
+        "band_mix": 0.6
+      },
+      "glow_halo": { "radius": 0.05, "falloff": 2.0, "amount": 0.9 }
     },
     "projection": {
       "bg_threshold": 0.12,

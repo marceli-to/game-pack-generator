@@ -245,22 +245,75 @@ def fbm(p, scale, octaves=4, seed=0):
     return tot / norm
 
 
-def voronoi_edge(p, scale, seed=0):
-    """F2 - F1 of a 3D Voronoi pattern (small near cell borders: crack lines)."""
+def voronoi(p, scale, seed=0):
+    """3D Voronoi at points p: (F1 distance, F2 - F1, random value in [0, 1] of the nearest cell)."""
     q = p * scale
     f = np.floor(q).astype(np.int64)
     d1 = np.full(len(q), 9.0)
     d2 = np.full(len(q), 9.0)
+    rid = np.zeros(len(q))
     for dx in (-1, 0, 1):
         for dy in (-1, 0, 1):
             for dz in (-1, 0, 1):
                 c = f + np.array([dx, dy, dz])
                 fp = np.stack([_hash(c[:, 0], c[:, 1], c[:, 2], seed + k).astype(np.float64) / 4294967295.0
-                               for k in range(3)], 1)
-                d = np.linalg.norm(c + fp - q, axis=1)
+                               for k in range(4)], 1)
+                d = np.linalg.norm(c + fp[:, :3] - q, axis=1)
                 d2 = np.where(d < d1, d1, np.minimum(d2, d))
+                rid = np.where(d < d1, fp[:, 3], rid)
                 d1 = np.minimum(d1, d)
-    return d2 - d1
+    return d1, d2 - d1, rid
+
+
+def voronoi_edge(p, scale, seed=0):
+    """F2 - F1 of a 3D Voronoi pattern (small near cell borders: crack lines)."""
+    return voronoi(p, scale, seed)[1]
+
+
+def rgb2hsv(c):
+    mx, mn = c.max(1), c.min(1)
+    d = mx - mn
+    r, g, b = c[:, 0], c[:, 1], c[:, 2]
+    dd = np.maximum(d, 1e-9)
+    h = np.where(mx == r, ((g - b) / dd) % 6, np.where(mx == g, (b - r) / dd + 2, (r - g) / dd + 4)) * 60.0
+    h = np.where(d < 1e-9, 0.0, h)
+    s = np.where(mx > 1e-9, d / np.maximum(mx, 1e-9), 0.0)
+    return np.stack([h, s, mx], 1)
+
+
+def hsv2rgb(hsv):
+    h, s, v = hsv[:, 0] % 360, np.clip(hsv[:, 1], 0, 1), np.clip(hsv[:, 2], 0, 1)
+    c = v * s
+    x = c * (1 - np.abs((h / 60) % 2 - 1))
+    m = v - c
+    z = np.zeros_like(h)
+    k = (h // 60).astype(int)
+    r = np.choose(k % 6, [c, x, z, z, x, c])
+    g = np.choose(k % 6, [x, c, c, x, z, z])
+    b = np.choose(k % 6, [z, z, x, c, c, x])
+    return np.stack([r + m, g + m, b + m], 1)
+
+
+def _hue_towards(h, target, amt):
+    d = ((target - h + 180) % 360) - 180
+    return h + d * amt
+
+
+def ramp(base, l, r):
+    """Painterly value ramp: l in [-1, 1] (shadow .. light) -> colour. Shadows darken and rotate hue
+    towards r['shadow_hue'] (warm red/purple) with more saturation; lights brighten and rotate towards
+    r['light_hue'] (yellow) with a bit less saturation. base: n x 3 or 3."""
+    base = np.broadcast_to(np.asarray(base, dtype=np.float64), (len(l), 3))
+    hsv = rgb2hsv(base)
+    sh = np.clip(-l, 0, 1)
+    li = np.clip(l, 0, 1)
+    h = _hue_towards(hsv[:, 0], r["shadow_hue"], sh * r["shadow_hue_amt"])
+    h = _hue_towards(h, r["light_hue"], li * r["light_hue_amt"])
+    s = hsv[:, 1] * (1 + sh * (r["shadow_sat"] - 1)) * (1 + li * (r["light_sat"] - 1))
+    v = hsv[:, 2] * (1 - sh * r["shadow_v"]) * (1 + li * r["light_v"])
+    out = hsv2rgb(np.stack([h, s, np.minimum(v, 1)], 1))
+    over = np.maximum(hsv[:, 2] * (1 + li * r["light_v"]) - 1, 0)   # past white: desaturate towards white
+    return out + (1 - out) * np.clip(over, 0, 1)[:, None]
 
 
 def smooth(a, lo, hi):
@@ -342,7 +395,7 @@ def bake_ao(obj, size, uv_name="Paint", distance=0.12, samples=48):
         o.select_set(False)
     bpy.context.view_layer.objects.active = obj
     obj.select_set(True)
-    bpy.ops.object.bake(type="AO", margin=0, use_clear=True)
+    bpy.ops.object.bake(type="AO", margin=4, margin_type="EXTEND", use_clear=True)  # margin: border texels of the conservative raster sit just outside the faces
     px = np.array(img.pixels[:], dtype=np.float32).reshape(size, size, 4)
     for m, n in nodes:
         m.node_tree.nodes.remove(n)
@@ -361,8 +414,57 @@ def role_names(obj):
     return roles, v
 
 
+def piece_ids(obj, tm):
+    """Per texel: id of its connected piece (faces linked by shared edges), so every band, plate and
+    dome gets its own top-to-bottom light gradient."""
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.faces.ensure_lookup_table()
+    pid = -np.ones(len(bm.faces), dtype=np.int64)
+    n = 0
+    for f in bm.faces:
+        if pid[f.index] >= 0:
+            continue
+        stack = [f]
+        pid[f.index] = n
+        while stack:
+            g = stack.pop()
+            for e in g.edges:
+                for h in e.link_faces:
+                    if pid[h.index] < 0:
+                        pid[h.index] = n
+                        stack.append(h)
+        n += 1
+    bm.free()
+    return pid[tm.poly]
+
+
+def glow_distance(P, src, radius, max_src=6000):
+    """Per point: distance (m) to the nearest point of `src`, capped at `radius` (mathutils KD-tree)."""
+    from mathutils.kdtree import KDTree
+    out = np.full(len(P), radius)
+    if not len(src):
+        return out
+    if len(src) > max_src:
+        src = src[np.linspace(0, len(src) - 1, max_src).astype(int)]
+    kd = KDTree(len(src))
+    for i, q in enumerate(src):
+        kd.insert(q.tolist(), i)
+    kd.balance()
+    lo, hi = src.min(0) - radius, src.max(0) + radius
+    near = np.nonzero(((P >= lo) & (P <= hi)).all(1))[0]
+    for i in near:
+        _, _, d = kd.find(P[i].tolist())
+        out[i] = min(d, radius)
+    return out
+
+
 def auto_paint(obj, tm, colors, cfg, seed=1):
-    """Procedural paint. colors: {role: palette index}; cfg: style paint.auto."""
+    """Procedural paint. colors: {role: palette index}; cfg: style paint.auto.
+
+    Light is a signed value l in [-1, 1] per texel (key light, part height gradient, AO, brush dabs,
+    soft value bands); each role's base colour goes through a hue-shifted ramp (`ramp`), then the role
+    treatments (mottle, rim light/shadow, dirt, rust, scratches, cracks, glow halo) are layered on top."""
     style = S.load()
     pal = style["palette"]["colors"]
     roles, prole = role_names(obj)
@@ -374,76 +476,110 @@ def auto_paint(obj, tm, colors, cfg, seed=1):
         if sel.any():
             base[sel] = hexrgb(pal[colors.get(r, 51)])
     stats = {}
+    treat = cfg["roles"]
+    ramp_default = cfg["ramp"]
 
-    # light: key from top-front-left, painterly shadow tint, height gradient per part
+    # key light (wrapped lambert), height gradient per connected piece, AO
     L = np.array(cfg["light_dir"], dtype=np.float64)
     L /= np.linalg.norm(L)
     k = np.clip(N @ L * 0.5 + 0.5, 0, 1)
-    shade = cfg["shadow"] + (cfg["highlight"] - cfg["shadow"]) * k
-    col = base * shade[:, None]
-    tint = hexrgb(cfg["shadow_tint"])
-    col = col * (1 - (1 - k)[:, None] * cfg["shadow_tint_amount"]) + (tint * col) * ((1 - k)[:, None] * cfg["shadow_tint_amount"])
-    lo, hi = P[:, 2].min(), P[:, 2].max()
-    g = (P[:, 2] - lo) / max(hi - lo, 1e-6)
-    col *= (cfg["gradient"][0] + (cfg["gradient"][1] - cfg["gradient"][0]) * g)[:, None]
-
-    # AO
+    piece = piece_ids(obj, tm)
+    g = np.zeros(tm.n)
+    for sid in np.unique(piece):
+        sel = piece == sid
+        z = P[sel, 2]
+        g[sel] = (z - z.min()) / max(z.max() - z.min(), 1e-6)
     ao_img = bake_ao(obj, tm.size, distance=cfg["ao_distance"])
     ao = ao_img[tm.iy, tm.ix, 0]
-    col *= (1 - cfg["ao_strength"] * (1 - ao))[:, None]
     stats["ao_mean"] = round(float(ao.mean()), 3)
+    lw = cfg["light"]
+    l = (k - 0.5) * 2 * lw["key"] + (g - 0.5) * 2 * lw["gradient"] + lw["bias"] - (1 - ao) * lw["ao"]
+
+    # brush dabs: one random value per Voronoi cell (flat strokes), plus soft value bands whose
+    # borders wander with noise (painted, not airbrushed)
+    b = cfg["brush"]
+    _, _, cell = voronoi(P * np.array(b["stretch"]), b["dab_scale"], seed + 21)
+    wob = fbm(P, b["wobble_scale"], 3, seed)
+    l = l + (cell - 0.5) * 2 * b["dab_amount"] + (wob - 0.5) * 2 * b["wobble_amount"]
+    if b["bands"]:
+        lq = np.round(l * b["bands"]) / b["bands"]
+        l = l + (lq - l) * b["band_mix"]
+    l = np.clip(l, -1, 1)
 
     # creases
     cvx, ccv = crease_distances(obj, tm, cfg["crease_min_deg"])
     edge = 1 - smooth(cvx, 0, cfg["edge_width"])
     dirt = 1 - smooth(ccv, 0, cfg["dirt_width"])
 
-    # brush noise (low-frequency value variation, like visible paint strokes)
-    n1 = fbm(P, cfg["brush_scale"], 3, seed)
-    col *= (1 + (n1 - 0.5) * 2 * cfg["brush_amount"])[:, None]
-
-    treat = cfg["roles"]
+    col = np.zeros((tm.n, 3))
+    glow_src = []
     for i, r in enumerate(roles):
         sel = trole == i
         if not sel.any():
             continue
         t = treat.get(r, {})
-        c = col[sel]
-        Ps, e, d = P[sel], edge[sel], dirt[sel]
+        rp = {**ramp_default, **t.get("ramp", {})}
+        ls = l[sel]
+        c = ramp(base[sel], ls, rp)
+        Ps, d, ks = P[sel], dirt[sel], k[sel]
+        e = 1 - smooth(cvx[sel], 0, t["edge_width"]) if "edge_width" in t else edge[sel]
         if t.get("mottle"):  # painterly colour blotches (hue shift, not just value)
             mn = fbm(Ps, t.get("mottle_scale", 5.0), 3, seed + 11)
             m = smooth(mn, 0.42, 0.72) * t["mottle"]
-            tgt = hexrgb(t["mottle_color"]) * shade[sel][:, None]
+            tgt = ramp(hexrgb(t["mottle_color"]), ls, rp)
             c = c * (1 - m[:, None]) + tgt * m[:, None]
-        if t.get("edge_highlight"):
+        if t.get("edge_highlight"):  # rim light on edges facing the light, rim shadow on the others
             chip = fbm(Ps, 40, 2, seed + 3)
-            m = e * (0.55 + 0.45 * smooth(chip, 0.35, 0.6)) * t["edge_highlight"]
+            lit = smooth(ks, 0.35, 0.75)
+            m = e * (0.6 + 0.4 * smooth(chip, 0.35, 0.6)) * t["edge_highlight"] * lit
             hl = hexrgb(t.get("highlight_color", "#FFFFFF"))
             c = c * (1 - m[:, None]) + hl * m[:, None]
+            ms = e * t.get("edge_shadow", 0.0) * (1 - lit)
+            c = c * (1 - 0.5 * ms[:, None])
         if t.get("dirt"):
             m = d * t["dirt"]
             c = c * (1 - m[:, None]) + hexrgb(t.get("dirt_color", "#2A1A14")) * m[:, None]
-        if t.get("rust"):
-            rn = fbm(Ps, 9, 4, seed + 5)
-            m = smooth(rn + 0.25 * d + 0.25 * (1 - ao[sel]), 0.62, 0.78) * t["rust"]
-            rc = hexrgb("#B5652A") * (0.75 + 0.5 * fbm(Ps, 30, 2, seed + 6))[:, None]
+        if t.get("rust"):  # rust creeps in from edges, creases and the lower part of each piece
+            rn = fbm(Ps, t.get("rust_scale", 6.0), 4, seed + 5)
+            drive = rn + 0.3 * e + 0.3 * d + 0.25 * (1 - g[sel]) + 0.2 * (1 - ao[sel])
+            m = smooth(drive, t.get("rust_lo", 0.8), t.get("rust_lo", 0.8) + 0.12) * t["rust"]
+            rc = ramp(hexrgb(t.get("rust_color", "#C2602A")) * (0.8 + 0.4 * fbm(Ps, 30, 2, seed + 6))[:, None], ls, rp)
             c = c * (1 - m[:, None]) + rc * m[:, None]
         if t.get("scratches"):
             q = Ps * np.array([1.0, 1.0, 7.0])           # stretched noise -> short streaks
             sn = fbm(q, 22, 2, seed + 7)
             m = smooth(sn, 0.74, 0.8) * t["scratches"]
-            c = c * (1 - m[:, None]) + (c * 1.45) * m[:, None]
-        if t.get("cracks"):
+            c = c * (1 - m[:, None]) + np.minimum(c * 1.45, 1) * m[:, None]
+        if t.get("cracks"):  # few, long, dark cracks with a lit lip on the lower side
             ve = voronoi_edge(Ps, t.get("crack_scale", 7.0), seed + 9)
-            sparse = smooth(fbm(Ps, 4, 2, seed + 10), 0.55, 0.65)
-            line = (1 - smooth(ve, 0.0, 0.035)) * sparse
-            lip = (1 - smooth(ve, 0.035, 0.07)) * sparse - line
-            c = c * (1 - 0.75 * line[:, None] * t["cracks"]) + (c * 1.3) * (0.4 * lip[:, None] * t["cracks"])
-        if t.get("glow"):
-            c = base[sel] * (1 + t["glow"] * (0.6 + 0.4 * k[sel]))[:, None]
-            c = np.minimum(c + 0.25 * (k[sel] ** 4)[:, None], 1)
+            sparse = smooth(fbm(Ps, t.get("crack_density_scale", 3.0), 2, seed + 10),
+                            t.get("crack_sparse", 0.6), t.get("crack_sparse", 0.6) + 0.06)
+            w = t.get("crack_width", 0.035)
+            line = (1 - smooth(ve, 0.0, w)) * sparse
+            lip = np.clip((1 - smooth(ve, w, 2.2 * w)) * sparse - line, 0, 1)
+            dark = hexrgb(t.get("crack_color", "#1E1218"))
+            c = c * (1 - line[:, None] * t["cracks"]) + dark * (line[:, None] * t["cracks"])
+            c = c + (np.minimum(c * 1.35, 1) - c) * (0.6 * lip[:, None] * t["cracks"])
+        if t.get("glow"):  # emissive look: bright core, saturated rim
+            core = smooth(ks, 0.3, 0.9)
+            c = base[sel] * (1 + t["glow"])
+            c = c + (hexrgb(t.get("core_color", "#E8FFFF")) - c) * (core ** 2)[:, None] * t.get("core", 0.6)
+            glow_src.append((Ps, base[sel]))
         col[sel] = c
+
+    # glow halo: light from `special` faces spills onto nearby surfaces (eye sockets, cheekbones)
+    gh = cfg.get("glow_halo")
+    if gh and glow_src:
+        src = np.concatenate([p for p, _ in glow_src])
+        gcol = np.concatenate([c for _, c in glow_src]).mean(0)
+        is_src = np.isin(trole, [roles.index(r) for r in treat if treat[r].get("glow")])
+        dist = glow_distance(P, src, gh["radius"])
+        h = (1 - dist / gh["radius"]) ** gh["falloff"] * gh["amount"] * ~is_src
+        gc = hexrgb(gh["color"]) if gh.get("color") else gcol
+        col = col * (1 - h[:, None]) + (col * 0.3 + gc * 0.9) * h[:, None]
+        stats["glow_halo_texels"] = int((h > 0.05).sum())
     stats["texels"] = int(tm.n)
+    stats["light_mean"] = round(float(l.mean()), 3)
     return np.clip(col, 0, 1), stats
 
 

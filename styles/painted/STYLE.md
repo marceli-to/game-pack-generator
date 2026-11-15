@@ -49,14 +49,28 @@ texture per character.
 
 - **One material** `M_Painted`, base colour = the character's baked texture (`texture_size` 1024², UVs per
   character, `uv_margin_px` padding), roughness 1.0, metallic 0.0.
-- **Default: `auto`** (decided by Marcel, 2026-11-15, after the knight spike): procedural paint from the mesh —
-  light with a painterly shadow tint, ambient occlusion, edge wear on convex creases, dirt in concave creases,
-  brush noise and per-role treatments (mottle, rust, scratches, cracks on `metal`; glow on `special`; …). Works
-  for any combination of parts, deterministic per seed.
+- **Default: `auto`** (decided by Marcel, 2026-11-15, after the knight spike): procedural paint from the mesh.
+  Works for any combination of parts, deterministic per seed. Per texel:
+  - a signed **light value** (shadow −1 … +1 light): key light from top-front-left (wrapped), a top-to-bottom
+    gradient **per connected piece** (every band, plate and dome is lit at the top, dark at the bottom),
+    ambient occlusion; plus **brush dabs** (one random value per small Voronoi cell, ≈ 4–5 cm) and soft
+    **value bands** with noisy borders, so the light reads as painted strokes, not an airbrush;
+  - a **hue-shifted ramp** per role (`ramp`): shadows darken, saturate and turn towards red/purple, lights
+    brighten and turn towards yellow (the art's gold: red-brown → orange → yellow; metal: deep plum → mauve →
+    pink); roles may override the ramp;
+  - role treatments on top: mottle, **rim light** on convex edges that face the light and rim shadow on the
+    others, dirt in concave creases, **rust** creeping in from edges, creases and the lower part of each piece,
+    scratches, a few long **cracks** with a lit lip, and **glow** on `special` (bright core) with a halo that
+    spills onto nearby surfaces (eye sockets).
+  Tuned on the knight against the sheet: per-material value range and mid/dark/light colours (metal, gold,
+  bone) are close to the art's.
 - **Optional: `projection`**, only for one-off hero characters with their own turnaround sheet: the sheet's
   front/side/back views are projected onto the mesh (z-buffer visibility, facing weights), auto paint fills what
   no view sees. Needs parts fitted to that sheet (overlay check); fitted parts are not reusable across characters,
   and views the sheet doesn't show (¾, top, under the chin) stretch or fall back to auto.
+- **Export unlit** (decided by Marcel, 2026-11-15): the GLB material uses `KHR_materials_unlit`; the light lives
+  in the painted texture, so scene lights don't light it a second time. A lit variant (less painted light) may
+  come later as a per-pack option. (Not implemented in `export` yet.)
 - Max. 8 base colours per character, as in `clean`.
 
 ## 5. Shading & normals

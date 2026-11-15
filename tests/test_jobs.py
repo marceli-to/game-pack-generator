@@ -83,3 +83,17 @@ def test_animation_feet_stay_on_floor_in_idle(mannequin, tmp_path):
     r = run_job_checked("render_preview", {"out_dir": str(tmp_path), "pose": "idle@0", "views": ["front"]},
                         blend=mannequin)
     assert r["ok"]
+
+
+def test_auto_paint_on_mannequin(mannequin, tmp_path):
+    """Painted style, auto approach: unwraps, bakes AO, paints every texel, writes the texture."""
+    colors = {"skin": 6, "primary": 17, "secondary": 46, "accent": 42, "metal": 40, "leather": 45,
+              "dark": 54, "special": 32, "hair": 8}
+    r = run_job_checked("paint_surface", {"approach": "auto", "colors": colors, "out_dir": str(tmp_path),
+                                          "size": 256}, blend=mannequin, timeout=600, style="painted")
+    tex = tmp_path / "auto.png"
+    assert tex.exists() and png_size(tex) == (256, 256)
+    st = r["stats"]
+    assert st["texels"] > 5000
+    assert 0.1 < st["ao_mean"] <= 1.0
+    assert -1.0 < st["light_mean"] < 1.0

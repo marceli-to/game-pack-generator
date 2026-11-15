@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel picked **auto** paint (projection optional for hero characters)._
+_Last updated: 2026-11-15 — Auto paint tuned towards the knight art and approved as the direction; painted export = unlit._
 
 ---
 
@@ -75,15 +75,38 @@ _Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel 
   treatments). Recommendation: auto as the surface mode; projection optional, only for one-off hero characters.
 - **Decided (Marcel, 2026-11-15):** `auto` is the painted surface; `projection` stays optional for hero characters.
 - **Decided (Marcel, 2026-11-15):** knight sheet is his own work → `specs/knight/reference/`.
-- **Proposed, awaiting Marcel's OK:** painted characters export **unlit** (`KHR_materials_unlit`, light lives in the
-  texture); a lit export (less painted light) later as a per-pack option.
+- **Decided (Marcel, 2026-11-15):** painted characters export **unlit** (`KHR_materials_unlit`, light lives in the
+  texture; `paint.unlit` in style.json); a lit export (less painted light) later as a per-pack option. Not in `export` yet.
 
-Next: make auto paint look closer to the art (bolder, larger-scale painterly treatments; tune on the knight
-against the sheet), then the `painted` surface properly (MCP tool, validate/export rules, approval), finish the
-knight (body parts), then Phase 3 (skinning & animation).
+## Auto-paint tuning (2026-11-15; Marcel: direction OK)
+
+- **Measured first:** per-material colour stats of the sheet vs the render (`workspace/knight-spike/scripts/colstats.py`:
+  hue/sat buckets for metal, gold, bone → value p5/50/95 and dark/mid/light colours). Old auto: metal value range
+  half the art's (std 0.08 vs 0.19), gold ochre instead of orange, bone grey (#C1AF8D vs #F6CDA2).
+- **New `auto` model** (`jobs/lib/paint.py`, styles/painted STYLE.md §4): signed light value (wrapped key light +
+  top-to-bottom gradient **per connected piece** + AO) → brush dabs (random value per Voronoi cell) + soft value
+  bands → **hue-shifted ramp** per role (shadows darker/more saturated/towards red, lights brighter/towards
+  yellow; `ramp` overrides per role) → treatments: rim light on lit convex edges + rim shadow on the others
+  (`edge_width` per role), rust driven by edges/creases/lower part of each piece, fewer longer cracks with a lit
+  lip, glow core + **glow halo** spilling onto nearby faces (eye sockets).
+- Draft palette cells nudged to the art's mid-tones: 6 bone `#F0C99C`, 40 painted iron `#74566B`, 42 gold `#DE8C30`.
+- **Bug fixed:** AO bake had `margin=0`, so the conservative-raster border texels read AO 0 → dashed dark lines
+  along every UV seam (also in the old renders). Bake margin 4 px (extend).
+- After tuning, stats are close to the art: metal V p5/50/95 0.24/0.44/0.75 (art 0.18/0.44/0.81), gold mid
+  #C57A2E (art #D57A2F), bone mid #E7C59C (art #F6CDA2). Sheet: `workspace/knight/paint/compare_auto_tuned.png`
+  (rows: reference, old auto, new auto unlit, new auto lit). Tuning loop: `workspace/knight-spike/scripts/tune_auto.py <tag>` (~9 s).
+- Remaining gap is mostly **geometry**, not paint: rivet domes, the skull's sculpted cheeks/jaw/teeth, the
+  dome's hole; the art's crisp gold top rim needs a bevel on the band to catch the rim light.
+- New test `test_auto_paint_on_mannequin` (53 tests).
+
+Next: the `painted` surface properly — MCP tool `paint_surface`, `export` with `KHR_materials_unlit` when
+`paint.unlit`, validate rules for painted characters (texture instead of palette.png), approval; then finish the
+knight (body parts, bevelled bands, rivets), then Phase 3 (skinning & animation).
 
 ## Decisions (with reasons)
 
+- **Auto paint look** (Marcel, 2026-11-15: "looks ok"): hue-shifted ramps, per-piece light gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo; tuned on the knight against the sheet's per-material colour stats.
+- **Painted export unlit** (Marcel, 2026-11-15): the light is painted into the texture; scene lights would light it twice and flatten the painted contrast.
 - **Painted surface = `auto` paint** (Marcel, 2026-11-15): works for any part combination and needs no art per character; projection looked closer to the art only from the drawn views and only after fitting the parts to that one sheet (¾ smears, fitted parts not reusable). Projection stays optional for hero characters.
 - **Procedural route first**; image-to-3D postponed (SPIKE.md archived until Phase 6).
 - **three.js / GLB only**; tool code MIT, packs CC0.
@@ -118,7 +141,7 @@ knight (body parts), then Phase 3 (skinning & animation).
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (52, ~60 s)
+.venv/bin/python -m pytest -q                       # all tests (53, ~60 s)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
 npm install --prefix node && npx --prefix node playwright install chromium
@@ -126,6 +149,7 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-15** — Auto paint tuned on the knight (hue-shifted ramps, per-piece gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo); AO-bake seam bug fixed; palette cells 6/40/42 nudged. Marcel: direction OK; painted export = unlit (decided).
 - **2026-11-15** — Knight sheet published (`specs/knight/`), spike committed + pushed (`4b8d8b7`, `7fc89d8`). Unlit export proposed, awaiting Marcel.
 - **2026-11-15** — Marcel picked auto paint for `painted` (projection optional).
 - **2026-11-15** — Knight head fitted to the sheet (v2 parts) for a fair projection test.
