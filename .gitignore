@@ -1,0 +1,7 @@
+workspace/
+__pycache__/
+*.pyc
+.venv/
+node_modules/
+*.blend1
+.DS_Store
