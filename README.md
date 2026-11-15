@@ -3,6 +3,7 @@
 Headless tool that lets agents create low-poly, rigged, animated game characters in a flat, chunky, Kenney-like style, and package them as CC0 asset packs (GLB for three.js).
 
 - Blender (headless) does the work; a thin MCP server (Python, MCP SDK 2.x `MCPServer`) is the interface.
+- [`PROGRESS.md`](PROGRESS.md): current status, decisions, next step — read first
 - [`PLAN.md`](PLAN.md): architecture, tools, phases
 - [`STYLE.md`](STYLE.md): binding visual and technical spec — `style.json` is its machine-readable twin
 - [`SPIKE.md`](SPIKE.md): image-to-3D route comparison (archived until Phase 6)
