@@ -7,7 +7,7 @@ This file is the binding spec for every character, in every style. Every value m
 | Style | Look | Status |
 |---|---|---|
 | `clean` | flat palette colours, smooth by angle, Kenney-like but rounder | in use (mage) |
-| `painted` | chibi, baked hand-painted texture (light, wear, grime) | spike (knight) |
+| `painted` | chibi, baked hand-painted texture (light, wear, grime; auto paint) | draft (knight head) |
 
 ---
 

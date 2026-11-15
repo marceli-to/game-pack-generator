@@ -13,7 +13,7 @@ _Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel 
 |---|---|
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
 | 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
-| 3 — Skinning & animation | after the painted spike |
+| 3 — Skinning & animation | after auto-paint tuning + the `painted` surface tool |
 | 4 — Parts library | — |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
@@ -28,7 +28,7 @@ _Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel 
 
 ### Phase 2 delivered
 - New MCP tools: `add_reference`, `build_part`, `list_parts`, `render_parts_catalog`, `assemble_from_parts`, `apply_palette`, `recolor`, `compare_reference` (15 tools total).
-- Part builder API (`jobs/lib/parts.py`, `P.loft/ring/rect/box/cylinder/mirror_x/transform/set_role/set_bone`) + part checks (STYLE.md §9a). Parts in `library/parts/<slot>/` with their build script (`.py` = source of truth), meta and preview.
+- Part builder API (`jobs/lib/parts.py`, `P.loft/ring/rect/rrect/box/rbox/cylinder/shell/mirror_x/transform/set_role/set_bone`) + part checks (STYLE.md §9a). Parts (now in `styles/<style>/parts/<slot>/`) with their build script (`.py` = source of truth), meta and preview.
 - `compare_reference`: reference crops / same-scale renders / silhouette overlay + IoU per view; arms lowered for A-pose drawings (`spec.compare.arms_down_deg`), staff hidden (`hide_slots`).
 - Mage: `specs/mage/spec.json`, 10 parts, **2,380 tris** (v2, rounder: 12–19-sided rings, bevelled boxes via `P.rbox`; smooth by angle 40°), 8 colours, height 1.80 m, `validate` clean (no hard, no soft), IoU front 0.84 / side 0.85 / back 0.81, GLB passes glTF validator (0/0) and three.js test load (no clips yet).
 - 46 pytest tests (incl. `test_mage_approval_still_valid`).
@@ -43,14 +43,14 @@ _Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel 
 
 - **`styles/painted/`** (draft): STYLE.md ↔ style.json; surface `painted`; archetype **`chibi`** (1.0–1.4 m, ≈ 3 skull-heights);
   budget 4,000–6,000 (hard 8,000), head ≤ 1,800 / 2,500; mid-tone palette (base colours per role); `paint` config
-  (`auto` light/AO/crease/noise + per-role treatments, `projection` weights). Root STYLE.md table lists it as "spike".
+  (`auto` light/AO/crease/noise + per-role treatments, `projection` weights). Root STYLE.md table lists it as "draft".
 - **`chibi` template** (`styles/painted/proportions/chibi.json`), calibrated on the knight sheet at 0.00177 m/px
   (1.2 m body, skull top and hips estimated). Mannequin vs sheet IoU 0.77 / 0.73 / 0.80 (arms_down 67°); fits well.
   Factors vs KayKit: leg 0.71, torso 0.61, arm 0.52, head 1.63 (short limbs: watch the clips in Phase 3).
-- **Parts** `head-skull` (884 tris) + `headwear-helmet-kettle` (1,180) in `styles/painted/parts/`; head group 2,064.
+- **Parts** `head-skull` (884 tris) + `headwear-helmet-kettle` (1,276 after the fitting pass) in `styles/painted/parts/`; head group 2,160.
   New builder primitive **`P.shell(grid, thickness, role, cyclic=…)`**: thick sheet from a point grid (plates, guards,
   bands; later capes/tunics).
-- **`paint_surface` job** (`jobs/paint_surface.py`, `jobs/lib/paint.py`): smart-UV unwrap → numpy texel map
+- **`paint_surface` job** (`jobs/paint_surface.py`, `jobs/lib/paint.py`; a Blender job only, no MCP tool yet): smart-UV unwrap → numpy texel map
   (position/normal/face per texel) → texture. `auto`: analytic light + shadow tint, Cycles AO bake, edge wear /
   dirt by distance to convex / concave creases, value noise, role treatments (mottle, rust, scratches, Voronoi
   cracks, glow). `projection`: sheet views projected with z-buffer visibility + facing weights, falls back to auto.
@@ -61,7 +61,7 @@ _Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel 
   rasterisation so faces thinner than a texel still get paint. (3) Projection depth buffer supersampled 3×
   (`zbuffer_scale`), facing power 2 → 4 (less ghosting where views overlap).
 - **Fitting pass (v2 parts):** overlay of the model outline on the sheet (`workspace/knight-spike/scripts/overlay.py`,
-  output `workspace/knight-spike/overlay.png`) → band 5 cm tall with front/back V points and a 4.8 cm tilt, cheek-guard gold
+  output `workspace/knight-spike/overlay.png`; spike scripts are local only, `workspace/` is gitignored) → band 5 cm tall with front/back V points and a 4.8 cm tilt, cheek-guard gold
   frame ~5 cm, slimmer skirt, teeth/nose raised. Helmet 1,276 tris, head group 2,160. v1 scripts kept in
   `workspace/knight-spike/parts/*.v1.py`. Projection now loses the double band and ghost cheek guards in front/side/back;
   ¾ still smears (teeth, stray band line across the eyes) and the skull's edge-on faces in the side view fall back to auto.
@@ -101,7 +101,7 @@ knight (body parts), then Phase 3 (skinning & animation).
 - Preview renders: specular highlight off (washed-out robe fronts).
 - **Budget raised** (Marcel, 2026-11-15) from 600–1,000 (Kenney-chunky, looked too edgy) to **1,500–2,500, hard 3,000**; head group ≤ 700 / 1,000; accessories ≤ 300 / 500. Segment & bevel guide in STYLE.md §3.
 - **Smooth by angle, 40°** replaces flat shading (Marcel, 2026-11-15): flat shading was what read as 'hard', not the triangle count (tested: same GLB, smoothed normals looked soft). Applied at assembly (`jobs/lib/shading.py`), split normals go into the GLB; `validate` warns on flat faces / unmarked creases. Round things use < 40° steps (heads/beards: 30° corner steps).
-- Reference images in the repo only when Marcel says they're his to publish (the mage is).
+- Reference images in the repo only when Marcel says they're his to publish (the mage and the knight are).
 - **Style profiles** (Marcel, 2026-11-15): packs may need different looks (clean now, painted next, others later). The shared pipeline (skeleton, roles, parts mechanics, QA, export) stays one; the look is a folder. Roles are the bridge: palette colour in `clean`, material treatment in `painted`.
 - The mage spec has no `style` key (adding one would change its hash and void the approval) → it relies on `default_style = clean`. Add `"style": "clean"` at the next re-approval.
 
@@ -118,7 +118,7 @@ knight (body parts), then Phase 3 (skinning & animation).
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (~45 s)
+.venv/bin/python -m pytest -q                       # all tests (52, ~60 s)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
 npm install --prefix node && npx --prefix node playwright install chromium
@@ -126,10 +126,11 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-15** — Knight sheet published (`specs/knight/`), spike committed + pushed (`4b8d8b7`, `7fc89d8`). Unlit export proposed, awaiting Marcel.
 - **2026-11-15** — Marcel picked auto paint for `painted` (projection optional).
 - **2026-11-15** — Knight head fitted to the sheet (v2 parts) for a fair projection test.
 - **2026-11-15** — Spike fixes: UV overlap repair (black bars), conservative raster, 3× z-buffer, facing power 4.
-- **2026-11-15** — Painted spike: `styles/painted` (draft), `chibi` template, knight skull + kettle helmet, `P.shell`, `paint_surface` job (auto vs projection), comparison sheet. 52 tests pass. Committed + pushed (`4b8d8b7`).
+- **2026-11-15** — Painted spike: `styles/painted` (draft), `chibi` template, knight skull + kettle helmet, `P.shell`, `paint_surface` job (auto vs projection), comparison sheet. 52 tests pass.
 - **2026-11-15** — Phase 2 committed + pushed (`21656d4`). Style profiles refactor (`core.json` + `styles/clean/`) committed + pushed. Session ends here; next session starts the painted spike.
 - **2026-11-15** — Staff switched to upright grip; mage approved by Marcel (spec + part hashes in `specs/mage/spec.json`). Phase 2 done.
 - **2026-11-15** — Shading switched to smooth by angle 40°; viewer gets soft lighting by default; head/beard corners at 30° steps (2,380 tris).
