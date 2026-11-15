@@ -34,12 +34,15 @@ Headwear may add at most 60 % of body height on top.
 | Asset | Target | Hard limit |
 |---|---|---|
 | Character complete | 4,000–6,000 tris | 8,000 |
-| Head incl. hair/headwear | ≤ 1,800 | 2,500 |
+| Head incl. hair/headwear | ≤ 3,000 | 3,500 |
 | Hand-held accessory (weapon, tool) | ≤ 600 | 900 |
 | Back accessory (cape, backpack) | ≤ 600 | 900 |
 | Prop (later) | ≤ 2,000 | 3,000 |
 
 More than `clean`: painted characters carry dents, rivets, rims and torn edges in geometry.
+The head got the most room (raised by Marcel, 2026-11-15, from ≤ 1,800 / 2,500): bevelled bands, rivets, a sculpted
+face and damage carry the look, and the chibi body is small and simple. Tris matter for skinning many characters
+at once, not for file size (the texture is ~85 % of a painted GLB).
 
 ## 4. Surface: painted (draft) → style.json
 
@@ -70,8 +73,14 @@ texture per character.
   and views the sheet doesn't show (¾, top, under the chin) stretch or fall back to auto.
 - **Export unlit** (decided by Marcel, 2026-11-15): the GLB material uses `KHR_materials_unlit`; the light lives
   in the painted texture, so scene lights don't light it a second time. A lit variant (less painted light) may
-  come later as a per-pack option. (Not implemented in `export` yet.)
+  come later as a per-pack option. The material is texture → Background shader (what Blender's glTF exporter
+  writes as `KHR_materials_unlit`), single-sided, linear filter; `export` fails without the extension.
 - Max. 8 base colours per character, as in `clean`.
+- **Tool:** `paint_surface(name, approach?, seed?)` after every `assemble_from_parts` (assembly puts the palette
+  material back, and `validate` reports `not_painted` until the character is painted). It unwraps to one UV layer
+  `Paint` (the palette UVs are removed), bakes `workspace/<name>/paint/<approach>.png`, packs it into the
+  `.blend` and renders lit + unlit sheets. `approach`/`seed` are stored in `spec.paint`. Colour changes: edit
+  `spec.colors`, re-run `paint_surface` (`apply_palette`/`recolor` are palette-only).
 
 ## 5. Shading & normals
 

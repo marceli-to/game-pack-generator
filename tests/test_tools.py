@@ -6,7 +6,9 @@ import pytest
 
 from server.blender import run_job_checked
 from server.main import mcp
+from server.tools import assemble as T_assemble
 from server.tools import export as T_export
+from server.tools import paint as T_paint
 from server.tools import project as T_project
 from server.tools import qa as T_qa
 
@@ -14,7 +16,7 @@ from .conftest import needs_blender, needs_node
 
 PHASE1_TOOLS = {"get_style", "init_character", "import_glb", "stats", "render_preview", "validate", "export",
                 "add_reference", "build_part", "list_parts", "render_parts_catalog", "assemble_from_parts",
-                "apply_palette", "recolor", "compare_reference"}
+                "apply_palette", "recolor", "compare_reference", "paint_surface"}
 
 
 def test_mcp_lists_phase1_tools():
@@ -68,3 +70,42 @@ def test_import_any_glb_check_render_export(workspace, mannequin, tmp_path):
     e = T_export.export("external")
     assert e["ok"], e.get("error")
     assert e["report"]["valid_style"] is False
+
+
+@needs_blender
+@needs_node
+def test_painted_character_paints_validates_and_exports_unlit(workspace, mannequin):
+    """Painted surface: validate demands paint, paint_surface bakes it (deterministic per seed), the GLB is
+    unlit with one UV set and a linear sampler; apply_palette refuses the painted style."""
+    colors = {"skin": 6, "primary": 17, "secondary": 46, "accent": 42, "metal": 40, "leather": 45,
+              "dark": 54, "special": 32, "hair": 8, "eyes": 56}
+    T_project.init_character("painted-dummy", {"style": "painted", "colors": colors})
+    shutil.copy(mannequin, workspace / "painted-dummy" / "character.blend")
+
+    v = T_qa.validate("painted-dummy")
+    assert "not_painted" in [h["code"] for h in v["hard"]]
+    with pytest.raises(Exception, match="palette surface"):
+        T_assemble.apply_palette("painted-dummy")
+
+    r = T_paint.paint_surface("painted-dummy", seed=3)
+    assert r["ok"], r.get("error")
+    assert r["stats"]["unlit"] is True and r["stats"]["approach"] == "auto"
+    assert T_project.C.load_spec("painted-dummy")["paint"] == {"seed": 3}
+    first = r["stats"]["texture_sha256"]
+    assert T_paint.paint_surface("painted-dummy")["stats"]["texture_sha256"] == first, "paint not deterministic"
+
+    v = T_qa.validate("painted-dummy")
+    codes = {h["code"] for h in v["hard"]} | {s["code"] for s in v["soft"]}
+    surface = {"not_painted", "materials", "texture", "texture_size", "uv_missing", "uv_outside", "uv_overlap",
+               "not_unlit", "uv_layers", "material_name", "colours"}
+    assert not codes & surface, codes & surface
+    assert v["stats"]["uv_layers"] == ["Paint"] and v["stats"]["unlit"] is True
+
+    e = T_export.export("painted-dummy")
+    assert e["ok"], e.get("error")
+    g = e["report"]["gltf"]
+    assert "KHR_materials_unlit" in g["extensions_used"]
+    assert g["materials"] == [{"name": "M_Painted", "unlit": True, "double_sided": False}]
+    assert g["texcoords"] == 1
+    assert g["samplers"][0]["magFilter"] == 9729  # LINEAR
+    assert e["report"]["gltf_validator"]["errors"] == 0

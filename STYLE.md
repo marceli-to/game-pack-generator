@@ -167,9 +167,10 @@ The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for 
 
 Target is **three.js only**; the only format is **GLB**.
 
-- +Y up, apply modifiers, palette texture embedded, animations as separate actions, no cameras/lights, Draco off
-- Texture sampler: nearest filter (in three.js: `texture.magFilter = THREE.NearestFilter`, set by the viewer)
-- Material exported as `MeshStandardMaterial` (roughness 1, metallic 0)
+- +Y up, apply modifiers, the style's texture embedded (palette.png or the baked paint), one UV set, animations as separate actions, no cameras/lights, Draco off
+- Material and texture sampler depend on the surface mode (styles/<name>/STYLE.md §4):
+  - `palette`: nearest filter (the viewer also turns mipmaps off for NEAREST textures), material exported as `MeshStandardMaterial` (roughness 1, metallic 0)
+  - `painted`: linear filter; unlit (`KHR_materials_unlit` → `MeshBasicMaterial` in three.js) when the style sets `paint.unlit`, else `MeshStandardMaterial`; `export` fails if an unlit style's GLB has no `KHR_materials_unlit`. Blender writes the extension for a texture → **Background** shader → output (not for an Emission shader).
 - FBX/OBJ: not planned; only add if needed later
 
 - For export the mesh is unparented from the armature (skinning stays via the armature modifier/skin), because glTF wants skinned meshes at the scene root (validator: `NODE_SKINNED_MESH_NON_ROOT`).
@@ -186,15 +187,15 @@ Defined by each style in `styles/<name>/STYLE.md` §11 (engine, lighting, views,
 - Tris > hard limit
 - Body height outside the archetype range (§2a), or headwear taller than 60 % of body height
 - Faces without a valid `role`, or a role without a colour in the spec
-- More than 1 material, or a texture other than palette.png
-- UVs outside palette cells, or a face spanning several cells
+- More than 1 material, or the wrong texture: `palette` surface: anything but palette.png; `painted` surface: not painted yet (still the palette material), more than one texture, or not `paint.texture_size`²
+- `palette`: UVs outside palette cells, or a face spanning several cells; `painted`: UVs outside 0..1, faces sharing texels, or not unlit although the style sets `paint.unlit`
 - Non-manifold geometry, flipped normals
 - Bone names/hierarchy differ from the standard skeleton
 - glTF validator errors
 
 **Soft (warning, human decides):**
 - Tris above target
-- More than 8 distinct palette indices used on faces
+- More than 8 distinct palette indices used on faces (`painted`: base colours of the roles used)
 - Asymmetry in base parts
 - Fewer than 2 edge loops at joints
 - Vertices with weights from > 2 bones (with rigid part skinning)
@@ -216,3 +217,4 @@ A character is approved when:
    ```
    Any later change to the spec changes its hash and voids the approval. `spec_hash` = SHA-256 of the spec JSON without the `approval` block, keys sorted.
    The block also records `parts`: the `script_sha256` of every part used (from its `.json`). Rebuilding a part with a different script voids the approval too, even though the spec is unchanged.
+   `painted` surface: the block also records `texture`: the `texture_sha256` returned by `paint_surface` (approach and seed live in `spec.paint`, so the spec hash covers them; the texture hash catches changes to the paint code). Painting is deterministic per seed.

@@ -6,3 +6,5 @@ node_modules/
 *.blend1
 .DS_Store
 .pytest_cache/
+spikes/ai-texture/runs/
+spikes/ai-texture/guides/

@@ -35,8 +35,8 @@
       "hard": 8000
     },
     "head": {
-      "target": 1800,
-      "hard": 2500,
+      "target": 3000,
+      "hard": 3500,
       "slots": ["head", "hair", "headwear", "face"]
     },
     "accessory_hand": {
@@ -99,7 +99,7 @@
           "crack_scale": 2.5,
           "mottle": 0.35,
           "mottle_color": "#9A6E86",
-          "ramp": { "light_hue": 10, "light_hue_amt": 0.35, "light_v": 0.75, "light_sat": 0.9 },
+          "ramp": { "light_hue": 10, "light_hue_amt": 0.35, "light_v": 0.55, "light_sat": 0.9, "shadow_v": 0.72 },
           "edge_shadow": 0.6,
           "rust_color": "#C8682C",
           "rust_scale": 6,
@@ -132,13 +132,7 @@
           "crack_scale": 6,
           "mottle": 0.3,
           "mottle_color": "#F7DDB4",
-          "ramp": {
-            "shadow_hue": 15,
-            "shadow_hue_amt": 0.4,
-            "shadow_v": 0.35,
-            "shadow_sat": 1.6,
-            "light_v": 0.15
-          },
+          "ramp": { "shadow_hue": 15, "shadow_hue_amt": 0.4, "shadow_v": 0.35, "shadow_sat": 1.6, "light_v": 0.15 },
           "edge_shadow": 0.5,
           "crack_sparse": 0.6
         },
@@ -149,9 +143,9 @@
           "dirt": 0.2,
           "ramp": { "shadow_v": 0.3, "light_v": 0.3 }
         },
-        "special": { "glow": 0.25, "core": 0.7, "core_color": "#DFFBFF" }
+        "special": { "glow": 0.15, "core": 0.5, "core_color": "#BFF4FF" }
       },
-      "light": { "key": 0.8, "gradient": 0.45, "bias": -0.05, "ao": 0.8 },
+      "light": { "key": 0.8, "gradient": 0.45, "bias": -0.15, "ao": 1.0, "facet": 0.5, "shadow": 0.85 },
       "ramp": {
         "shadow_v": 0.6,
         "shadow_sat": 1.2,
@@ -163,9 +157,9 @@
         "light_hue_amt": 0.2
       },
       "brush": {
-        "dab_scale": 22,
+        "dab_scale": 13,
         "stretch": [1.0, 1.0, 0.6],
-        "dab_amount": 0.18,
+        "dab_amount": 0.16,
         "wobble_scale": 9,
         "wobble_amount": 0.12,
         "bands": 4,

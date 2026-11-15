@@ -459,6 +459,27 @@ def glow_distance(P, src, radius, max_src=6000):
     return out
 
 
+def cast_shadow(obj, P, N, L, max_dist=0.6):
+    """1 where the ray from a texel towards the light hits the mesh, else 0 (BVH ray cast, world space)."""
+    from mathutils import Vector
+    from mathutils.bvhtree import BVHTree
+    dg = bpy.context.evaluated_depsgraph_get()
+    bm = bmesh.new()
+    bm.from_object(obj, dg)
+    bm.transform(obj.matrix_world)
+    tree = BVHTree.FromBMesh(bm)
+    bm.free()
+    d = Vector(L.tolist())
+    O = P + N * 0.003
+    out = np.zeros(len(P))
+    facing = N @ L > -0.05          # texels facing away are dark from the key light anyway
+    for i in np.nonzero(facing)[0]:
+        hit = tree.ray_cast(Vector(O[i].tolist()), d, max_dist)
+        if hit[0] is not None:
+            out[i] = 1.0
+    return out
+
+
 def auto_paint(obj, tm, colors, cfg, seed=1):
     """Procedural paint. colors: {role: palette index}; cfg: style paint.auto.
 
@@ -482,7 +503,20 @@ def auto_paint(obj, tm, colors, cfg, seed=1):
     # key light (wrapped lambert), height gradient per connected piece, AO
     L = np.array(cfg["light_dir"], dtype=np.float64)
     L /= np.linalg.norm(L)
-    k = np.clip(N @ L * 0.5 + 0.5, 0, 1)
+    lw = cfg["light"]
+    Nk = N
+    if lw.get("facet"):  # part of the light from the flat face normal: painted planes, not a gradient
+        fn = np.empty(len(obj.data.polygons) * 3)
+        obj.data.polygons.foreach_get("normal", fn)
+        fn = fn.reshape(-1, 3) @ np.array(obj.matrix_world.to_3x3().inverted().transposed()).T
+        fn /= np.linalg.norm(fn, axis=1, keepdims=True) + 1e-12
+        Nk = N * (1 - lw["facet"]) + fn[tm.poly] * lw["facet"]
+        Nk /= np.linalg.norm(Nk, axis=1, keepdims=True) + 1e-12
+    k = np.clip(Nk @ L * 0.5 + 0.5, 0, 1)
+    if lw.get("shadow"):  # cast shadow from the key light (under bands, brows, cheekbones, teeth)
+        sh = cast_shadow(obj, P, N, L)
+        k = k * (1 - lw["shadow"] * sh)
+        stats["shadow_frac"] = round(float(sh.mean()), 3)
     piece = piece_ids(obj, tm)
     g = np.zeros(tm.n)
     for sid in np.unique(piece):
@@ -492,7 +526,6 @@ def auto_paint(obj, tm, colors, cfg, seed=1):
     ao_img = bake_ao(obj, tm.size, distance=cfg["ao_distance"])
     ao = ao_img[tm.iy, tm.ix, 0]
     stats["ao_mean"] = round(float(ao.mean()), 3)
-    lw = cfg["light"]
     l = (k - 0.5) * 2 * lw["key"] + (g - 0.5) * 2 * lw["gradient"] + lw["bias"] - (1 - ao) * lw["ao"]
 
     # brush dabs: one random value per Voronoi cell (flat strokes), plus soft value bands whose
@@ -656,7 +689,12 @@ def project_paint(obj, tm, ref, ref_img, fallback, cfg):
     wsum = np.zeros(tm.n)
     stats = {}
     views = [v for v in ("front", "side", "back") if v in ref["views"]]
-    jobs = [(v, v) for v in views] + ([("side_mirror", "side")] if "side" in views else [])
+    # the -X side: its own view if the sheet has one (stored flipped, screen right = +Y like `side`),
+    # else the +X side reused mirrored (symmetric characters)
+    if "side_mirror" in ref["views"]:
+        jobs = [(v, v) for v in views] + [("side_mirror", "side_mirror")]
+    else:
+        jobs = [(v, v) for v in views] + ([("side_mirror", "side")] if "side" in views else [])
     for view, src in jobs:
         v = ref["views"][src]
         x0, x1 = v.get("x_range", [0, ref_img.shape[1]])
@@ -692,20 +730,35 @@ def project_paint(obj, tm, ref, ref_img, fallback, cfg):
     return rgb, cov, stats
 
 
-def painted_material(obj, image, name):
+def painted_material(obj, image, name, unlit=False, uv_name="Paint"):
+    """One material with the baked texture. unlit=True: texture -> Background shader -> output, which
+    Blender's glTF exporter writes as KHR_materials_unlit (an Emission shader is exported as emissive
+    instead). unlit=False: Principled BSDF, roughness 1, metallic 0. Every other UV layer is removed so
+    the GLB carries exactly one TEXCOORD."""
     mat = bpy.data.materials.get(name) or bpy.data.materials.new(name)
     mat.use_nodes = True
+    mat.use_backface_culling = True  # closed shells: exported as doubleSided=false
     nt = mat.node_tree
-    for n in list(nt.nodes):
-        if n.type not in ("BSDF_PRINCIPLED", "OUTPUT_MATERIAL"):
-            nt.nodes.remove(n)
-    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
-    bsdf.inputs["Roughness"].default_value = 1.0
-    bsdf.inputs["Metallic"].default_value = 0.0
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
     tex = nt.nodes.new("ShaderNodeTexImage")
     tex.image = image
     tex.interpolation = "Linear"
-    nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
-    obj.data.materials.clear()
-    obj.data.materials.append(mat)
+    tex.location = (-400, 0)
+    if unlit:
+        sh = nt.nodes.new("ShaderNodeBackground")
+        nt.links.new(tex.outputs["Color"], sh.inputs["Color"])
+    else:
+        sh = nt.nodes.new("ShaderNodeBsdfPrincipled")
+        sh.inputs["Roughness"].default_value = 1.0
+        sh.inputs["Metallic"].default_value = 0.0
+        nt.links.new(tex.outputs["Color"], sh.inputs["Base Color"])
+    nt.links.new(sh.outputs[0], out.inputs["Surface"])
+    mesh = obj.data
+    for uv in [u for u in mesh.uv_layers if u.name != uv_name]:
+        mesh.uv_layers.remove(uv)
+    mesh.uv_layers.active = mesh.uv_layers[uv_name]
+    mesh.uv_layers[uv_name].active_render = True
+    mesh.materials.clear()
+    mesh.materials.append(mat)
     return mat

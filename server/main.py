@@ -12,6 +12,7 @@ from mcp.server.mcpserver import MCPServer
 
 from .tools import assemble as T_assemble
 from .tools import export as T_export
+from .tools import paint as T_paint
 from .tools import parts as T_parts
 from .tools import project as T_project
 from .tools import qa as T_qa
@@ -22,8 +23,9 @@ STYLE.md (shared rules) + styles/<style>/STYLE.md (the look) are the law; read t
 A character's spec names its style (spec.style); parts belong to a style (pass style= to part tools).
 Characters live in workspace/<name>/.
 Build a character: get_style -> init_character -> add_reference -> list_parts /
-render_parts_catalog (build missing parts with build_part) -> assemble_from_parts -> validate ->
-compare_reference (max. 3 correction rounds, then ask the human) -> export.
+render_parts_catalog (build missing parts with build_part) -> assemble_from_parts ->
+[painted styles: paint_surface] -> validate -> compare_reference (max. 3 correction rounds, then ask
+the human) -> export. Re-run paint_surface after every assemble_from_parts on a painted style.
 Check an existing model: init_character -> import_glb -> stats / validate -> render_preview -> export.
 Every result lists preview images: open them to see what you did.
 """
@@ -177,6 +179,18 @@ def compare_reference(name: str, arms_down_deg: float | None = None, hide_slots:
     arms_down_deg: lower the T-pose arms to match an A-pose drawing (default spec.compare.arms_down_deg).
     hide_slots: slots left out of the render, e.g. a staff drawn beside the character."""
     return T_qa.compare_reference(name, arms_down_deg, hide_slots)
+
+
+@mcp.tool()
+@_safe
+def paint_surface(name: str, approach: str | None = None, seed: int | None = None) -> dict:
+    """Painted styles only (surface 'painted'): UV-unwrap the assembled character and bake its painted
+    texture from the face roles + spec.colors into one material (unlit when the style says so), saved in
+    character.blend. Run after every assemble_from_parts. approach: 'auto' (default; procedural, works for
+    any parts) or 'projection' (hero characters: projects the add_reference sheet, auto fills the rest).
+    seed varies brush dabs/cracks/rust. approach/seed default to spec.paint and are stored there when
+    given. Previews: lit and unlit (flat) turnaround sheets; stats.texture_sha256 goes into an approval."""
+    return T_paint.paint_surface(name, approach, seed)
 
 
 def main() -> None:

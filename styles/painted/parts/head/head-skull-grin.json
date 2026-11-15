@@ -1,0 +1,32 @@
+{
+ "part": "head-skull-grin",
+ "slot": "head",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "50f48e2a290f5ec1b56a2aa4413cf72ccb44c404382f6f6bb39dc3eefc0633b2",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 1028,
+ "verts": 570,
+ "roles": [
+  "dark",
+  "skin",
+  "special"
+ ],
+ "shells": 28,
+ "bbox": [
+  [
+   -0.18,
+   -0.24,
+   0.772
+  ],
+  [
+   0.18,
+   0.17,
+   1.2
+  ]
+ ],
+ "warnings": []
+}

@@ -94,6 +94,7 @@ game-pack-generator/
 |---|---|
 | `apply_palette(name)` | resolves each face's `role` → `spec.colors` → palette cell, writes UVs |
 | `recolor(name, role, palette_index)` | changes one role's colour (for variants), re-applies the palette |
+| `paint_surface(name, approach?, seed?)` | `painted` styles only: unwraps and bakes the painted texture (auto paint; projection for hero characters) into one material, unlit if the style says so; re-run after every assembly |
 
 ### Rig & animation
 | Tool | Purpose |
@@ -168,7 +169,7 @@ packs/<pack-name>/
 2. `init_character` + `add_reference`
 3. Analyse the reference → write the spec (parts, proportions, colours)
 4. `render_parts_catalog` → choose parts → `assemble_from_parts`
-5. `apply_palette` → `validate` → `compare_reference`
+5. `apply_palette` (palette styles; done by assembly) or `paint_surface` (painted styles) → `validate` → `compare_reference`
 6. Max. 3 correction rounds on the spec or parts, then hand over to a human
 7. `skin` → `apply_animations` → `pose_test` (the skeleton is already in place from step 4)
 8. **Human approval** (preview + pose sheet)

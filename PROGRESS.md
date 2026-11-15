@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-15 — Auto paint tuned towards the knight art and approved as the direction; painted export = unlit._
+_Last updated: 2026-11-15 — AI-texture spike (local SDXL) clearly beats auto paint but takes ~18 min/image on the 16 GB MacBook; repo moved to `~/Jamon.digital/Webroot/game-pack-generator`; next: run the spike on the Mac Studio._
 
 ---
 
@@ -13,7 +13,7 @@ _Last updated: 2026-11-15 — Auto paint tuned towards the knight art and approv
 |---|---|
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
 | 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
-| 3 — Skinning & animation | after auto-paint tuning + the `painted` surface tool |
+| 3 — Skinning & animation | after the painted-texture route is settled (AI spike) and the knight body |
 | 4 — Parts library | — |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
@@ -42,7 +42,7 @@ _Last updated: 2026-11-15 — Auto paint tuned towards the knight art and approv
 ## Painted-style spike (2026-11-15, `4b8d8b7`; decided: auto)
 
 - **`styles/painted/`** (draft): STYLE.md ↔ style.json; surface `painted`; archetype **`chibi`** (1.0–1.4 m, ≈ 3 skull-heights);
-  budget 4,000–6,000 (hard 8,000), head ≤ 1,800 / 2,500; mid-tone palette (base colours per role); `paint` config
+  budget 4,000–6,000 (hard 8,000), head ≤ 1,800 / 2,500 (raised to 3,000 / 3,500, see decisions); mid-tone palette (base colours per role); `paint` config
   (`auto` light/AO/crease/noise + per-role treatments, `projection` weights). Root STYLE.md table lists it as "draft".
 - **`chibi` template** (`styles/painted/proportions/chibi.json`), calibrated on the knight sheet at 0.00177 m/px
   (1.2 m body, skull top and hips estimated). Mannequin vs sheet IoU 0.77 / 0.73 / 0.80 (arms_down 67°); fits well.
@@ -99,14 +99,75 @@ _Last updated: 2026-11-15 — Auto paint tuned towards the knight art and approv
   dome's hole; the art's crisp gold top rim needs a bevel on the band to catch the rim light.
 - New test `test_auto_paint_on_mannequin` (53 tests).
 
-Next: the `painted` surface properly — MCP tool `paint_surface`, `export` with `KHR_materials_unlit` when
-`paint.unlit`, validate rules for painted characters (texture instead of palette.png), approval; then finish the
-knight (body parts, bevelled bands, rivets), then Phase 3 (skinning & animation).
+## Painted surface tool (2026-11-15)
+
+- **MCP tool `paint_surface(name, approach?, seed?)`** (`server/tools/paint.py`, 16 tools): painted styles only;
+  bakes into `character.blend`, texture in `workspace/<name>/paint/<approach>.png`, lit + unlit sheets;
+  approach/seed default to `spec.paint` (stored there when passed, so the spec hash covers them); projection
+  uses the character's `add_reference` sheet. Returns `texture_sha256` (painting is deterministic per seed, tested).
+- **Material** (`paint.painted_material`): texture → **Background** shader when `paint.unlit` (Blender's glTF
+  exporter writes that as `KHR_materials_unlit`; an Emission shader exports as emissive), backface culling on
+  (`doubleSided: false`), palette UV layer removed (the GLB had two TEXCOORDs, the paint on `TEXCOORD_1`).
+- **validate** is surface-aware (`_palette_rules` / `_painted_rules` in `jobs/lib/measure.py`): hard
+  `not_painted` (still the palette material, e.g. after re-assembly), `texture`, `texture_size`, `uv_outside`
+  (0..1), `uv_overlap` (shared texels), `not_unlit`; soft `uv_layers`, `material_name`, `colours` (base colours).
+- **export**: report gets `gltf` (extensions, unlit/doubleSided per material, samplers, TEXCOORD count); fails if
+  an unlit style's GLB lacks `KHR_materials_unlit`. Viewer only forces nearest filtering on NEAREST textures, so
+  painted textures stay linear. `apply_palette` refuses painted styles.
+- **Knight (head only)**: `paint_surface` → `validate` 0 hard (soft: head 2,160 > 1,800 target; floor, no body yet)
+  → `export` ok: unlit, 1 UV set, linear sampler, glTF validator 0/0, three.js load ok
+  (`workspace/knight/export/character-knight-testload.png`).
+- Docs: root STYLE.md §10/§12/§14 (approval of painted characters also records `texture`), painted STYLE.md §4,
+  PLAN.md tool table + workflow. New test `test_painted_character_paints_validates_and_exports_unlit` (54 tests).
+
+## Knight v3 test: how far can procedural go? (2026-11-15)
+
+Marcel found the painted knight "very mid". Time-boxed test: rebuild only the head, one paint round, compare.
+- **Builder:** `P.sweep(path, profile, role, normals, cyclic)` (bevelled straps/bands/rims/frames),
+  `P.strap_profile(width, height, bevel)`, `P.dome(center, normal, r, height)` (rivets).
+- **Parts (new, old ones kept):** `headwear-helmet-bell` (1,982 tris: bevelled band + wide crest, cheek-guard gold
+  frames, dome rivets, broken-hole plate), `head-skull-grin` (1,028: deep slanted sockets, cheekbones, heart nose,
+  arched jaws with teeth on the arc, chin). Head group 3,010 (was over the old hard 2,500; budget raised to 3,000 / 3,500).
+- **Paint:** `light.facet` (part of the key light from flat face normals: painted planes), `light.shadow`
+  (ray-cast key-light shadows: under the band, cheekbones, teeth), bigger dabs, darker metal; special → cell 33.
+- Test character `workspace/knight-v3/`, loop `workspace/knight-v3-test/run.py`, sheets in
+  `workspace/knight-v3-test/tune/v3*/compare.png` (rows: reference, old head, v3).
+- **Result:** clearly better than v2 (silhouette, band, crest, rivets, grin, shadows) but still reads as procedural:
+  pastel even iron, the hole reads as a decal, the face is stiff. Ceiling of this route for the look, as predicted.
+
+Decided: keep these parts, head budget raised (3,000 / 3,500). Marcel: "better", but asked whether AI texturing
+could close the gap → AI-texture spike below.
+
+## AI-texture spike (2026-11-15; `spikes/ai-texture/`, details in its README)
+
+- **Idea:** geometry, UVs, rig and export stay ours; an image model paints the views, our `projection` paint bakes
+  them. Unlike projecting Marcel's hand-drawn sheet, the views are generated *from our renders*, so they match
+  the mesh by construction.
+- **Setup (Marcel: local, no hosted service):** SDXL base + depth ControlNet + IP-Adapter (style reference = crop
+  of the knight sheet, style blocks only) via `diffusers` on MPS; all licences allow commercial use of outputs.
+  4 views (front, side, back, side_mirror) in one 2×2 1024² image → one style across views; img2img from the
+  auto-paint render. `projection` now takes a real `side_mirror` view (asymmetric details like the helmet hole).
+- **Result (run `a1`):** clearly better than auto paint: glowing eyes in dark sockets, shaded teeth, gold with real
+  light/shade, the hole reads as torn metal; the ¾ view (never generated, only projected) holds up. Issues:
+  vertical "plank" lines on the dome (the model reads the 16 faceted segments of the start image as panels), iron
+  still a bit light. Sheet: `spikes/ai-texture/runs/a1/compare.png` (local, gitignored).
+- **Cost:** ~18 min per image on the 16 GB M1 Pro: SDXL + ControlNet + encoders don't fit, it swaps (~55 s/step).
+  `gen.py` already loads in stages (encoders freed before the UNet). Expected on the Mac Studio: ~1 min (Max)
+  or less (Ultra); a few-step SDXL variant (SDXL-Lightning) should cut it ~3× more.
+
+Next: Marcel sets up the repo on the Mac Studio (README + `spikes/ai-texture/README.md`), then: run `a1` there
+for timing → fix the plank lines (smoother start image/depth, lower `--cn`) → few-step model → if it holds, an
+`ai` approach in `paint_surface`; then the knight body → approval → Phase 3.
 
 ## Decisions (with reasons)
 
 - **Auto paint look** (Marcel, 2026-11-15: "looks ok"): hue-shifted ramps, per-piece light gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo; tuned on the knight against the sheet's per-material colour stats.
 - **Painted export unlit** (Marcel, 2026-11-15): the light is painted into the texture; scene lights would light it twice and flatten the painted contrast.
+- **AI texturing runs locally** (Marcel, 2026-11-15): no hosted service; heavy runs on the office Mac Studio.
+- **Painted head budget 3,000 / 3,500** (Marcel, 2026-11-15; was 1,800 / 2,500): the v3 knight head needs ~3,000 for
+  bevelled bands, rivets and a sculpted face; tris cost skinning time with many characters, not file size (texture
+  ~85 % of the GLB); the character total stays 4,000–6,000.
+- **Painted approval binds the texture hash** too (STYLE.md §14): the paint code can change the texture without any spec or part change.
 - **Painted surface = `auto` paint** (Marcel, 2026-11-15): works for any part combination and needs no art per character; projection looked closer to the art only from the drawn views and only after fitting the parts to that one sheet (¾ smears, fitted parts not reusable). Projection stays optional for hero characters.
 - **Procedural route first**; image-to-3D postponed (SPIKE.md archived until Phase 6).
 - **three.js / GLB only**; tool code MIT, packs CC0.
@@ -136,12 +197,14 @@ knight (body parts, bevelled bands, rivets), then Phase 3 (skinning & animation)
 - **Blender 5 actions are layered** (slots/channelbags): use `jobs/lib/scene.py` helpers (`action_fcurves`, `assign_action`), not `action.fcurves`.
 - **glTF importer** adds bone display shapes (icosphere) → `import_glb` removes them; glTF can't carry face attributes, so imported GLBs always fail `no_role`.
 - **Export** unparents the mesh from the armature for the session (validator: `NODE_SKINNED_MESH_NON_ROOT`).
+- **Repo location:** `/Users/marceli.to/Jamon.digital/Webroot/game-pack-generator` (moved from a scratch folder on 2026-11-15; venvs recreated). Old scratch files (animation comparison report, retarget tests) are in `workspace/_archive/` (local only).
+- **AI spike** has its own venv (`spikes/ai-texture/.venv`, torch + diffusers); models (~13 GB) are cached in `~/.cache/huggingface`. 16 GB RAM is not enough to run it without swapping.
 - **KayKit source** is not in the repo (only the built `.blend`s). Download "Free 1.1" from https://kaylousberg.itch.io/kaykit-character-animations to rebuild the library.
 
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (53, ~60 s)
+.venv/bin/python -m pytest -q                       # all tests (54, ~90 s)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
 npm install --prefix node && npx --prefix node playwright install chromium
@@ -149,6 +212,10 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-15** — AI-texture spike (local SDXL + depth ControlNet + IP-Adapter, projected): clearly better than auto paint, ~18 min/image on 16 GB. Repo moved to `~/Jamon.digital/Webroot/game-pack-generator`; spike scripts committed under `spikes/ai-texture/`. Next: Mac Studio.
+- **2026-11-15** — Painted head budget raised to 3,000 / 3,500 (Marcel); knight v3 head route kept.
+- **2026-11-15** — Knight v3 head test (sweep/dome builders, bell helmet, grinning skull, cast shadows + faceted light): better, still procedural-looking; head 3,010 tris. Awaiting Marcel.
+- **2026-11-15** — Painted surface tool: `paint_surface` MCP tool, unlit material/export (`KHR_materials_unlit`), surface-aware `validate`, viewer keeps linear textures; knight head exports clean. 54 tests pass.
 - **2026-11-15** — Auto paint tuned on the knight (hue-shifted ramps, per-piece gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo); AO-bake seam bug fixed; palette cells 6/40/42 nudged. Marcel: direction OK; painted export = unlit (decided).
 - **2026-11-15** — Knight sheet published (`specs/knight/`), spike committed + pushed (`4b8d8b7`, `7fc89d8`). Unlit export proposed, awaiting Marcel.
 - **2026-11-15** — Marcel picked auto paint for `painted` (projection optional).

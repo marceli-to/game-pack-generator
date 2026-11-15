@@ -24,6 +24,10 @@ def assemble_from_parts(name: str, spec: dict | None = None) -> dict:
 
 
 def apply_palette(name: str) -> dict:
+    st = load_style(C.style_of(name))
+    if st.get("surface") != "palette":
+        raise C.CharacterError(f"apply_palette works on the palette surface; style {st['style']!r} uses "
+                               f"{st.get('surface')!r} (change spec.colors, then run paint_surface)")
     spec = C.load_spec(name) or {}
     blend = C.require(name)
     return run_job("apply_palette", {"colors": spec.get("colors") or {}, "out": str(blend)}, blend=blend, style=C.style_of(name))

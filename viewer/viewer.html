@@ -92,8 +92,9 @@ function load(url) {
     model = gltf.scene;
     model.traverse((o) => {
       if (o.isMesh && crease !== null) o.geometry = toCreasedNormals(o.geometry, crease);
-      if (o.isMesh && o.material.map) {
-        o.material.map.magFilter = THREE.NearestFilter;
+      // Palette textures come with a NEAREST sampler: keep cells crisp at every distance (no mipmaps).
+      // Painted textures are LINEAR in the GLB and are left as loaded.
+      if (o.isMesh && o.material.map && o.material.map.magFilter === THREE.NearestFilter) {
         o.material.map.minFilter = THREE.NearestFilter;
         o.material.map.generateMipmaps = false;
         o.material.map.needsUpdate = true;

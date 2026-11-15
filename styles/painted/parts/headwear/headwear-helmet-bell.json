@@ -1,0 +1,35 @@
+{
+ "part": "headwear-helmet-bell",
+ "slot": "headwear",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "2e5faf05441941abebafb9efb1740a367888d128d56f25c4a6048bef63baeb09",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 1982,
+ "verts": 1045,
+ "roles": [
+  "accent",
+  "dark",
+  "metal"
+ ],
+ "shells": 28,
+ "bbox": [
+  [
+   -0.3156,
+   -0.3137,
+   0.8323
+  ],
+  [
+   0.3156,
+   0.3257,
+   1.3876
+  ]
+ ],
+ "warnings": [
+  "1982 tris above the head target 1800 (the whole head group shares it)",
+  "asymmetric: 44 of 1045 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

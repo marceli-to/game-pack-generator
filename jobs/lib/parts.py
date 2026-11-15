@@ -305,6 +305,48 @@ class PartBuilder:
         bmesh.ops.recalc_face_normals(bm, faces=faces)
         return faces
 
+    def sweep(self, path, profile, role, normals, cyclic=False, bone=None):
+        """Sweep a 2D cross-section along `path` (bevelled straps, bands, rims, frames).
+        normals: outward direction per path point (e.g. the surface normal under a strap).
+        profile: list of (out, side) points, a closed convex-ish ring: `out` along the normal, `side`
+        along tangent x normal; or a function i -> such a list (same length) to vary it along the path.
+        Ends are capped unless cyclic. Returns the faces."""
+        path = [Vector(p) for p in path]
+        n = len(path)
+        rings = []
+        for i, p in enumerate(path):
+            a = path[(i - 1) % n] if (cyclic or i > 0) else p
+            b = path[(i + 1) % n] if (cyclic or i < n - 1) else p
+            t = (b - a).normalized()
+            nn = Vector(normals[i])
+            nn = (nn - t * nn.dot(t)).normalized()
+            side = t.cross(nn)
+            prof = profile(i) if callable(profile) else profile
+            rings.append([p + nn * o + side * s for o, s in prof])
+        if cyclic:
+            rings.append(rings[0])
+            faces = self.loft(rings, role, cap_start=False, cap_end=False, bone=bone)
+            bmesh.ops.remove_doubles(self.bm, verts=list({v for f in faces for v in f.verts}), dist=1e-6)
+            faces = [f for f in faces if f.is_valid]
+            bmesh.ops.recalc_face_normals(self.bm, faces=faces)
+            return faces
+        return self.loft(rings, role, bone=bone)
+
+    @staticmethod
+    def strap_profile(width, height, bevel, inset=0.004):
+        """Cross-section of a bevelled strap lying on a surface: `width` across, `height` above it
+        (starting `inset` below the surface so it sits in it), 45-degree bevels of size `bevel`."""
+        w, h, k = width / 2, height, min(bevel, width / 2 - 1e-4, height - 1e-4)
+        return [(-inset, -w), (h - k, -w), (h, -w + k), (h, w - k), (h - k, w), (-inset, w)]
+
+    def dome(self, center, normal, r, height, n=8, role="accent", bone=None):
+        """Rivet / stud: a low dome of radius r on a surface (base sunk 3 mm into it)."""
+        c, nn = Vector(center), Vector(normal).normalized()
+        q = Vector((0, 0, 1)).rotation_difference(nn)
+        base = [c - nn * 0.003 + q @ v for v in self.ring((0, 0, 0), r, n=n)]
+        mid = [c + nn * height * 0.6 + q @ v for v in self.ring((0, 0, 0), r * 0.72, n=n)]
+        return self.loft([base, mid, [c + nn * height]], role, bone=bone)
+
     def transform(self, faces, matrix):
         verts = {v for f in faces for v in f.verts}
         bmesh.ops.transform(self.bm, matrix=Matrix(matrix), verts=list(verts))

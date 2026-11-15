@@ -64,8 +64,19 @@ def _material_images(mat):
     return [n.image for n in mat.node_tree.nodes if n.type == "TEX_IMAGE" and n.image is not None]
 
 
+def _is_unlit(mat):
+    """Texture -> Background shader -> output: Blender's glTF exporter writes KHR_materials_unlit."""
+    if mat is None or not mat.use_nodes:
+        return False
+    for n in mat.node_tree.nodes:
+        if n.type == "OUTPUT_MATERIAL" and n.is_active_output and n.inputs["Surface"].links:
+            return n.inputs["Surface"].links[0].from_node.type == "BACKGROUND"
+    return False
+
+
 def measure(spec=None):
     style = S.load()
+    painted = style.get("surface") == "painted"
     roles = style["roles"]
     slots = style["slots"]
     topo = style["topology"]
@@ -82,7 +93,9 @@ def measure(spec=None):
     m = {
         "objects": [o.name for o in objs],
         "tris": 0, "verts": 0, "faces": 0,
-        "materials": [], "images": [], "palette_texture_ok": None,
+        "surface": style.get("surface"),
+        "materials": [], "images": [], "image_sizes": {}, "palette_texture_ok": None, "unlit": None,
+        "uv_layers": [], "uv_overlap_faces": 0,
         "has_role": True, "invalid_role_faces": 0, "roles_used": set(),
         "has_slot": True, "slot_tris": defaultdict(int),
         "uv_missing": False, "uv_outside": 0, "uv_spanning": 0, "uv_off_centre": 0,
@@ -121,9 +134,11 @@ def measure(spec=None):
             name = mat.name if mat else None
             if name not in m["materials"]:
                 m["materials"].append(name)
+                m["unlit"] = _is_unlit(mat) if m["unlit"] is None else (m["unlit"] and _is_unlit(mat))
             for img in _material_images(mat):
                 if img.name not in m["images"]:
                     m["images"].append(img.name)
+                    m["image_sizes"][img.name] = list(img.size)
                     ok = _palette_matches(img)
                     m["palette_texture_ok"] = ok if m["palette_texture_ok"] is None else (m["palette_texture_ok"] and ok)
 
@@ -135,8 +150,12 @@ def measure(spec=None):
             m["has_slot"] = False
 
         uv = mesh.uv_layers.active
+        m["uv_layers"] += [u.name for u in mesh.uv_layers]
         if uv is None:
             m["uv_missing"] = True
+        elif painted:
+            from . import paint as PT  # local: only painted styles need it
+            m["uv_overlap_faces"] += len(PT.uv_overlaps(mesh, uv.name, style["paint"]["texture_size"]))
         for p in mesh.polygons:
             ntri = len(p.vertices) - 2
             if role is not None:
@@ -160,7 +179,10 @@ def measure(spec=None):
                 m["ngons_over_max"] += 1
             if p.area < topo["min_face_area"]:
                 m["zero_area_faces"] += 1
-            if uv is not None:
+            if uv is not None and painted:
+                if any(not (0.0 <= c <= 1.0) for li in p.loop_indices for c in uv.data[li].uv):
+                    m["uv_outside"] += 1
+            elif uv is not None:
                 cells = set()
                 for li in p.loop_indices:
                     u, v = uv.data[li].uv
@@ -349,24 +371,10 @@ def violations(m, spec=None):
         if missing:
             H("role_without_colour", f"roles without a colour in the spec: {missing}")
 
-    mats = m["materials"]
-    if len(mats) > 1:
-        H("materials", f"{len(mats)} materials ({mats}); exactly one ({style['palette']['material']}) allowed")
-    elif mats and mats[0] != style["palette"]["material"]:
-        W("material_name", f"material is {mats[0]!r}, expected {style['palette']['material']!r}")
-    if len(m["images"]) != 1 or not m["palette_texture_ok"]:
-        H("texture", f"texture must be palette.png; found {m['images'] or 'none'}"
-                     + ("" if m["palette_texture_ok"] in (None, True) else f" (pixels differ from {style['palette']['file']})"))
-    if m["uv_missing"]:
-        H("uv_missing", "mesh has no UV map")
-    if m["uv_outside"]:
-        H("uv_outside", f"{m['uv_outside']} faces with UVs outside the palette")
-    if m["uv_spanning"]:
-        H("uv_spanning", f"{m['uv_spanning']} faces span several palette cells")
-    if m["uv_off_centre"]:
-        W("uv_off_centre", f"{m['uv_off_centre']} UV loops not collapsed to the cell centre")
-    if len(m["palette_indices"]) > style["palette"]["max_colors"]:
-        W("colours", f"{len(m['palette_indices'])} palette colours used (max {style['palette']['max_colors']})")
+    if m["surface"] == "painted":
+        _painted_rules(m, spec, style, H, W)
+    else:
+        _palette_rules(m, style, H, W)
 
     if m["boundary_edges"] or m["non_manifold_edges"] or m["wire_edges"]:
         H("non_manifold", f"non-manifold geometry: {m['boundary_edges']} open edges, "
@@ -410,3 +418,60 @@ def violations(m, spec=None):
     info.append({"code": "joint_loops", "message": "edge loops at joints: not checked yet (Phase 3, pose_test)"})
     info.append({"code": "gltf_validator", "message": "glTF validator runs in `export`"})
     return {"hard": hard, "soft": soft, "info": info}
+
+
+def _palette_rules(m, style, H, W):
+    """Surface `palette` (STYLE.md §4, §12): one M_Palette material, palette.png, UVs in single cells."""
+    mats = m["materials"]
+    if len(mats) > 1:
+        H("materials", f"{len(mats)} materials ({mats}); exactly one ({style['palette']['material']}) allowed")
+    elif mats and mats[0] != style["palette"]["material"]:
+        W("material_name", f"material is {mats[0]!r}, expected {style['palette']['material']!r}")
+    if len(m["images"]) != 1 or not m["palette_texture_ok"]:
+        H("texture", f"texture must be palette.png; found {m['images'] or 'none'}"
+                     + ("" if m["palette_texture_ok"] in (None, True) else f" (pixels differ from {style['palette']['file']})"))
+    if m["uv_missing"]:
+        H("uv_missing", "mesh has no UV map")
+    if m["uv_outside"]:
+        H("uv_outside", f"{m['uv_outside']} faces with UVs outside the palette")
+    if m["uv_spanning"]:
+        H("uv_spanning", f"{m['uv_spanning']} faces span several palette cells")
+    if m["uv_off_centre"]:
+        W("uv_off_centre", f"{m['uv_off_centre']} UV loops not collapsed to the cell centre")
+    if len(m["palette_indices"]) > style["palette"]["max_colors"]:
+        W("colours", f"{len(m['palette_indices'])} palette colours used (max {style['palette']['max_colors']})")
+
+
+def _painted_rules(m, spec, style, H, W):
+    """Surface `painted` (styles/<style>/STYLE.md §4, §12): one material with the baked texture
+    (not palette.png), one UV layer inside 0..1 without shared texels, unlit if paint.unlit."""
+    pc = style["paint"]
+    mats, imgs = m["materials"], m["images"]
+    if len(mats) > 1:
+        H("materials", f"{len(mats)} materials ({mats}); exactly one ({pc['material']}) allowed")
+    if mats == [style["palette"]["material"]] or m["palette_texture_ok"]:
+        H("not_painted", "the character still has the palette material: run paint_surface "
+                         "(needed after every assemble_from_parts)")
+        return
+    if mats and mats[0] != pc["material"]:
+        W("material_name", f"material is {mats[0]!r}, expected {pc['material']!r}")
+    size = pc["texture_size"]
+    if len(imgs) != 1:
+        H("texture", f"exactly one painted texture expected; found {imgs or 'none'}")
+    elif m["image_sizes"][imgs[0]] != [size, size]:
+        H("texture_size", f"texture is {m['image_sizes'][imgs[0]]}, expected {size} x {size}")
+    if m["uv_missing"]:
+        H("uv_missing", "mesh has no UV map")
+    if len(set(m["uv_layers"])) > 1:
+        W("uv_layers", f"{len(set(m['uv_layers']))} UV layers {sorted(set(m['uv_layers']))}; the GLB should carry one")
+    if m["uv_outside"]:
+        H("uv_outside", f"{m['uv_outside']} faces with UVs outside 0..1")
+    if m["uv_overlap_faces"]:
+        H("uv_overlap", f"{m['uv_overlap_faces']} faces share texels with other faces (wrong paint)")
+    if pc.get("unlit") and not m["unlit"]:
+        H("not_unlit", "style exports unlit (paint.unlit) but the material is not texture -> Background "
+                       "(KHR_materials_unlit); re-run paint_surface")
+    colors = spec.get("colors") or {}
+    base = {colors[r] for r in m["roles_used"] if r in colors}
+    if len(base) > style["palette"]["max_colors"]:
+        W("colours", f"{len(base)} base colours used (max {style['palette']['max_colors']})")
