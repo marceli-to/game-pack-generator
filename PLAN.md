@@ -11,7 +11,7 @@ A headless tool that lets agents create low-poly, rigged, animated game characte
 - **Generation route:** procedural first (parts + parameters in Blender). No API keys, no costs, deterministic. Image-to-3D comes later as an optional extension (Phase 6).
 - **Licence:** open source. Tool code under MIT, generated packs CC0 (like Kenney).
 - **Spike (`SPIKE.md`):** postponed. Only becomes relevant when image-to-3D is added.
-- **Animations:** from a CC0 animation library; its skeleton becomes the standard skeleton (STYLE.md §8).
+- **Animations:** KayKit Character Animations 1.1 (CC0), `Rig_Medium`; its skeleton becomes the standard skeleton, T-pose rest (STYLE.md §7, §8).
 - **Colours:** parts carry per-face roles, the spec maps roles to palette colours (STYLE.md §4).
 - **Height:** body height without headwear, range per archetype (STYLE.md §2a).
 
@@ -179,7 +179,7 @@ packs/<pack-name>/
 - MCP server, Blender runner (subprocess, timeout, JSON in and out)
 - `init_character`, `get_style`, `stats`, `render_preview`, `validate`, `export`
 - style.json from STYLE.md, palette.png, role enum
-- **Choose the CC0 animation library**, import its rig as `skeleton.blend` and its clips as `animations.blend`; update STYLE.md §7 bone names to match
+- Import KayKit `Rig_Medium` as `skeleton.blend` (add `headslot`, `backslot`; mark slots non-deforming) and the mapped clips as `animations.blend`; record bone list and clip lengths in style.json
 - **Proportion template `human.json`**: rest-pose joint positions measured from the rig, adjusted to the target proportions; render it as a stick-figure preview for approval
 - pytest: every job against a fixture cube/character
 - **Done when:** an agent can import any GLB, check it, render it and export it; the skeleton plays the library's idle/walk in the three.js viewer; the human proportion template is approved.
@@ -228,4 +228,4 @@ packs/<pack-name>/
 | Blender API changes | pin one Blender version (current LTS at project start): recorded in README and style.json; the runner checks `bpy.app.version` and refuses to run on a mismatch |
 
 ## Open decisions
-- CC0 animation library: Quaternius vs. Kenney — comparison of rigs and clip coverage in progress (Phase 1)
+- (none currently)

@@ -28,7 +28,7 @@ This file is the binding spec for every character. Every value marked `→ style
 | Up (Blender) | +Z |
 | glTF export | +Y up, forward +Z (Blender converts automatically; matches three.js) |
 | Transforms | applied before export (location 0, rotation 0, scale 1) |
-| Rest pose | A-pose, arms ~45° downward, legs slightly apart |
+| Rest pose | **T-pose** (arms straight out along ±X), legs straight below the hips — the library rig's rest pose (§7) |
 
 ## 2a. Archetypes & height → style.json
 
@@ -95,74 +95,77 @@ Headwear may add at most 60 % of body height on top (the wizard hat is fine, a 2
 
 ## 7. Standard skeleton → style.json
 
-Every character uses one armature (`library/skeleton.blend`). **It is adopted from the chosen CC0 animation library (§8)**, so animations play without retargeting. The hierarchy below is the target structure; if the library's rig differs, its bone names win and this section is updated to match. Bone names are binding (animations depend on them).
+Every character uses one armature (`library/skeleton.blend`), **adopted from KayKit Character Animations 1.1, `Rig_Medium`** (CC0, Kay Lousberg; see §8). Clips play on it without retargeting. Bone names are KayKit's and binding (animations depend on them).
 
 ```
-root                      (floor, between the feet)
+root                          (floor, between the feet)
 └─ hips
    ├─ spine
    │  └─ chest
-   │     ├─ neck
-   │     │  └─ head
-   │     ├─ shoulder.L
-   │     │  └─ upper_arm.L
-   │     │     └─ lower_arm.L
-   │     │        └─ hand.L
-   │     │           └─ hand_slot.L     (attachment point, not deforming)
-   │     ├─ shoulder.R … (mirrored, incl. hand_slot.R)
-   │     └─ back_slot                    (attachment point for cape/backpack)
-   ├─ upper_leg.L
-   │  └─ lower_leg.L
-   │     └─ foot.L
-   └─ upper_leg.R … (mirrored)
-head
-└─ head_slot                             (attachment point for headwear)
+   │     ├─ head
+   │     │  └─ headslot        (added by us; attachment for headwear)
+   │     ├─ upperarm.l
+   │     │  └─ lowerarm.l
+   │     │     └─ wrist.l
+   │     │        └─ hand.l
+   │     │           └─ handslot.l   (from KayKit; attachment for hand-held items)
+   │     ├─ upperarm.r … (mirrored, incl. handslot.r)
+   │     └─ backslot           (added by us; attachment for cape/backpack)
+   ├─ upperleg.l
+   │  └─ lowerleg.l
+   │     └─ foot.l
+   │        └─ toes.l
+   └─ upperleg.r … (mirrored)
 ```
 
-- **Adopting the library rig (Phase 1):**
-  - Bone names: the library's names are kept; the tree above is updated to match.
-  - Kept: all deforming body bones, incl. toes if the clips key them.
-  - Stripped from the rig **and** from every clip: finger bones (mitten hands), facial bones, IK targets, poles and other helper/control bones.
-  - Added by us: the 4 slot bones (`hand_slot.L/R`, `back_slot`, `head_slot`) as non-deforming children of hand/chest/head. The library doesn't have them; clips never key them.
+- 20 deforming bones (`root` doesn't deform) + 4 slots (`handslot.l/r`, `headslot`, `backslot`).
+- **No neck and no shoulder/clavicle bones.** Head turns come from `head` on `chest`; arms attach directly to `chest`. Parts are modelled accordingly (no separate neck deformation, shoulders are part of the torso).
+- **Adopting the rig (Phase 1):**
+  - Source: `Rig_Medium` from KayKit Character Animations 1.1 (GLB). The rig is identical in KayKit Adventurers 2.0.
+  - `handslot.l/r` exist in KayKit; they are set to non-deforming. `headslot` and `backslot` are added by us; clips never key them.
   - The final bone list is recorded in style.json; `validate` checks against it.
+  - The large-character rig (`Rig_Large`) is not used.
 - Slots are non-deforming bones; accessories are rigidly parented to them (100 % weight).
 - Bone roll consistent (Blender "Recalculate Roll → Global +Z" for spine/legs).
-- Proportions adapt by scaling bones per the proportion template and `spec.proportions` (§7a); hierarchy and names never change.
+- Proportions adapt by changing rest-pose bone lengths per the proportion template and `spec.proportions` (§7a); hierarchy and names never change.
 
 ## 7a. Proportion templates → style.json
 
-A proportion template = the rest-pose joint positions of the skeleton for one archetype (`library/proportions/<archetype>.json`): world positions of hips, neck, head top, shoulders, elbows, wrists, knees, ankles, plus the attachment slots.
+A proportion template = the rest-pose joint positions of the skeleton for one archetype (`library/proportions/<archetype>.json`): world positions of hips, head base (top of `chest`), head top, shoulders (`upperarm` heads), elbows, wrists, knees, ankles, plus the attachment slots.
 
 - Defined in Phase 1, **before any part exists**.
 - Every part is modelled to fit the template of its archetype (e.g. a sleeve ends at the wrist joint, a boot top sits below the knee).
 - `spec.proportions` changes **rest-pose bone lengths** (edit bones in Edit Mode), e.g. `legs: 0.9` shortens the upper and lower leg bones and moves child joints accordingly. Parts follow via their bone attachment, not via free scaling of the mesh.
 - **Never pose-mode scaling:** pose scale is inherited by child bones and attached accessories and ends up in exported animations. After assembly, every bone has pose scale 1.
 - **Clip rules (so proportions don't break animations):**
-  - Clips contain **rotations only**, except the hips' location.
-  - The hips' location keys are multiplied by the leg-length ratio (character leg length ÷ template leg length), so feet stay on the floor when legs are shorter or longer.
-  - Scale keys and location keys on any other bone are stripped on import.
+  - Rotation keys are applied unchanged (bone directions and rolls are preserved when lengths change).
+  - **Location keys are kept and scaled** by the factor of the offset they move: hips by the leg-length ratio (character ÷ template), so feet stay on the floor; the small authored offsets on `upperarm`/`upperleg` (KayKit, mostly < 10 cm) by the factor of their parent segment; `handslot` keys by the arm factor.
+  - Scale keys are stripped on import (they only occur in clips we don't use).
   - `pose_test` includes a foot-contact check on walk/run (feet within ±2 cm of the floor at contact frames).
 - A part may support several archetypes only if it was checked against each template.
 
 ## 8. Animations → style.json
 
-**Source: a CC0 animation library, not agent keyframing.** Agents keyframing through bpy produces stiff motion; this is the biggest quality risk of the tool.
+**Source: KayKit Character Animations 1.1** (Kay Lousberg, CC0, `License.txt` in the download dated 10/12/2025; https://kaylousberg.itch.io/kaykit-character-animations), `Rig_Medium` clips. Recorded in `library/CREDITS.md`. Agents keyframing through bpy produces stiff motion; this is the biggest quality risk of the tool.
 
-- Use an existing CC0 humanoid animation set (e.g. Quaternius' animation library or Kenney's animated characters; verify the licence of the exact download). Its skeleton becomes the standard skeleton (§7).
+- Chosen over Quaternius' Universal Animation Library (CC0 inside the download, but quaternius.com's licence page, since 28 Aug 2026, forbids redistribution in asset packs) and Kenney's animated characters (too few clips).
 - Mixamo is **not** used: its terms don't allow redistributing the animations, which conflicts with CC0 packs.
-- Agents may *adapt* library animations (timing, trimming, blending, per-archetype adjustments) but do not author full cycles from scratch.
-- Missing animations: first look for another CC0 clip on the same rig; agent keyframing only as the last resort, always reviewed by Marcel.
+- Agents may *adapt* library animations (trimming, blending, per-archetype adjustments) but do not author full cycles from scratch.
+- Missing animations: first look for another KayKit clip on `Rig_Medium`; agent keyframing only as the last resort, always reviewed by Marcel.
+- **Clip lengths come from the source clip** (imported at 30 fps), not fixed numbers; the actual frame counts are recorded in style.json.
 
-| Name | Frames @ 30 fps | Loop |
+| Name | Source clip (KayKit `Rig_Medium`) | Loop |
 |---|---|---|
-| `idle` | 60 | yes |
-| `walk` | 30 | yes |
-| `run` | 20 | yes |
-| `jump` | 30 | no |
-| `attack` | 20 | no |
-| `hit` | 15 | no |
-| `die` | 40 | no |
-| `interact` | 30 | no |
+| `idle` | `Idle_A` (General) | yes |
+| `walk` | `Walking_A` (MovementBasic) | yes |
+| `run` | `Running_A` (MovementBasic) | yes |
+| `jump` | `Jump_Full_Short` (MovementBasic) | no |
+| `attack` | `Melee_1H_Attack_Chop` (CombatMelee) | no |
+| `hit` | `Hit_A` (General) | no |
+| `die` | `Death_A` (General) | no |
+| `interact` | `Interact` (General) | no |
+
+The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for a mage); the GLB animation name stays the §8 name.
 
 - Actions live in `library/animations.blend`, keyed to the standard skeleton.
 - Root motion: none (character stays in place; movement is handled in the game).
