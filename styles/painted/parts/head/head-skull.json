@@ -1,0 +1,32 @@
+{
+ "part": "head-skull",
+ "slot": "head",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "533b024f2203e1fe6925086accae9a08a2a053f16c17a0bd79883aa89e7ad79d",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 884,
+ "verts": 486,
+ "roles": [
+  "dark",
+  "skin",
+  "special"
+ ],
+ "shells": 22,
+ "bbox": [
+  [
+   -0.165,
+   -0.214,
+   0.79
+  ],
+  [
+   0.165,
+   0.17,
+   1.2
+  ]
+ ],
+ "warnings": []
+}

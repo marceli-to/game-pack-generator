@@ -255,6 +255,56 @@ class PartBuilder:
             rings.append([p + q @ v for v in pts])
         return self.loft(rings, role, bone=bone)
 
+    def shell(self, grid, thickness, role, cyclic=False, bone=None, edge_role=None):
+        """Thick sheet (plates, guards, capes): `grid` is rows (v) of points (u), the outer surface.
+        A copy offset by `thickness` along the surface normal (negative: the other side) closes it
+        into one manifold shell. cyclic=True joins the last column to the first (a band).
+        edge_role: role of the rim faces (default `role`). Returns the faces."""
+        bm = self.bm
+        rows = [[Vector(p) for p in r] for r in grid]
+        nv, nu = len(rows), len(rows[0])
+        assert nv >= 2 and nu >= 2 and all(len(r) == nu for r in rows), "grid must be >= 2 x 2 and rectangular"
+
+        def P_(i, j):
+            if cyclic:
+                j %= nu
+            return rows[max(0, min(nv - 1, i))][max(0, min(nu - 1, j))]
+
+        inner = []
+        for i in range(nv):
+            row = []
+            for j in range(nu):
+                du = P_(i, j + 1) - P_(i, j - 1)
+                dv = P_(i + 1, j) - P_(i - 1, j)
+                n = du.cross(dv)
+                n = n.normalized() if n.length > 1e-9 else Vector((0, 0, 1))
+                row.append(rows[i][j] - n * thickness)
+            inner.append(row)
+        O = [[bm.verts.new(p) for p in r] for r in rows]
+        I = [[bm.verts.new(p) for p in r] for r in inner]
+        faces, rim = [], []
+        ju = nu if cyclic else nu - 1
+        for i in range(nv - 1):
+            for j in range(ju):
+                k = (j + 1) % nu
+                faces.append(bm.faces.new([O[i][j], O[i][k], O[i + 1][k], O[i + 1][j]]))
+                faces.append(bm.faces.new([I[i][j], I[i + 1][j], I[i + 1][k], I[i][k]]))
+        self.set_role(faces, role)
+        for j in range(ju):  # top and bottom rims
+            k = (j + 1) % nu
+            rim.append(bm.faces.new([O[0][j], I[0][j], I[0][k], O[0][k]]))
+            rim.append(bm.faces.new([O[-1][j], O[-1][k], I[-1][k], I[-1][j]]))
+        if not cyclic:  # side rims
+            for i in range(nv - 1):
+                rim.append(bm.faces.new([O[i][0], O[i + 1][0], I[i + 1][0], I[i][0]]))
+                rim.append(bm.faces.new([O[i][-1], I[i][-1], I[i + 1][-1], O[i + 1][-1]]))
+        self.set_role(rim, edge_role or role)
+        faces += rim
+        if bone:
+            self.set_bone(faces, bone)
+        bmesh.ops.recalc_face_normals(bm, faces=faces)
+        return faces
+
     def transform(self, faces, matrix):
         verts = {v for f in faces for v in f.verts}
         bmesh.ops.transform(self.bm, matrix=Matrix(matrix), verts=list(verts))

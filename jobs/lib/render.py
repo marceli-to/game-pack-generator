@@ -34,7 +34,7 @@ def world_bbox(objs):
     return lo, hi
 
 
-def setup(size):
+def setup(size, light=None):
     sc = bpy.context.scene
     pv = S.load()["preview"]
     sc.render.engine = pv["engine"]
@@ -45,7 +45,7 @@ def setup(size):
     sc.render.image_settings.color_mode = "RGB"
     sc.view_settings.view_transform = "Standard"
     sh = sc.display.shading
-    sh.light = "STUDIO"
+    sh.light = light or pv.get("light", "STUDIO")
     sh.color_type = "TEXTURE"
     sh.show_shadows = False
     sh.show_specular_highlight = False
@@ -76,17 +76,17 @@ VIEWS = {
 }
 
 
-def render_views(out_dir, views=None, size=None, prefix="view", frame=None):
+def render_views(out_dir, views=None, size=None, prefix="view", frame=None, light=None):
     """Render each view to out_dir/<prefix>_<view>.png and a sheet out_dir/<prefix>_sheet.png.
 
     frame: optional {"center": [x, y, z], "extent": metres} for a fixed framing (e.g. to match a
-    reference image's scale); default fits the bounding box."""
+    reference image's scale); default fits the bounding box. light: "STUDIO" (default) or "FLAT"."""
     pv = S.load()["preview"]
     size = size or pv["view_size"]
     views = views or pv["views"]
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
-    setup(size)
+    setup(size, light)
     cam = _camera()
     objs = SC.meshes()
     lo, hi = world_bbox(objs)

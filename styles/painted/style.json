@@ -1,0 +1,169 @@
+{
+  "_comment": "Machine-readable twin of styles/painted/STYLE.md; merged over core.json by the tools. Draft: surface = auto paint (projection optional for hero characters).",
+  "name": "painted",
+  "surface": "painted",
+  "archetypes": {
+    "chibi": {
+      "height": [1.0, 1.4],
+      "heads": 3,
+      "template": "styles/painted/proportions/chibi.json",
+      "targets": {
+        "_comment": "calibrated on the skeleton-knight turnaround (1.2 m body = 678 px, 0.00177 m/px); skull top and hips estimated (hidden by helmet and tunic)",
+        "hip_z": 0.36,
+        "head_base_z": 0.79,
+        "head_top_z": 1.2,
+        "arm_length": 0.3,
+        "shoulder_x": 0.22,
+        "hip_x": 0.14,
+        "ankle_z": 0.095,
+        "foot_length": 0.21,
+        "head_width": 0.34,
+        "head_depth": 0.36,
+        "torso_width": 0.52,
+        "torso_depth": 0.32,
+        "foot_width": 0.24,
+        "foot_height": 0.1,
+        "foot_heel": 0.1
+      }
+    }
+  },
+  "default_archetype": "chibi",
+  "headwear_max_ratio": 0.6,
+  "budget": {
+    "character": {
+      "target": [4000, 6000],
+      "hard": 8000
+    },
+    "head": {
+      "target": 1800,
+      "hard": 2500,
+      "slots": ["head", "hair", "headwear", "face"]
+    },
+    "accessory_hand": {
+      "target": 600,
+      "hard": 900,
+      "slots": ["accessory_hand_l", "accessory_hand_r"]
+    },
+    "accessory_back": {
+      "target": 600,
+      "hard": 900,
+      "slots": ["accessory_back"]
+    },
+    "prop": { "target": 2000, "hard": 3000 }
+  },
+  "shading": { "_comment": "STYLE.md §5", "mode": "smooth_by_angle", "crease_deg": 40 },
+  "palette": {
+    "file": "styles/painted/palette.png",
+    "size": 256,
+    "grid": 8,
+    "cell": 32,
+    "material": "M_Palette",
+    "max_colors": 8,
+    "rows": [
+      "skin + greys", "hair", "reds/oranges", "yellows/greens", "blues/purples",
+      "metal 40-44 (painted iron, steel, gold, bronze, copper) + leather 45-47",
+      "neutrals 48 white -> 55 black", "eyes 56-57 + glow/crystal 58-63"
+    ],
+    "colors": [
+      "#FFE0C7", "#F5C6A0", "#E0A47A", "#C68458", "#9C6440", "#6E4630", "#E3CFA3", "#B89A6C",
+      "#6B4428", "#2B2420", "#E8C46A", "#B5482A", "#8E8E8E", "#F2F0EA", "#5B8DEF", "#C25FD9",
+      "#E04040", "#C8323A", "#7A1E1E", "#FF7A3D", "#E0581E", "#FFA26B", "#F28CA8", "#C24F72",
+      "#FFD23F", "#E8A317", "#B7D84B", "#6FBF3B", "#3E8E3A", "#23602C", "#4FC9A6", "#2E8A74",
+      "#5AA9F0", "#2F6FD1", "#1F428F", "#16285C", "#8F6BE0", "#5E3FB0", "#3A2672", "#7FD6F0",
+      "#76637F", "#A6A9B4", "#E0A43A", "#B0702E", "#C2603A", "#8E5636", "#6E4128", "#4A2A18",
+      "#FFFFFF", "#E6E6E6", "#C2C2C2", "#999999", "#6E6E6E", "#4A4A4A", "#2A2A2A", "#121212",
+      "#1C1C24", "#F4F4FF", "#5CFFE6", "#FFE45C", "#FF5CD6", "#7CFF5C", "#5C9DFF", "#FF8A3D"
+    ]
+  },
+  "paint": {
+    "_comment": "STYLE.md §4 (draft): baked base-colour texture per character",
+    "texture_size": 1024,
+    "uv_margin_px": 4,
+    "material": "M_Painted",
+    "approaches": ["auto", "projection"],
+    "auto": {
+      "light_dir": [-0.45, -0.55, 0.9],
+      "shadow": 0.7,
+      "highlight": 1.12,
+      "shadow_tint": "#6A5A9A",
+      "shadow_tint_amount": 0.3,
+      "gradient": [0.86, 1.06],
+      "ao_distance": 0.12,
+      "ao_strength": 0.45,
+      "crease_min_deg": 25,
+      "edge_width": 0.012,
+      "dirt_width": 0.02,
+      "brush_scale": 10,
+      "brush_amount": 0.12,
+      "roles": {
+        "metal": {
+          "edge_highlight": 0.45,
+          "highlight_color": "#C9B3C9",
+          "dirt": 0.5,
+          "rust": 0.45,
+          "scratches": 0.25,
+          "cracks": 1.0,
+          "crack_scale": 4,
+          "mottle": 0.6,
+          "mottle_color": "#A27896"
+        },
+        "accent": {
+          "edge_highlight": 0.7,
+          "highlight_color": "#FFE7A0",
+          "dirt": 0.4,
+          "dirt_color": "#5A3212",
+          "rust": 0.35,
+          "mottle": 0.5,
+          "mottle_color": "#F2B544"
+        },
+        "skin": {
+          "edge_highlight": 0.25,
+          "highlight_color": "#FFF6DD",
+          "dirt": 0.6,
+          "dirt_color": "#5B3A22",
+          "cracks": 0.6,
+          "crack_scale": 9,
+          "mottle": 0.4,
+          "mottle_color": "#F0DDB5"
+        },
+        "leather": { "edge_highlight": 0.25, "highlight_color": "#C98A5E", "dirt": 0.4, "scratches": 0.3 },
+        "primary": { "edge_highlight": 0.15, "dirt": 0.4 },
+        "secondary": { "edge_highlight": 0.15, "dirt": 0.4 },
+        "dark": { "dirt": 0.2 },
+        "special": { "glow": 0.35 }
+      }
+    },
+    "projection": {
+      "bg_threshold": 0.12,
+      "erode_px": 3,
+      "depth_eps": 0.012,
+      "facing_power": 4.0,
+      "full_weight": 0.35,
+      "zbuffer_scale": 3
+    },
+    "default_approach": "auto"
+  },
+  "parts": {
+    "_comment": "part library (STYLE.md §9a)",
+    "dir": "styles/painted/parts",
+    "fit_tolerance": 0.03,
+    "preview_colors": {
+      "skin": 1,
+      "hair": 12,
+      "primary": 34,
+      "secondary": 47,
+      "accent": 41,
+      "metal": 40,
+      "leather": 45,
+      "eyes": 56,
+      "dark": 54,
+      "special": 58
+    }
+  },
+  "preview": {
+    "engine": "BLENDER_WORKBENCH",
+    "views": ["front", "side", "back", "three_quarter"],
+    "view_size": 512,
+    "background": "#E8E8E8"
+  }
+}

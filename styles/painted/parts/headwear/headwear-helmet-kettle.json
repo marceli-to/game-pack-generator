@@ -1,0 +1,32 @@
+{
+ "part": "headwear-helmet-kettle",
+ "slot": "headwear",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "8f9f143a4bccebae96abab392e5f78d5692a1cd19dca228b14dd0ab480ffc482",
+ "built": "2026-11-15",
+ "blender": "5.2.4",
+ "tris": 1276,
+ "verts": 680,
+ "roles": [
+  "accent",
+  "dark",
+  "metal"
+ ],
+ "shells": 22,
+ "bbox": [
+  [
+   -0.3,
+   -0.3082,
+   0.8478
+  ],
+  [
+   0.3,
+   0.3202,
+   1.372
+  ]
+ ],
+ "warnings": []
+}

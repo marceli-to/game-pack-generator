@@ -1,0 +1,23 @@
+{
+  "archetype": "chibi",
+  "colors": {
+    "accent": 42,
+    "dark": 54,
+    "leather": 45,
+    "metal": 40,
+    "primary": 17,
+    "secondary": 46,
+    "skin": 6,
+    "special": 32
+  },
+  "compare": {
+    "arms_down_deg": 67
+  },
+  "name": "knight",
+  "parts": {
+    "head": "head-skull",
+    "headwear": "headwear-helmet-kettle"
+  },
+  "reference": "specs/knight/reference/turnaround.png",
+  "style": "painted"
+}
