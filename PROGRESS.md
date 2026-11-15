@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-15 — Painted spike done (uncommitted). Marcel picked **auto** paint (projection optional for hero characters)._
+_Last updated: 2026-11-15 — Painted spike done and pushed (`4b8d8b7`). Marcel picked **auto** paint (projection optional for hero characters)._
 
 ---
 
@@ -39,7 +39,7 @@ _Last updated: 2026-11-15 — Painted spike done (uncommitted). Marcel picked **
 - Loader merges core + style (`server/style.py`, `jobs/lib/style.py`); `run_job(..., style=)` → env `GPG_STYLE`. `spec.style` picks it; specs without one use `core.json` `default_style` (`clean`). Part tools and `get_style` take `style=`.
 - Current look moved to `styles/clean` (mage unchanged, approval still valid). 49 tests.
 
-## Painted-style spike (built 2026-11-15, uncommitted; decided: auto)
+## Painted-style spike (2026-11-15, `4b8d8b7`; decided: auto)
 
 - **`styles/painted/`** (draft): STYLE.md ↔ style.json; surface `painted`; archetype **`chibi`** (1.0–1.4 m, ≈ 3 skull-heights);
   budget 4,000–6,000 (hard 8,000), head ≤ 1,800 / 2,500; mid-tone palette (base colours per role); `paint` config
@@ -129,7 +129,7 @@ npm install --prefix node && npx --prefix node playwright install chromium
 - **2026-11-15** — Marcel picked auto paint for `painted` (projection optional).
 - **2026-11-15** — Knight head fitted to the sheet (v2 parts) for a fair projection test.
 - **2026-11-15** — Spike fixes: UV overlap repair (black bars), conservative raster, 3× z-buffer, facing power 4.
-- **2026-11-15** — Painted spike: `styles/painted` (draft), `chibi` template, knight skull + kettle helmet, `P.shell`, `paint_surface` job (auto vs projection), comparison sheet. 52 tests pass. Uncommitted.
+- **2026-11-15** — Painted spike: `styles/painted` (draft), `chibi` template, knight skull + kettle helmet, `P.shell`, `paint_surface` job (auto vs projection), comparison sheet. 52 tests pass. Committed + pushed (`4b8d8b7`).
 - **2026-11-15** — Phase 2 committed + pushed (`21656d4`). Style profiles refactor (`core.json` + `styles/clean/`) committed + pushed. Session ends here; next session starts the painted spike.
 - **2026-11-15** — Staff switched to upright grip; mage approved by Marcel (spec + part hashes in `specs/mage/spec.json`). Phase 2 done.
 - **2026-11-15** — Shading switched to smooth by angle 40°; viewer gets soft lighting by default; head/beard corners at 30° steps (2,380 tris).
