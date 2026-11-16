@@ -1,0 +1,30 @@
+{
+ "part": "face-beard-short-block",
+ "slot": "face",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "3a72897298e164ef146d0f346b48edfd94915ef1230e1b2b8fc1a6de15a6217b",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 80,
+ "verts": 42,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.212,
+   -0.2,
+   0.77
+  ],
+  [
+   0.212,
+   0.0276,
+   1.065
+  ]
+ ],
+ "warnings": []
+}

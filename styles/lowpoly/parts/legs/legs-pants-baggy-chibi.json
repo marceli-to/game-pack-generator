@@ -1,0 +1,30 @@
+{
+ "part": "legs-pants-baggy-chibi",
+ "slot": "legs",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "d4b5cb35bc3f70b1de65eb4550e04c7b4f6550ccb8b474c499e1ef6e1d4c4c03",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 216,
+ "verts": 112,
+ "roles": [
+  "secondary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.2332,
+   -0.1002,
+   0.15
+  ],
+  [
+   0.2332,
+   0.0882,
+   0.42
+  ]
+ ],
+ "warnings": []
+}

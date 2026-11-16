@@ -1,0 +1,31 @@
+{
+ "part": "head-chibi-elf",
+ "slot": "head",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "6c4567c50c99027588fb273eb4fade963d8ac844488110e741365713d156120a",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 256,
+ "verts": 140,
+ "roles": [
+  "eyes",
+  "skin"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.325,
+   -0.187,
+   0.79
+  ],
+  [
+   0.325,
+   0.165,
+   1.2
+  ]
+ ],
+ "warnings": []
+}

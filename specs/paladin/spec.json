@@ -1,0 +1,30 @@
+{
+  "name": "paladin",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 9,
+    "metal": 41,
+    "primary": 49,
+    "accent": 42,
+    "leather": 46,
+    "secondary": 48,
+    "dark": 34
+  },
+  "parts": {
+    "head": "head-chibi-stern",
+    "hair": "hair-short-chibi",
+    "headwear": null,
+    "face": null,
+    "torso": "torso-armor-tabard-chibi",
+    "arms": "arms-armored-chibi",
+    "hands": "hands-gauntlet-block",
+    "legs": "legs-armored-chibi",
+    "feet": "feet-sabatons-chibi",
+    "accessory_hand_r": "accessory_hand_r-sword-block",
+    "accessory_hand_l": "accessory_hand_l-book-block",
+    "accessory_waist": null
+  }
+}

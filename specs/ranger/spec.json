@@ -1,0 +1,31 @@
+{
+  "name": "ranger",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 0,
+    "eyes": 9,
+    "hair": 10,
+    "primary": 28,
+    "secondary": 46,
+    "dark": 9,
+    "leather": 46,
+    "metal": 41,
+    "special": 16,
+    "accent": 42
+  },
+  "parts": {
+    "head": "head-chibi-elf",
+    "hair": "hair-short-chibi",
+    "headwear": null,
+    "face": null,
+    "torso": "torso-tunic-chibi",
+    "arms": "arms-sleeves-slim-chibi",
+    "hands": "hands-glove-chibi",
+    "legs": "legs-pants-chibi",
+    "feet": "feet-boots-cuffed-chibi",
+    "accessory_hand_r": "accessory_hand_r-sword-block",
+    "accessory_hand_l": null,
+    "accessory_waist": "accessory_waist-potions-block"
+  }
+}

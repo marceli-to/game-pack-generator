@@ -1,0 +1,30 @@
+{
+ "part": "hair-short-chibi",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "a134324a12aa744d9970b59a263035af0a2170c451c81ea2a1b8302ad5b79203",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 142,
+ "verts": 73,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.2124,
+   -0.2027,
+   0.9128
+  ],
+  [
+   0.2124,
+   0.1871,
+   1.23
+  ]
+ ],
+ "warnings": []
+}

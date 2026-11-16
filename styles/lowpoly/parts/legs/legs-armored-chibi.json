@@ -1,0 +1,32 @@
+{
+ "part": "legs-armored-chibi",
+ "slot": "legs",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "638d8dbbb584d4eea15dd76ebd25aba9ae5e4ac205d293df95ad6ea2d5a0aafb",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 264,
+ "verts": 144,
+ "roles": [
+  "accent",
+  "dark",
+  "metal"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.239,
+   -0.103,
+   0.15
+  ],
+  [
+   0.239,
+   0.091,
+   0.42
+  ]
+ ],
+ "warnings": []
+}

@@ -1,0 +1,32 @@
+{
+ "part": "feet-boots-cuffed-chibi",
+ "slot": "feet",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "c1c45d7f45f3560988e4d191b10c0a052bd04cc8cf80e0a19404b8345f38b58f",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 560,
+ "verts": 296,
+ "roles": [
+  "dark",
+  "leather",
+  "secondary"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.253,
+   -0.1968,
+   0.0
+  ],
+  [
+   0.253,
+   0.1532,
+   0.255
+  ]
+ ],
+ "warnings": []
+}

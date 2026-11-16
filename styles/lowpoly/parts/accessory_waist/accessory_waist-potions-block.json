@@ -1,0 +1,31 @@
+{
+ "part": "accessory_waist-potions-block",
+ "slot": "accessory_waist",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "a544e5c2a256afcd6cc1d7ff2e73588232a4430e2cbc45ea2061db15590cf726",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 180,
+ "verts": 100,
+ "roles": [
+  "leather",
+  "special"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.18,
+   -0.23,
+   0.44
+  ],
+  [
+   -0.055,
+   -0.168,
+   0.548
+  ]
+ ],
+ "warnings": []
+}

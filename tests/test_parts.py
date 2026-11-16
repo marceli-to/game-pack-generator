@@ -125,7 +125,8 @@ def test_parts_catalog_lists_library():
 def test_render_parts_catalog(workspace):
     r = T_parts.render_parts_catalog(parts=["head-round", "hands-mitten"])
     assert r["ok"], r.get("error")
-    assert r["stats"]["rows"] == ["head-round", "hands-mitten"]
+    assert r["stats"]["rows"] == {"head": ["head-round"], "hands": ["hands-mitten"]}
+    assert any(o.endswith("catalog.html") for o in r["outputs"])
 
 
 @pytest.mark.parametrize("name", ["mage", "wizard"])

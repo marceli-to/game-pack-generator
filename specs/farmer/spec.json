@@ -1,0 +1,29 @@
+{
+  "name": "farmer",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 2,
+    "eyes": 9,
+    "hair": 43,
+    "primary": 33,
+    "secondary": 45,
+    "dark": 9,
+    "leather": 46,
+    "accent": 42
+  },
+  "parts": {
+    "head": "head-chibi-block",
+    "hair": "hair-short-chibi",
+    "headwear": null,
+    "face": "face-beard-short-block",
+    "torso": "torso-tunic-chibi",
+    "arms": "arms-sleeves-slim-chibi",
+    "hands": "hands-mitten-block",
+    "legs": "legs-pants-baggy-chibi",
+    "feet": "feet-boots-cuffed-chibi",
+    "accessory_hand_r": null,
+    "accessory_hand_l": null,
+    "accessory_waist": "accessory_waist-pouch-small-block"
+  }
+}

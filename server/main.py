@@ -145,7 +145,8 @@ def list_parts(slot: str | None = None, style: str | None = None) -> dict:
 @mcp.tool()
 @_safe
 def render_parts_catalog(slot: str | None = None, parts: list[str] | None = None, style: str | None = None) -> dict:
-    """Preview sheet of library parts (one row per part: front, side, 3/4), in stats.rows order."""
+    """Preview grid of library parts: one row per slot, one 3/4 tile per part (pairs framed on one side),
+    in stats.rows order ({slot: [part, ...]}); catalog.html next to it labels each tile."""
     return T_parts.render_parts_catalog(slot, parts, style)
 
 

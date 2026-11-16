@@ -3,9 +3,9 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-16 — Phase 4 in `lowpoly`: all 5 characters (wizard, knight, rogue, villager, dwarf) from
-specs only, fitted to Marcel's sheets (IoU ≈ 0.8–0.86), animated, exported; second archetype `dwarf` works;
-awaiting Marcel's look; next: his feedback, then 3–5 variants per slot._
+_Last updated: 2026-11-16 — Phase 4 in `lowpoly`: 8 characters from specs only (wizard, knight, rogue, villager,
+dwarf + test mixes ranger, farmer, paladin); every slot has 3–5 parts; catalog is a labelled grid; awaiting Marcel's
+look at the new parts; Heerschar in-game test briefed (other agent)._
 
 ---
 
@@ -16,7 +16,7 @@ awaiting Marcel's look; next: his feedback, then 3–5 variants per slot._
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
 | 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
 | 3 — Skinning & animation | ✅ done, wizard approved 2026-11-16 (animated, GLB plays in three.js) |
-| 4 — Parts library | **in progress** (lowpoly: 5 characters + `dwarf` archetype built; variants per slot next) |
+| 4 — Parts library | **nearly done** (lowpoly: 3–5 parts per slot, 8 characters from specs, catalog grid; Marcel's look at the new parts) |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
 
@@ -24,26 +24,29 @@ awaiting Marcel's look; next: his feedback, then 3–5 variants per slot._
 |---|---|---|
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
-| `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager, dwarf (built, fitted, not reviewed) |
+| `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
 
 ## Next session: start here
 
-1. **Marcel's look at the fitted knight / rogue / villager** (`workspace/<name>/renders/compare/compare_sheet.png`,
-   `preview/view_sheet.png`, `pose_test/pose_test.png`, GLBs in `export/`). Not yet modelled from the sheets: knight
-   gold collar + dark gorget and split tabard; villager Peter-Pan collar; rogue shoulder cowl, wider leaf daggers.
-   Shared differences (template/parts, all sheets incl. the wizard): sheets' boots sit closer together and the arms
-   hang steeper (compare at `arms_down_deg` 62). Knight/rogue ~2,580/2,760 tris (soft, target 2,500; mittens 464).
-2. **Dwarf** (`dwarf` archetype, `specs/dwarf/`): Marcel's look. Open: thick sleeves 5–6 cm into the barrel torso
-   when the arms hang (mostly hidden), arm through the beard in `attack`/`die`, axe through helmet/face in `interact`
-   (clip has no held-weapon variant), 2,888 tris (head group 1,248 > 1,000 target: beard 580), axe shortened to
-   0.6 m (sheet 0.84 m would stick far out with the weapon grip).
-3. Then: fill slots to 3–5 variants (heads, feet, hands are still one each), `render_parts_catalog` sheet,
-   Phase 4 done when the 5 characters come from specs only (see PLAN.md).
-4. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
-   held staff lies 2–3 cm across the wizard's face; `pose_test` penetration counts are dominated by hidden
-   overlaps (boots sliding up under skirts/tabards: 7–15 cm, invisible) → a "visible" check would help;
-   per-character clip mapping (`attack` → `Ranged_Magic_Shoot` for casters) needs that clip in the library.
-5. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint, mouth spilling onto the beard,
+1. **Marcel's look at the new parts** (catalog `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`) and the
+   three test mixes `ranger` (elf head, short hair, gloves, cuffed boots, potions), `farmer` (short hair + beard,
+   baggy trousers), `paladin` (stern head, armoured legs, sabatons, book): `workspace/<name>/renders/preview/view_sheet.png`,
+   `pose_test/pose_test.png`, GLBs in `export/`. Paladin 2,772 tris (soft, target 2,500).
+2. **Heerschar in-game test** (Marcel's game, `/Users/marceli.to/Jamon.digital/Webroot/heerschar`): brief handed to
+   another agent (knight-lowpoly as the player `krieger`, driven by the game's KayKit Knight clips: same bone names;
+   hips track × 0.689; `swaps: []`). Wait for its report; likely generator follow-ups: export with KayKit clip names
+   (floor clamp / hand damping baked in), a recolour mapping for the palette texture, separate weapon nodes for the
+   swing trail.
+3. Phase 4 wrap-up: dwarf slots still have one part each (dwarf parts only fit the dwarf template); decide whether
+   Phase 4 needs dwarf variants or moves on to Phase 5 (`build_pack`, 10-character pack).
+4. Open from the earlier sheets (not modelled): knight split tabard; rogue shoulder cowl, wider leaf daggers; all
+   sheets: boots closer together, arms hanging steeper. Dwarf: head group 1,248 tris (> 1,000), arm through the beard
+   in `attack`/`die`, axe through the helmet in `interact`.
+5. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
+   held staff lies across the wizard's face; `pose_test` counts are dominated by hidden overlaps (boots under
+   hems/trousers: 4–10 cm on every trousered character) → a "visible" check would help; knight `hit` 14 cm torso
+   into helmet (probably the C-shaped guard shell fooling the parity test).
+6. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint, mouth spilling onto the beard,
    iron too light/even, 512 px per view thin for a full body; the knight body.
 
 ### Phase 1 delivered
@@ -400,6 +403,21 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   hung high on the belt (0.435–0.54) for villager and rogue; ≤ 2.6 cm left. The wizard keeps his approved pouch
   (same overlap, 3–4 cm in walk/run) and his dark-purple insides: **Marcel: leave the wizard as is** (2026-11-16).
 
+- **Marcel (2026-11-16):** knight and villager "look alright" after round 2 (not formally approved).
+- **Variants round (2026-11-16):** 11 new lowpoly parts so every slot has ≥ 3: `head-chibi-elf` (pointed ears swept
+  back), `head-chibi-stern` (slanted brows, down-turned mouth), `hair-short-chibi` (closed loft 2 cm over the head's
+  facets, 12 columns, fringe tufts at the brow, tucked into the head; 142 tris), `face-beard-short-block`,
+  `feet-boots-cuffed-chibi` (turned-down cuff, sole; 560), `feet-sabatons-chibi` (stepped toe plates, gold band; each
+  plate ring 4 mm higher than the one behind, else the step faces are zero-area at the sole), `legs-pants-baggy-chibi`
+  (bloused over the boot tops), `legs-armored-chibi` (cuisses flaring over the greave tops), `hands-glove-chibi`
+  (leather mitten + flared cuff), `accessory_hand_l-book-block` (pinched in the fist, covers ±Z like the shield),
+  `accessory_waist-potions-block` (wearer's right front, `special` liquid). All shafts keep the 0.25 top so the knee
+  blend and robes work with any boot. Test specs `specs/ranger|farmer|paladin` (no reference): validate 0 hard,
+  8 clips, foot contact ok, export ok.
+- **`render_parts_catalog` is a grid** now: one row per slot, one 3/4 tile per part, mirrored pairs (arms, hands,
+  legs, feet) framed on the +X side; `catalog.html` labels the tiles (name, archetypes, tris), since Blender's Python
+  has no image library for text; `stats.rows` = `{slot: [parts]}`. The old one-row-per-part sheet was 12,000 px tall.
+
 ## Decisions (with reasons)
 
 - **Wizard keeps 9 colours** (Marcel, 2026-11-16): the dark robe purple (lowpoly cell 37) for the robe/sleeve insides
@@ -470,6 +488,9 @@ npm install --prefix node && npx --prefix node playwright install chromium
 ```
 
 ## Log
+
+- **2026-11-16** — Knight + villager OK'd by Marcel. 11 new lowpoly parts (every slot ≥ 3), test mixes ranger/farmer/
+  paladin (built, animated, exported), catalog as a labelled grid. Heerschar in-game test briefed. 64 tests.
 
 - **2026-11-16** — Marcel's viewer rounds: rogue hood as one loft ("much better"), knight helmet/chest/pauldrons,
   villager hair/collar. Waiting for his check of knight + villager. 64 tests.

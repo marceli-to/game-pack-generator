@@ -1,0 +1,32 @@
+{
+ "part": "accessory_hand_l-book-block",
+ "slot": "accessory_hand_l",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "dcdefa39f63fc153d9435ead087ab49122fe2c59220e22b5fd4a886b6709c70d",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 124,
+ "verts": 72,
+ "roles": [
+  "accent",
+  "leather",
+  "secondary"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   0.5502,
+   -0.084,
+   0.6477
+  ],
+  [
+   0.7602,
+   0.082,
+   0.7077
+  ]
+ ],
+ "warnings": []
+}
