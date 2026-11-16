@@ -1,0 +1,33 @@
+{
+ "part": "headwear-hood-block",
+ "slot": "headwear",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "8a1071ec7b1440df25333822ea84ebf2ad593529dbceecb8f04e94211c04f73c",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 310,
+ "verts": 157,
+ "roles": [
+  "dark",
+  "secondary"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.3481,
+   -0.27,
+   0.745
+  ],
+  [
+   0.3481,
+   0.28,
+   1.4623
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 61 of 157 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

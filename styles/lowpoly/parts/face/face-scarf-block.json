@@ -1,0 +1,30 @@
+{
+ "part": "face-scarf-block",
+ "slot": "face",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "d0a45806162ac35e2ca3447e7b1d48e8d205d104105dda1fdbbe3d8ebaee42d6",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 92,
+ "verts": 48,
+ "roles": [
+  "dark"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.2341,
+   -0.2232,
+   0.7513
+  ],
+  [
+   0.2341,
+   0.0325,
+   0.925
+  ]
+ ],
+ "warnings": []
+}

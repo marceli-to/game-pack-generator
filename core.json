@@ -94,7 +94,7 @@
   },
   "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0 },
   "skinning": {
-    "_comment": "STYLE.md §9a: long robes (torso part reaching below the hips, legs slot empty) get skirt weights",
+    "_comment": "STYLE.md §9a: robes and tabards (torso part reaching > 5 cm below the hips, with or without legs) get skirt weights",
     "skirt": { "follow": 1.0, "full_at": 0.5, "centre_width": 0.12 },
     "max_bones_per_vertex": 3,
     "upright_held_clips": ["die"],

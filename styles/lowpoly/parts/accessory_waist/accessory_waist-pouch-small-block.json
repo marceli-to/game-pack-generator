@@ -1,0 +1,31 @@
+{
+ "part": "accessory_waist-pouch-small-block",
+ "slot": "accessory_waist",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "2e878b0234df0ea8708c4f2071389d5d04f91fcdd0c6481531473d7d7c69c005",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 68,
+ "verts": 40,
+ "roles": [
+  "accent",
+  "leather"
+ ],
+ "shells": 3,
+ "bbox": [
+  [
+   0.045,
+   -0.223,
+   0.435
+  ],
+  [
+   0.165,
+   -0.145,
+   0.54
+  ]
+ ],
+ "warnings": []
+}

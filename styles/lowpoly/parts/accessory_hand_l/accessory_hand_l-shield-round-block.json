@@ -1,0 +1,33 @@
+{
+ "part": "accessory_hand_l-shield-round-block",
+ "slot": "accessory_hand_l",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "041bd40605850d9936f15be6cdbc554d114de1f7a43e48071f83aa91442293b5",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 156,
+ "verts": 84,
+ "roles": [
+  "accent",
+  "leather",
+  "metal",
+  "primary"
+ ],
+ "shells": 3,
+ "bbox": [
+  [
+   0.3909,
+   -0.178,
+   0.6677
+  ],
+  [
+   0.7295,
+   0.178,
+   0.875
+  ]
+ ],
+ "warnings": []
+}

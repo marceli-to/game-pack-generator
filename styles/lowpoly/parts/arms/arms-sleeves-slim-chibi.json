@@ -1,0 +1,32 @@
+{
+ "part": "arms-sleeves-slim-chibi",
+ "slot": "arms",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "1f9d2f5f718594f7d509e480ec65e78472d4e91418fd2b3fbabefcc97270fe84",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 248,
+ "verts": 128,
+ "roles": [
+  "dark",
+  "leather",
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.515,
+   -0.0674,
+   0.6403
+  ],
+  [
+   0.515,
+   0.0674,
+   0.7751
+  ]
+ ],
+ "warnings": []
+}

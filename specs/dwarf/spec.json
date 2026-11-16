@@ -1,0 +1,20 @@
+{
+  "name": "dwarf",
+  "style": "lowpoly",
+  "archetype": "dwarf",
+  "colors": {"skin": 1, "eyes": 9, "dark": 9, "hair": 43, "metal": 40, "primary": 45, "leather": 46, "accent": 42, "secondary": 0},
+  "parts": {
+    "head": "head-dwarf-block",
+    "hair": "hair-back-dwarf",
+    "headwear": "headwear-helmet-horned-dwarf",
+    "face": "face-beard-braided-dwarf",
+    "torso": "torso-jerkin-dwarf",
+    "arms": "arms-sleeves-dwarf",
+    "hands": "hands-mitten-dwarf",
+    "legs": "legs-pants-dwarf",
+    "feet": "feet-boots-dwarf",
+    "accessory_hand_r": "accessory_hand_r-axe-dwarf"
+  },
+  "reference": "specs/dwarf/reference/turnaround.png",
+  "compare": {"arms_down_deg": 62, "hide_slots": ["accessory_hand_r"]}
+}

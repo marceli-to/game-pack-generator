@@ -1,0 +1,32 @@
+{
+ "part": "headwear-helmet-horned-dwarf",
+ "slot": "headwear",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "b4ee45b3302d449dd130d57ac024a326fca80f21055fd9f3aedcbdf1471d64fb",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 344,
+ "verts": 180,
+ "roles": [
+  "dark",
+  "metal",
+  "secondary"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.353,
+   -0.2535,
+   0.7116
+  ],
+  [
+   0.353,
+   0.2976,
+   1.095
+  ]
+ ],
+ "warnings": []
+}

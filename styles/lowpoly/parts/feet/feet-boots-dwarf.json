@@ -1,0 +1,30 @@
+{
+ "part": "feet-boots-dwarf",
+ "slot": "feet",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "d51fb9933d561c6d73649eea8c060f408e263593087b45dbcaa1a316c11ad994",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 304,
+ "verts": 160,
+ "roles": [
+  "leather"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.297,
+   -0.19,
+   0.0
+  ],
+  [
+   0.297,
+   0.2,
+   0.13
+  ]
+ ],
+ "warnings": []
+}

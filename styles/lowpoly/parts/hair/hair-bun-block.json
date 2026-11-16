@@ -1,0 +1,30 @@
+{
+ "part": "hair-bun-block",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "63060f9d28873e8000605acbe4581caf0d2a8f8db1a3bcf789904a29c49689e0",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 406,
+ "verts": 211,
+ "roles": [
+  "hair"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.3236,
+   -0.295,
+   0.83
+  ],
+  [
+   0.3236,
+   0.295,
+   1.525
+  ]
+ ],
+ "warnings": []
+}

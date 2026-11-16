@@ -1,0 +1,32 @@
+{
+ "part": "arms-armored-chibi",
+ "slot": "arms",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "79d215774bdedfb872c61c24d395b07cd786a1a24575b94b11f24d746bfd0c69",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 632,
+ "verts": 328,
+ "roles": [
+  "accent",
+  "dark",
+  "metal"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.515,
+   -0.1454,
+   0.6282
+  ],
+  [
+   0.515,
+   0.1454,
+   0.8634
+  ]
+ ],
+ "warnings": []
+}

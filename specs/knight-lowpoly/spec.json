@@ -1,0 +1,36 @@
+{
+  "name": "knight-lowpoly",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "metal": 41,
+    "primary": 33,
+    "accent": 42,
+    "leather": 46,
+    "secondary": 16,
+    "dark": 53
+  },
+  "parts": {
+    "head": "head-chibi-block",
+    "hair": null,
+    "headwear": "headwear-helmet-knight-block",
+    "face": null,
+    "torso": "torso-armor-tabard-chibi",
+    "arms": "arms-armored-chibi",
+    "hands": "hands-gauntlet-block",
+    "legs": "legs-pants-chibi",
+    "feet": "feet-boots-chibi",
+    "accessory_hand_r": "accessory_hand_r-sword-block",
+    "accessory_hand_l": "accessory_hand_l-shield-round-block"
+  },
+  "reference": "specs/knight-lowpoly/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 62,
+    "hide_slots": [
+      "accessory_hand_r",
+      "accessory_hand_l"
+    ]
+  }
+}

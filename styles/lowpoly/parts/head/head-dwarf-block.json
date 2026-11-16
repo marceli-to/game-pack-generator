@@ -1,0 +1,31 @@
+{
+ "part": "head-dwarf-block",
+ "slot": "head",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "4dfad5fdcad825de47806de5372c4a75c88a64b33c535dc84ed1271ba98f8635",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 244,
+ "verts": 134,
+ "roles": [
+  "eyes",
+  "skin"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.315,
+   -0.25,
+   0.58
+  ],
+  [
+   0.315,
+   0.2,
+   0.95
+  ]
+ ],
+ "warnings": []
+}

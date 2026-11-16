@@ -1,0 +1,31 @@
+{
+ "part": "face-beard-braided-dwarf",
+ "slot": "face",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "0e6c3024f920830c21e631ca465b1a28e1f42a276b08fac041ecab1ae0cbcbb0",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 580,
+ "verts": 308,
+ "roles": [
+  "accent",
+  "hair"
+ ],
+ "shells": 9,
+ "bbox": [
+  [
+   -0.2836,
+   -0.35,
+   0.29
+  ],
+  [
+   0.2836,
+   0.04,
+   0.845
+  ]
+ ],
+ "warnings": []
+}

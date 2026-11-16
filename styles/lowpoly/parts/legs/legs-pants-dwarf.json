@@ -1,0 +1,30 @@
+{
+ "part": "legs-pants-dwarf",
+ "slot": "legs",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "0678d505a0626290bc2c9bf730fb8248eabc93d8ea83c6f5864286fdbe38163f",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 152,
+ "verts": 80,
+ "roles": [
+  "dark"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.2428,
+   -0.0878,
+   0.06
+  ],
+  [
+   0.2428,
+   0.0885,
+   0.3
+  ]
+ ],
+ "warnings": []
+}

@@ -1,0 +1,32 @@
+{
+  "name": "villager",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 8,
+    "primary": 23,
+    "secondary": 48,
+    "accent": 25,
+    "leather": 46,
+    "dark": 23
+  },
+  "parts": {
+    "head": "head-chibi-block",
+    "hair": "hair-bun-block",
+    "headwear": null,
+    "face": null,
+    "torso": "torso-dress-chibi",
+    "arms": "arms-sleeves-slim-chibi",
+    "hands": "hands-mitten-block",
+    "legs": null,
+    "feet": "feet-boots-chibi",
+    "accessory_waist": "accessory_waist-pouch-small-block"
+  },
+  "reference": "specs/villager/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 62,
+    "hide_slots": []
+  }
+}

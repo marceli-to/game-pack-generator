@@ -26,6 +26,30 @@
         "foot_height": 0.1,
         "foot_heel": 0.1
       }
+    },
+    "dwarf": {
+      "height": [0.85, 1.05],
+      "heads": 2.5,
+      "template": "styles/lowpoly/proportions/dwarf.json",
+      "clip_damping": { "hand.l": 0.5, "hand.r": 0.5 },
+      "targets": {
+        "_comment": "Marcel's dwarf sheet at 2.18 mm/px (STYLE.md §7a)",
+        "hip_z": 0.24,
+        "head_base_z": 0.58,
+        "head_top_z": 0.95,
+        "arm_length": 0.24,
+        "shoulder_x": 0.26,
+        "hip_x": 0.15,
+        "ankle_z": 0.075,
+        "foot_length": 0.175,
+        "head_width": 0.5,
+        "head_depth": 0.42,
+        "torso_width": 0.58,
+        "torso_depth": 0.42,
+        "foot_width": 0.27,
+        "foot_height": 0.1,
+        "foot_heel": 0.11
+      }
     }
   },
   "default_archetype": "chibi",

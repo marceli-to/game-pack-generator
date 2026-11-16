@@ -19,7 +19,7 @@ from lib import style as S
 
 
 def skirt_weights(obj, arm, cfg):
-    """Long robe without legs (STYLE.md §9a): below the hip joints, blend `hips` with the thighs, from 0 at
+    """Robe or tabard reaching below the hips (STYLE.md §9a; with or without legs): below the hip joints, blend `hips` with the thighs, from 0 at
     the hips to `follow` at `full_at` of the way down to the hem; the leg share is split between both thighs across the centre line
     (linear over ±`centre_width`), so the front and back stretch between the legs instead of tearing.
     Returns the number of blended vertices."""
@@ -128,7 +128,7 @@ def run(args):
         else:
             PT.weight_nearest(obj, arm, part_bones[slot])
         blended.update(joint_blends(obj, arm, style["skinning"]["joint_blends"]))
-        if slot == "torso" and not spec["parts"].get("legs"):
+        if slot == "torso":   # long robes and short tabards alike (STYLE.md §9a)
             skirt[part] = skirt_weights(obj, arm, style["skinning"]["skirt"])
         per_part[part] = sum(len(p.vertices) - 2 for p in mesh.polygons)
         objs.append(obj)

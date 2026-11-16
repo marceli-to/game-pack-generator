@@ -32,6 +32,7 @@ the facets themselves are the shading.
 | Archetype | Body height | Heads tall (approx.) |
 |---|---|---|
 | `chibi` (default) | 1.0–1.4 | 3 |
+| `dwarf` | 0.85–1.05 | 2.5 |
 
 Headwear may add at most 60 % of body height on top (the wizard hat: ≈ 0.35 m on a 1.2 m body).
 
@@ -74,6 +75,12 @@ Templates live in `styles/lowpoly/proportions/<archetype>.json` (+ `_preview.png
   x ±0.22; arm 0.3 m; hips 0.36 m; ankles 0.095 m), checked against the wizard sheet at 2.18 mm/px (floor at
   y 920): face, beard, shoulders (±0.20 m) and boots (0.2 m wide, ≈ 0.31 m long) fit. To recalibrate on the
   wizard if the body comparison asks for it.
+- **`dwarf` (draft):** from Marcel's dwarf sheet (`specs/dwarf/reference/turnaround.png`), read at the shared
+  2.18 mm/px of the Phase 4 sheets: 0.95 m to the head top under the helmet, head joint 0.58 m (chin under the
+  beard), shoulders x ±0.26, arm 0.24 m, hips 0.24 m (x ±0.15), ankles 0.075 m, foot bone 0.175 m ankle to toe
+  (longer pitches the toe joint below the floor with this low ankle; the boot mesh itself is 0.27 × 0.39 m). Face features as big as the chibi's, head much wider (cheeks/ears ±0.29), torso
+  0.58 × 0.42 m. Same clip damping as `chibi` (mitten hands). Its parts are separate from the chibi's (built
+  against this template, named `-dwarf`).
 - **Clip damping (`clip_damping`):** `chibi` plays `hand.l`/`hand.r` rotations at 50 % of the clip (slerp towards
   the rest pose). KayKit bends the hands 50–75° against the forearm (small hands); chibi mittens sit in wide cuffs
   and their thumbs swung back through the sleeve (Marcel, `run`).

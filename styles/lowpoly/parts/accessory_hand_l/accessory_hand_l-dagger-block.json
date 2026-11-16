@@ -1,0 +1,32 @@
+{
+ "part": "accessory_hand_l-dagger-block",
+ "slot": "accessory_hand_l",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "aae6321f6c53433dfabef6f0eb322ac9dbbcfe8281d456758241b4c2ce7488d3",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 86,
+ "verts": 51,
+ "roles": [
+  "accent",
+  "leather",
+  "metal"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   0.5202,
+   -0.33,
+   0.6577
+  ],
+  [
+   0.6202,
+   0.078,
+   0.6977
+  ]
+ ],
+ "warnings": []
+}

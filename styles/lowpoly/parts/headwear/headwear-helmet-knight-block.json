@@ -1,0 +1,33 @@
+{
+ "part": "headwear-helmet-knight-block",
+ "slot": "headwear",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "442d8e4577fcfee969a68bbcdc04b3027b99ba865d904ebc0fb09ae649673952",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 412,
+ "verts": 216,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "secondary"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.2779,
+   -0.268,
+   0.8068
+  ],
+  [
+   0.2779,
+   0.31,
+   1.44
+  ]
+ ],
+ "warnings": []
+}

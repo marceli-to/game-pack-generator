@@ -1,0 +1,30 @@
+{
+ "part": "hands-mitten-dwarf",
+ "slot": "hands",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "3627b8ff47daeade86856b90f88706f68aa70493da3e2b74abcd764c88c449e6",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 304,
+ "verts": 160,
+ "roles": [
+  "skin"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.6488,
+   -0.1248,
+   0.4493
+  ],
+  [
+   0.6488,
+   0.072,
+   0.5789
+  ]
+ ],
+ "warnings": []
+}

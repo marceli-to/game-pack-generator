@@ -1,0 +1,30 @@
+{
+ "part": "hair-back-dwarf",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "dwarf"
+ ],
+ "script_sha256": "ac13459afa7882f0f9f244c9c34cbf0143b39ad41cb24debb7b2ccd897c39112",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 80,
+ "verts": 42,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.3107,
+   0.0815,
+   0.5924
+  ],
+  [
+   0.3107,
+   0.3095,
+   0.7928
+  ]
+ ],
+ "warnings": []
+}

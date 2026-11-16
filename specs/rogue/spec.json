@@ -1,0 +1,37 @@
+{
+  "name": "rogue",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "primary": 28,
+    "secondary": 47,
+    "dark": 9,
+    "leather": 46,
+    "metal": 41,
+    "accent": 42
+  },
+  "parts": {
+    "head": "head-chibi-block",
+    "hair": null,
+    "headwear": "headwear-hood-block",
+    "face": "face-scarf-block",
+    "torso": "torso-tunic-chibi",
+    "arms": "arms-sleeves-slim-chibi",
+    "hands": "hands-mitten-block",
+    "legs": "legs-pants-chibi",
+    "feet": "feet-boots-chibi",
+    "accessory_hand_r": "accessory_hand_r-dagger-block",
+    "accessory_hand_l": "accessory_hand_l-dagger-block",
+    "accessory_waist": "accessory_waist-pouch-small-block"
+  },
+  "reference": "specs/rogue/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 62,
+    "hide_slots": [
+      "accessory_hand_r",
+      "accessory_hand_l"
+    ]
+  }
+}

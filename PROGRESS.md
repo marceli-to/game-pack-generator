@@ -3,8 +3,9 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-16 — Phase 3 done: `apply_animations` + `pose_test`; the wizard animates, exports with all 8 clips
-and is **approved** (Marcel); next: Phase 4 (parts library)._
+_Last updated: 2026-11-16 — Phase 4 in `lowpoly`: all 5 characters (wizard, knight, rogue, villager, dwarf) from
+specs only, fitted to Marcel's sheets (IoU ≈ 0.8–0.86), animated, exported; second archetype `dwarf` works;
+awaiting Marcel's look; next: his feedback, then 3–5 variants per slot._
 
 ---
 
@@ -15,7 +16,7 @@ and is **approved** (Marcel); next: Phase 4 (parts library)._
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
 | 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
 | 3 — Skinning & animation | ✅ done, wizard approved 2026-11-16 (animated, GLB plays in three.js) |
-| 4 — Parts library | **next** |
+| 4 — Parts library | **in progress** (lowpoly: 5 characters + `dwarf` archetype built; variants per slot next) |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
 
@@ -23,24 +24,27 @@ and is **approved** (Marcel); next: Phase 4 (parts library)._
 |---|---|---|
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
-| `lowpoly` | draft; flat shading, chibi | wizard (approved 2026-11-16, animated) |
+| `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager, dwarf (built, fitted, not reviewed) |
 
 ## Next session: start here
 
-1. **Phase 4 — parts library** (PLAN.md): 3–5 variants per slot against the templates, a second archetype, the parts
-   catalog for choosing; done when 5 characters come from specs only. Decide with Marcel which style first
-   (`lowpoly` has the approved wizard; `clean` the approved mage).
-2. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run (cloth-like
-   fix out of scope); in `die` the held staff lies 2–3 cm across his face; `pose_test` penetrations are noisy for
-   overlaps hidden by design (maybe a "visible" check); the mage's staff dipped into the floor on `jump` landing
-   before the slide fix (re-check; the mage is not re-approved, its approval binds only spec + part scripts);
-   per-character clip mapping (`attack` → `Ranged_Magic_Shoot` for casters, §8) needs that clip in
-   `library/animations.blend`.
-3. Small wizard look points (optional): hat tip curls less than the sheet, brim a little high at the sides, hands
-   464 tris.
-4. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint (faces under brims go tan), the
-   model's mouth spilling onto the beard top, iron lighter/more even than the knight sheet, 512 px per view may be
-   thin for a full body; the knight body.
+1. **Marcel's look at the fitted knight / rogue / villager** (`workspace/<name>/renders/compare/compare_sheet.png`,
+   `preview/view_sheet.png`, `pose_test/pose_test.png`, GLBs in `export/`). Not yet modelled from the sheets: knight
+   gold collar + dark gorget and split tabard; villager Peter-Pan collar; rogue shoulder cowl, wider leaf daggers.
+   Shared differences (template/parts, all sheets incl. the wizard): sheets' boots sit closer together and the arms
+   hang steeper (compare at `arms_down_deg` 62). Knight/rogue ~2,580/2,760 tris (soft, target 2,500; mittens 464).
+2. **Dwarf** (`dwarf` archetype, `specs/dwarf/`): Marcel's look. Open: thick sleeves 5–6 cm into the barrel torso
+   when the arms hang (mostly hidden), arm through the beard in `attack`/`die`, axe through helmet/face in `interact`
+   (clip has no held-weapon variant), 2,888 tris (head group 1,248 > 1,000 target: beard 580), axe shortened to
+   0.6 m (sheet 0.84 m would stick far out with the weapon grip).
+3. Then: fill slots to 3–5 variants (heads, feet, hands are still one each), `render_parts_catalog` sheet,
+   Phase 4 done when the 5 characters come from specs only (see PLAN.md).
+4. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
+   held staff lies 2–3 cm across the wizard's face; `pose_test` penetration counts are dominated by hidden
+   overlaps (boots sliding up under skirts/tabards: 7–15 cm, invisible) → a "visible" check would help;
+   per-character clip mapping (`attack` → `Ranged_Magic_Shoot` for casters) needs that clip in the library.
+5. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint, mouth spilling onto the beard,
+   iron too light/even, 512 px per view thin for a full body; the knight body.
 
 ### Phase 1 delivered
 - MCP server `server/main.py` (stdio, registered in `.mcp.json`): `get_style`, `init_character`, `import_glb`, `stats`, `render_preview`, `validate`, `export`.
@@ -311,6 +315,91 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   for now.
 - Tests: `tests/test_animate.py` (docs sync, wizard end-to-end incl. export); 63 pass, 1 skipped.
 
+## Phase 4: parts library, lowpoly (2026-11-16, started)
+
+- Marcel: **lowpoly first**, cast = fantasy RPG mix (wizard, knight, rogue, dwarf warrior, villager).
+- Dev loop: `.venv/bin/python workspace/lib4/run.py <name> [--build [part ...]] [--anim] [--export]` builds parts
+  from `workspace/lib4/parts/<part>.py` (gitignored; the library `.py` is the source of truth), re-inits from
+  `specs/<name>/spec.json`, assembles, validates.
+- **New parts** (lowpoly, chibi): `headwear-helmet-knight-block` (dome, gold rim, cheek/neck guard shell, red crest),
+  `headwear-hood-block`, `hair-bun-block`, `face-scarf-block`, `torso-armor-tabard-chibi`, `torso-tunic-chibi`
+  (diagonal bandolier), `torso-dress-chibi` (apron, hem set back so boots stay inside), `arms-armored-chibi`
+  (pauldron shells), `arms-sleeves-slim-chibi` (bracers), `hands-gauntlet-block`, `legs-pants-chibi` (first
+  `legs` part), `accessory_hand_r-sword-block`, `accessory_hand_r/l-dagger-block`,
+  `accessory_hand_l-shield-round-block` (first `weapon`-grip items and first left-hand slot).
+- **Characters** (specs only, all `validate` 0 hard, 8 clips, export ok): `knight-lowpoly` 2,646 tris (name: `knight`
+  is the painted head test), `rogue` 2,644, `villager` 2,028.
+- **Weapon grip works as specified:** blade along the handslot axis (−Y in the T-pose), edges along the forearm;
+  swings correctly in `attack`. Shield: face +Z in the T-pose (over the back of the fist) → faces outward with
+  the arms down.
+- **Skirt weights now for any torso reaching > 5 cm below the hips**, legs or not (STYLE.md §9a, core.json comment,
+  `jobs/assemble.py`): the knight's rigid tabard let the thighs/boots swing out through it; with the blend the
+  tabard front follows the lifted thigh. Wizard/mage unchanged (both have `legs` empty).
+
+- **Turnaround sheets from Marcel** (generated with the wizard sheet as reference) for knight, rogue, villager, dwarf:
+  `specs/<name>/reference/turnaround.png`, wired into the specs (`reference`, `compare.arms_down_deg` 62, hand
+  items hidden). All sheets share the wizard's scale (boot widths 96–102 px) → `add_reference` with
+  `top_y = floor_y − 550` (2.18 mm/px, 1.2 m); measuring scale from the boots alone put the knight's chin 3–4 cm low.
+  Silhouette profiles in metres: `ai/.venv/bin/python workspace/lib4/profile.py <sheet> <floor_y> 0.00218 <x0> <x1>
+  <centre_x> <z_from> <z_to> [step]` (`measure_sheet.py` for floor/figure columns).
+- **Fitting round 1:** knight helmet wider/lower (dome to 1.245, brow band ±0.276 with a V point, front ridge, cheek
+  guards to 0.8, brush crest sweeping back to y 0.31 / z 1.43), smaller pauldrons; villager big hair mass (±0.33),
+  cheek locks, big top bun, wider A-line hem (±0.318); rogue big pointed hood (open shell + cone whose tip curls back
+  and to the left; ring orientation = bisector tangent, spine checked so no ring dips under the previous one's
+  plane: the first try folded and showed a see-through patch), scarf hanging to a point, bandolier right shoulder →
+  left hip, satchel (`accessory_waist-pouch-block`). IoU front/side/back: knight 0.81/0.87/0.79, rogue
+  0.79/0.77/0.79, villager 0.72/0.84/0.82 (front low because the white apron reads as background in the sheet mask).
+  All animate (no floor/contact findings; left: satchel/pouch vs skirt 3–4 cm in walk/run) and export.
+
+- **Second archetype `dwarf`** (lowpoly; STYLE.md §2a/§7a ↔ style.json, `proportions/dwarf.json` + preview): read off
+  Marcel's dwarf sheet at the shared 2.18 mm/px with a metric grid overlay (`workspace/lib4/grid.py`): head top 0.95,
+  head joint 0.58, shoulders ±0.26, arm 0.24, hips 0.24 (±0.15), ankle 0.075. **foot_length 0.175** (not the sheet's
+  0.26: the foot bone slopes down from the low ankle, 0.26 put the toe joint at z −0.035). Template regenerated
+  with the `make_template` + `make_mannequin` jobs (what `build_library` does per archetype).
+- **Dwarf parts** (`-dwarf`, built against the dwarf template): `head-dwarf-block` (wide head, same face features),
+  `headwear-helmet-horned-dwarf` (dome tilted back 14°, ridge, horns as bisector-oriented lofts, fold-checked),
+  `face-beard-braided-dwarf` (deep beard shell, moustache, brows, braids with gold rings), `hair-back-dwarf`,
+  `torso-jerkin-dwarf` (jerkin over a steel front plate, big buckle), `arms-sleeves-dwarf` (bare forearms, bracers,
+  pads), `hands-mitten-dwarf` (1.2×, single chamfers), `legs-pants-dwarf`, `feet-boots-dwarf` (0.27 × 0.39,
+  single chamfers to stay under the 3,000 hard limit), `accessory_hand_r-axe-dwarf` (blade along the forearm).
+  Dwarf: 2,888 tris, 8 colours (hair cell 43; trousers share the eyes' dark brown 9), IoU 0.85 / 0.84 / 0.83; walk/run
+  floor clamp lifts up to 8.7 cm (long boots on short legs), feet contact ok, export ok.
+
+- **Marcel (viewer, 2026-11-16):** dwarf "looks good, best of the new ones"; knight/rogue/villager "very low in
+  details/quality compared to the wizard". First point, the rogue's hood (two pieces: flaps flared out at the front,
+  the cone's dark underside showed as a black band over the face). Rebuilt as **one closed loft** from the cowl to
+  the curled tip, 12 points per ring with the same angles all the way up; on the rings round the face the 3 front
+  points are pulled back into the head (lip at the opening, recess at y −0.06 hidden inside the head), so the strip
+  between face and rim reads as the hood's dark interior (role `dark` → rogue cell 9, dark brown like the sheet).
+  310 tris, IoU 0.81 / 0.77 / 0.81, max 4 cm hood/arm overlap in attack/die. Marcel: "much better". Knight and
+  villager: he tests them in the viewer later.
+
+- **Knight round 2** (Marcel in the viewer: helmet too far from the face, chest, shoulders): helmet gets an inner
+  flange ring (band sits on the brow, its underside no longer shows above the face), plain steel cheek guards from
+  46° (close round the face, no gold edges), brush crest narrow at the base and wide at the top; torso gets a dark
+  gorget, a gold collar with a V point and a breastplate; arms get rounded pauldron caps (4 × 7 shell) with a raised
+  gold strap swept along their edges, wide gold forearm bands. (A first pauldron edit silently did not apply: a
+  text replace missed after round 1 had changed the numbers; check the built tris after script edits.) Knight
+  2,986 tris (hard 3,000: pauldrons trimmed from 5 × 9 + 6-sided strap, collar 12 columns), IoU 0.81 / 0.87 / 0.79;
+  pose test clean except `hit` reports torso 14 cm into the helmet with nothing visible in the frames (probably
+  the C-shaped guard shell confusing the parity test; to check).
+
+- **Villager round 2** (Marcel in the viewer: hair, shoulders/neck): hair rebuilt as one closed loft like the rogue's
+  hood (opening reaches behind the ears, front points pulled into the head, fringe ring dipping to a point at the
+  centre), tapered locks moved in beside the cheeks so the ears show, 10 × 5 ball bun on top at the back (406
+  tris); dress gets a round white collar (cyclic 3-row sheet following the bodice, two rounded points at the front).
+  2,422 tris, IoU 0.72 / 0.81 / 0.82 (front held down by the apron mask), animates, export ok.
+  Marcel: skirt inside black ("same issue as the wizard"): `dark` faces (skirt underside, sleeve insides) face
+  down and only get light from below, so even a dark shade reads black → villager `dark` = 23 (the dress colour).
+  Same for the wizard would be `dark` 37 → 38, but that changes its spec hash (re-approval): asked Marcel.
+  Marcel (viewer, `run`): skirt front passes through the pouch. The skirt front follows a lifted thigh up to
+  z ≈ 0.42 at the pouch, the pouch (`accessory_waist-pouch-block`, rigid on `hips`) hung down to 0.38. Tried and
+  dropped: (1) pouch copies the nearest torso vertex's weights (no effect: it hangs above the hip joint, where the
+  torso is hips-only); (2) pouch rigid with the skirt weights 5 cm below the hip (worse, 12–14 cm: rotating with
+  the thigh swings its top, above the pivot, back into the body). Fix: new `accessory_waist-pouch-small-block`
+  hung high on the belt (0.435–0.54) for villager and rogue; ≤ 2.6 cm left. The wizard keeps his approved pouch
+  (same overlap, 3–4 cm in walk/run) and his dark-purple insides: **Marcel: leave the wizard as is** (2026-11-16).
+
 ## Decisions (with reasons)
 
 - **Wizard keeps 9 colours** (Marcel, 2026-11-16): the dark robe purple (lowpoly cell 37) for the robe/sleeve insides
@@ -320,7 +409,7 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 - **Upright staff is held in `die`** (2026-11-16): standing upright beside a lying character looked wrong; following
   the hand freely snapped it sideways at frame 0 (it's modelled upright in the T-pose).
 - **Skirt weights instead of rigid robes** (2026-11-16): rigid on `hips`, the legs swung out through the robe front
-  in walk/run (boots 13 cm through).
+  in walk/run (boots 13 cm through). Extended to short tabards over legs (Phase 4, same failure on the knight).
 
 - **AI texture model: full SDXL, not Lightning** (Marcel, 2026-11-16): 27 s per image is fine; Lightning (6 s) looks flatter and less painterly.
 - **Auto paint look** (Marcel, 2026-11-15: "looks ok"): hue-shifted ramps, per-piece light gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo; tuned on the knight against the sheet's per-material colour stats.
@@ -347,7 +436,8 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 - Preview renders: specular highlight off (washed-out robe fronts).
 - **Budget raised** (Marcel, 2026-11-15) from 600–1,000 (Kenney-chunky, looked too edgy) to **1,500–2,500, hard 3,000**; head group ≤ 700 / 1,000; accessories ≤ 300 / 500. Segment & bevel guide in STYLE.md §3.
 - **Smooth by angle, 40°** replaces flat shading (Marcel, 2026-11-15): flat shading was what read as 'hard', not the triangle count (tested: same GLB, smoothed normals looked soft). Applied at assembly (`jobs/lib/shading.py`), split normals go into the GLB; `validate` warns on flat faces / unmarked creases. Round things use < 40° steps (heads/beards: 30° corner steps).
-- Reference images in the repo only when Marcel says they're his to publish (the mage and the knight are).
+- Reference images in the repo only when Marcel says they're his to publish (the mage, the knight, the wizard, and the
+  Phase 4 sheets for knight-lowpoly, rogue, villager and dwarf are: Marcel, 2026-11-16).
 - **Wizard approval after the pose test** (Marcel, 2026-11-16): the static look is accepted, but approval follows STYLE.md §14 (comparison + pose test sheet), so it waits for Phase 3.
 - **Simple faces stay procedural under `ai`** (Marcel, 2026-11-16): `keep_roles`; the image model redraws them (nose, lost smile).
 - **Preview light per style** (2026-11-16): `preview.studio_light` (lowpoly: `paint.sl`); the default Workbench studio light made flat palettes look dark and dull, and raising the exposure washed them out.
@@ -381,6 +471,14 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-16** — Marcel's viewer rounds: rogue hood as one loft ("much better"), knight helmet/chest/pauldrons,
+  villager hair/collar. Waiting for his check of knight + villager. 64 tests.
+- **2026-11-16** — `dwarf` archetype (from Marcel's sheet) + 10 dwarf parts; dwarf fitted (IoU ≈ 0.84), animated,
+  exported. All 5 Phase 4 characters now build from specs only. 64 tests.
+- **2026-11-16** — Marcel's turnaround sheets for knight/rogue/villager/dwarf; first three fitted (IoU ≈ 0.8),
+  animated, exported. Next: dwarf archetype.
+- **2026-11-16** — Phase 4 started (lowpoly, RPG cast): 15 new parts; knight-lowpoly, rogue, villager from specs
+  only, animated + exported; skirt weights extended to tabards over legs. Awaiting Marcel's look. 64 tests.
 - **2026-11-16** — Round 4 (taller boots + knee blend: robe covers the boots in `attack`); **wizard approved**
   (Marcel; spec + 10 part hashes in `specs/wizard/spec.json`, `test_approval_still_valid[wizard]`). Phase 3 done. 64 tests.
 - **2026-11-16** — Rounds 2–3 from Marcel's viewer checks: skirt split across both thighs, dark purple robe inside
