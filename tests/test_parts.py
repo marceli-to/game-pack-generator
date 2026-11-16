@@ -128,14 +128,16 @@ def test_render_parts_catalog(workspace):
     assert r["stats"]["rows"] == ["head-round", "hands-mitten"]
 
 
-def test_mage_approval_still_valid():
+@pytest.mark.parametrize("name", ["mage", "wizard"])
+def test_approval_still_valid(name):
     """STYLE.md §14: the approval binds to the spec hash and to every part's build script."""
     import hashlib
 
-    spec = json.loads(MAGE_SPEC.read_text())
+    spec = json.loads((REPO / "specs" / name / "spec.json").read_text())
     ap = spec["approval"]
     assert ap["spec_hash"] == C.spec_hash(spec), "spec changed since approval"
+    parts_dir = REPO / load_style(spec.get("style"))["parts"]["dir"]
     for slot, part in spec["parts"].items():
         if part:
-            script = (REPO / load_style()["parts"]["dir"] / slot / f"{part}.py").read_bytes()
+            script = (parts_dir / slot / f"{part}.py").read_bytes()
             assert ap["parts"][part] == "sha256:" + hashlib.sha256(script).hexdigest(), f"{part} rebuilt since approval"

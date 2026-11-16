@@ -56,7 +56,8 @@ Surface mode **`palette`**, as in `clean`: every face resolves its role (root ST
 - **One material** `M_Palette`, base colour = `styles/lowpoly/palette.png`, roughness 1.0, metallic 0.0.
 - **palette.png:** 256 × 256 px, 8 × 8 grid → 64 cells of 32 × 32 px each, closest filtering, UVs collapsed to
   cell centres. Same layout and colours as `clean`, except cell 38: a soft magenta-purple `#9A5BBA` (the wizard's robe and
-  hat; lighter than `painted`'s `#8A45AC`, so the lit GLB matches the sheet) instead of a deep indigo.
+  hat; lighter than `painted`'s `#8A45AC`, so the lit GLB matches the sheet) instead of a deep indigo, and cell 37: its
+  dark shade `#5A3473` (inside of robes and sleeves, role `dark`) instead of a blue violet.
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals
@@ -73,6 +74,9 @@ Templates live in `styles/lowpoly/proportions/<archetype>.json` (+ `_preview.png
   x ±0.22; arm 0.3 m; hips 0.36 m; ankles 0.095 m), checked against the wizard sheet at 2.18 mm/px (floor at
   y 920): face, beard, shoulders (±0.20 m) and boots (0.2 m wide, ≈ 0.31 m long) fit. To recalibrate on the
   wizard if the body comparison asks for it.
+- **Clip damping (`clip_damping`):** `chibi` plays `hand.l`/`hand.r` rotations at 50 % of the clip (slerp towards
+  the rest pose). KayKit bends the hands 50–75° against the forearm (small hands); chibi mittens sit in wide cuffs
+  and their thumbs swung back through the sleeve (Marcel, `run`).
 
 ## 11. Preview renders → style.json
 

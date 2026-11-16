@@ -1,8 +1,25 @@
 {
+  "approval": {
+    "by": "marcel",
+    "date": "2026-11-16",
+    "parts": {
+      "accessory_hand_r-staff-crystal-block": "sha256:19b8d768efcf99838881c4e255c23aa3777b7eac52507e80370dbfcc4a53cb68",
+      "accessory_waist-pouch-block": "sha256:a9273a2ab005e7a3ec486f6b0fd3033dde7e9b4cca47d861954f53bd91a51569",
+      "arms-sleeves-chibi": "sha256:adb606563db419dd2ec98c3ca947a529776540b8e288bd742066e9fb3005f085",
+      "face-beard-block": "sha256:a3353f3b41cb85d5d9e6a26526644219ee35e8736dcb22fe2c9677053d22e7fc",
+      "feet-boots-chibi": "sha256:308304bede0ee58b764a3600dc0258544063df386de72743ce851a80dfd64a8e",
+      "hair-back-block": "sha256:67b742e3a15978bf4b1ac3bc6ae723f44ef28f6c520b416f8bafccb752ad197d",
+      "hands-mitten-block": "sha256:b683aacb3d3f140050cd6deb014f9b5e0c9ae1dacd49684c1bbc57f152f81a55",
+      "head-chibi-block": "sha256:cf5152b4e76ae92439592a5aa8c7085985595d590f5bf05917e0a2721ad73585",
+      "headwear-wizard-hat-block": "sha256:6872f0fcdc678d462b31ffa061b3bd25231dec22eacf61863de93385d61d59b3",
+      "torso-robe-chibi": "sha256:b204398a9b82d884c1e11663d38b362578eade184807fd3b04f552a3704f5a1f"
+    },
+    "spec_hash": "sha256:4d1be9698945d7265e7a6a342daa032eb2458363c10e2c066f4afa3cb4c2ce66"
+  },
   "archetype": "chibi",
   "colors": {
     "accent": 42,
-    "dark": 9,
+    "dark": 37,
     "eyes": 9,
     "hair": 13,
     "leather": 46,
@@ -13,7 +30,9 @@
   },
   "compare": {
     "arms_down_deg": 50,
-    "hide_slots": ["accessory_hand_r"]
+    "hide_slots": [
+      "accessory_hand_r"
+    ]
   },
   "grip": {
     "accessory_hand_r": "upright"

@@ -105,7 +105,7 @@ def measure(spec=None):
         "zero_area_faces": 0, "duplicate_verts": 0, "ngons_over_max": 0,
         "flat_faces": 0, "unmarked_creases": 0, "vertex_color_layers": 0,
         "asymmetric_verts": 0, "symmetry_checked_verts": 0,
-        "weights_over_2_bones": 0, "unweighted_verts": 0,
+        "weights_over_max_bones": 0, "unweighted_verts": 0,
         "z_min": None, "body_top": None, "headwear_top": None, "total_top": None,
         "transforms_applied": True,
     }
@@ -251,8 +251,8 @@ def measure(spec=None):
             src = o.data
             for v in src.vertices:
                 bones = [g for g in v.groups if g.weight > 1e-4 and gnames.get(g.group) in deform_bones]
-                if len(bones) > 2:
-                    m["weights_over_2_bones"] += 1
+                if len(bones) > style["skinning"]["max_bones_per_vertex"]:
+                    m["weights_over_max_bones"] += 1
                 if not bones:
                     m["unweighted_verts"] += 1
         ev.to_mesh_clear()
@@ -407,10 +407,15 @@ def violations(m, spec=None):
     else:
         if sk["missing"] or sk["extra"] or sk["wrong_parent"]:
             H("skeleton", f"skeleton differs from the standard: missing={sk['missing']} extra={sk['extra']} wrong_parent={sk['wrong_parent']}")
+        # slot bones of upright grips deform on purpose (STYLE.md §9a)
+        sb = style["skeleton"]["slot_bones"]
+        upright = {sb[s] for s, mode in (spec.get("grip") or {}).items() if mode == "upright" and s in sb}
+        sk["deform_mismatch"] = [b for b in sk["deform_mismatch"] if b not in upright]
         if sk["deform_mismatch"]:
             W("deform_flags", f"deform flags differ from core.json: {sk['deform_mismatch']}")
-    if m["weights_over_2_bones"]:
-        W("weights", f"{m['weights_over_2_bones']} vertices weighted to more than 2 bones")
+    if m["weights_over_max_bones"]:
+        W("weights", f"{m['weights_over_max_bones']} vertices weighted to more than "
+                     f"{style['skinning']['max_bones_per_vertex']} bones")
     if sk.get("present") and m["unweighted_verts"]:
         W("unweighted", f"{m['unweighted_verts']} vertices have no bone weights")
 

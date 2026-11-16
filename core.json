@@ -93,5 +93,27 @@
     ]
   },
   "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0 },
-  "foot_contact_tolerance": 0.02
+  "skinning": {
+    "_comment": "STYLE.md §9a: long robes (torso part reaching below the hips, legs slot empty) get skirt weights",
+    "skirt": { "follow": 1.0, "full_at": 0.5, "centre_width": 0.12 },
+    "max_bones_per_vertex": 3,
+    "upright_held_clips": ["die"],
+    "upright_clearance": 0.015,
+    "joint_blends": [
+      { "bone": "upperarm", "parent": "chest", "axis": "out_x", "width": 0.05 },
+      { "bone": "foot", "parent": "lowerleg", "axis": "down_z", "width": 0.04 },
+      { "bone": "lowerleg", "parent": "upperleg", "axis": "down_z", "width": 0.04 }
+    ]
+  },
+  "foot_contact_tolerance": 0.02,
+  "pose_test": {
+    "penetration_tolerance": 0.01,
+    "step": 2,
+    "foot_contact_clips": ["walk", "run"],
+    "columns": 4,
+    "tile_size": 256,
+    "frame_scale": 1.1,
+    "floor_margin": 0.06,
+    "max_upright_tilt_deg": 30
+  }
 }

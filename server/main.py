@@ -10,6 +10,7 @@ import traceback
 
 from mcp.server.mcpserver import MCPServer
 
+from .tools import animate as T_animate
 from .tools import assemble as T_assemble
 from .tools import export as T_export
 from .tools import paint as T_paint
@@ -25,7 +26,7 @@ Characters live in workspace/<name>/.
 Build a character: get_style -> init_character -> add_reference -> list_parts /
 render_parts_catalog (build missing parts with build_part) -> assemble_from_parts ->
 [painted styles: paint_surface] -> validate -> compare_reference (max. 3 correction rounds, then ask
-the human) -> export. Re-run paint_surface after every assemble_from_parts on a painted style.
+the human) -> apply_animations -> pose_test -> export. Re-run paint_surface (painted styles) and apply_animations after every assemble_from_parts.
 Check an existing model: init_character -> import_glb -> stats / validate -> render_preview -> export.
 Every result lists preview images: open them to see what you did.
 """
@@ -197,6 +198,26 @@ def paint_surface(name: str, approach: str | None = None, seed: int | None = Non
     approach/seed/subject/keep_roles default to spec.paint and are stored there when given. Previews: lit and unlit
     (flat) turnaround sheets (+ the generated views for 'ai'); stats.texture_sha256 goes into an approval."""
     return T_paint.paint_surface(name, approach, seed, subject, keep_roles)
+
+
+@mcp.tool()
+@_safe
+def apply_animations(name: str) -> dict:
+    """Add the STYLE.md §8 clips (idle, walk, run, jump, attack, hit, die, interact) from the library to the
+    assembled character: location keys scaled to its proportions, hips lifted where the body would go
+    through the floor, upright grips (spec.grip) baked so staffs stay vertical. Re-run after every
+    assemble_from_parts. Then pose_test, then export (the GLB carries the clips)."""
+    return T_animate.apply_animations(name)
+
+
+@mcp.tool()
+@_safe
+def pose_test(name: str, clips: list[str] | None = None) -> dict:
+    """Play every clip and check it (STYLE.md §8a): parts pushed into other parts (vs the rest pose),
+    anything below the floor, foot contact on walk/run. stats.findings lists them; stats.clips has the
+    details per clip. Sheet: one row per clip, 4 frames from the front, then the same from the side.
+    Open it: penetrations hidden inside the robe are fine, visible ones are not."""
+    return T_animate.pose_test(name, clips)
 
 
 def main() -> None:

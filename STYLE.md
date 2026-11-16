@@ -113,7 +113,8 @@ A proportion template = the rest-pose joint positions of the skeleton for one ar
   - Rotation keys are applied unchanged (bone directions and rolls are preserved when lengths change).
   - **Location keys are kept and scaled** by the factor of the offset they move: hips by the leg-length ratio (character ÷ template), so feet stay on the floor; the small authored offsets on `upperarm`/`upperleg` (KayKit, mostly < 10 cm) by the factor of their parent segment; `handslot` keys by the arm factor.
   - Scale keys are stripped on import (they only occur in clips we don't use).
-  - `pose_test` includes a foot-contact check on walk/run (feet within ±2 cm of the floor at contact frames).
+  - **Floor clamp:** `apply_animations` raises `hips` per frame by the depth of the body's lowest point below the floor (base parts only; hand accessories may touch it). Chibi feet are long for their legs, so heel strike and toe-off pitch them deeper than in the source rig (wizard: up to 5 cm in `walk`), and a 1.6× head lies deeper in `die`. Frames above the floor stay unchanged, so feet still lift.
+  - `pose_test` includes a foot-contact check on walk/run (each foot's lowest point over the cycle within ±2 cm of the floor, §8a).
 - A part may support several archetypes only if it was checked against each template.
 
 ## 8. Animations → core.json
@@ -122,7 +123,7 @@ A proportion template = the rest-pose joint positions of the skeleton for one ar
 
 - Chosen over Quaternius' Universal Animation Library (CC0 inside the download, but quaternius.com's licence page, since 28 Aug 2026, forbids redistribution in asset packs) and Kenney's animated characters (too few clips).
 - Mixamo is **not** used: its terms don't allow redistributing the animations, which conflicts with CC0 packs.
-- Agents may *adapt* library animations (trimming, blending, per-archetype adjustments) but do not author full cycles from scratch.
+- Agents may *adapt* library animations (trimming, blending, per-archetype adjustments) but do not author full cycles from scratch. Per-archetype adjustment in the style: `archetypes.<name>.clip_damping` = `{bone: factor}` plays that bone's rotations at `factor` of their angle (e.g. chibi hands, styles/lowpoly §7a).
 - Missing animations: first look for another KayKit clip on `Rig_Medium`; agent keyframing only as the last resort, always reviewed by Marcel.
 - **Clip lengths come from the source clip** (imported at 30 fps), not fixed numbers; the actual frame counts are recorded in style.json.
 
@@ -143,6 +144,16 @@ The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for 
 - Root motion: none (character stays in place; movement is handled in the game).
 - In GLB: every action as its own glTF animation with exactly this name.
 
+## 8a. Pose test → core.json (`pose_test`)
+
+`apply_animations` adds the clips to an assembled character; `pose_test` plays them and checks the skinned mesh, sampled every `step` = 2 frames (plus the last):
+- **Penetration:** vertices of one part that end up inside another part's closed shell (ray parity per shell) although they were outside it in the rest pose, deeper than `penetration_tolerance` = 1 cm. Reported per clip and part pair (depth, worst frame, vertex count). Parts that overlap by design (sleeves inside the robe, boots under it) also show up here; the sheet decides whether it is visible.
+- **Floor:** any slot's lowest point more than `foot_contact_tolerance` (2 cm) below the floor.
+- **Upright tilt:** an upright item's slot leaning more than `max_upright_tilt_deg` = 30° (outside `upright_held_clips`).
+- **Foot contact** on `walk` and `run` (`foot_contact_clips`): each foot's lowest point over the cycle within ±2 cm of the floor.
+- **Sheet:** one row per clip, `columns` = 4 evenly spaced frames from the front, then the same frames from the side, tiles `tile_size` = 256 px, framed per clip (box over its frames × `frame_scale` = 1.1, floor `floor_margin` = 6 % above the bottom edge).
+- Findings are not blocking; Marcel judges them with the sheet (§14). Edge loops at joints are not checked: parts are rigid per bone, only skirts and joint blends blend (§9a); a part that crosses a joint needs a ring at the joint for its blend to bend cleanly.
+
 ## 9. Naming conventions
 
 - Characters: `character-<name>` (kebab-case), e.g. `character-knight`
@@ -159,10 +170,13 @@ The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for 
 - Hard checks (part is not saved): faces without a valid role, open or non-manifold shells, inside-out shells, tris over the slot group's hard limit (§3), weights to bones the slot may not use.
 - Soft checks: tris above target, n-gons, asymmetry of base parts, **fit** to the template (e.g. head top at the head joint's tip, feet on the floor, arms reaching the wrists, hand accessories through their handslot; tolerance `parts.fit_tolerance` in the style).
 - Separate closed shells may overlap (helmet over head, belt over robe); hidden geometry still counts towards the budget.
-- **Weights:** rigid. A part may weight vertices to its slot's bones (`skeleton.part_bones`); `assemble_from_parts` gives every other vertex its nearest allowed bone. Headwear is weighted to `head`, hand accessories to `hand.l/r`: the deforming parents of the slot bones, because slot bones don't deform (revisit with skinning in Phase 3).
+- **Weights:** rigid. A part may weight vertices to its slot's bones (`skeleton.part_bones`); `assemble_from_parts` gives every other vertex its nearest allowed bone. Headwear is weighted to `head`, hand accessories to `hand.l/r`: the deforming parents of the slot bones, because slot bones don't deform. Two exceptions (core.json `skinning`):
+  - **Skirts:** a `torso` part reaching below the hip joints while the `legs` slot is empty (long robes) blends `hips` with the thighs below the hips, from 0 at the hip joints to `follow` = 1.0 at `full_at` = 50 % of the way down to the hem (the lower robe moves with the thigh, so boot shafts stay under it); the leg share is split between both thighs across the centre line, linear over ±`centre_width` = 12 cm (centre vertices: hips + both thighs). Without it the legs swing out through a rigid robe in walk/run; with a hard fade to the hips at the centre line (first try) the hem sheared open at the front in `run`.
+  - **Joint blends** (`joint_blends`): rigid parts that reach across a joint swing their inner end out of the body when the joint bends (Marcel saw the sleeve's inner end come out at the shoulder in `run`, the boot shafts at the ankle). Vertices on the body side of the joint go to the parent bone, blended linearly from the joint to `width` inside it: sleeves `upperarm` → `chest` along ±X (5 cm), boots `foot` → `lowerleg` above the ankle (4 cm) and `lowerleg` → `upperleg` above the knee (4 cm): boots under a long robe reach past the knee into the robe, so the part above the knee moves with the thigh and the robe, and a bent knee neither opens a gap at the hem nor swings the shaft top out over it. Only vertices fully on the child bone are changed.
+  - **Upright grips:** the item is weighted 100 % to its slot bone (`handslot.l/r`), which then deforms (`validate` allows that for upright slots).
 - **Hand accessories** have a grip mode, set per character in `spec.grip` (`{slot: mode}`, default `weapon`):
   - `weapon`: modelled along the handslot's bone axis (KayKit convention, −Y in the T-pose); swings with the hand in every clip (swords, axes, tools).
-  - `upright`: modelled along world +Z in the rest pose, grip at the handslot; in the clips the slot keeps its rest orientation and only follows the hand's position, so the item stays vertical (staffs, banners, lanterns). Applied when clips are added (Phase 3).
+  - `upright`: modelled along world +Z in the rest pose, grip at the handslot; in the clips the slot keeps its rest orientation and only follows the hand's position, so the item stays vertical (staffs, banners, lanterns). `apply_animations` bakes this into the slot's keys of every clip. Where the item would cut through the headwear (the staff's crystal and the hat brim in `run`), it leans outward around the grip just enough to clear the hat's profile by `upright_clearance` = 1.5 cm (wizard: 10° in `idle`, up to 18° in `interact`); where its foot would go below the floor it slides up in the hand. In `upright_held_clips` (`die`) it is upright only at the first frame and then stays fixed in the hand, so the staff falls with the character instead of standing next to it.
 
 ## 10. Export → core.json
 
@@ -199,7 +213,7 @@ Defined by each style in `styles/<name>/STYLE.md` §11 (engine, lighting, views,
 - More than 8 distinct palette indices used on faces (`painted`: base colours of the roles used)
 - Asymmetry in base parts
 - Fewer than 2 edge loops at joints
-- Vertices with weights from > 2 bones (with rigid part skinning)
+- Vertices with weights from more than `skinning.max_bones_per_vertex` = 3 bones (rigid parts use 1, joint blends 2, skirts up to 3; glTF allows 4)
 
 ## 13. Licence
 

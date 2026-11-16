@@ -3,8 +3,8 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-16 (end of session, committed `035a557`) — repo on the M4 Max; `ai` paint + `keep_roles`; new style
-`lowpoly` (flat shading) with a full wizard Marcel called "perfect"; next: Phase 3 on the wizard; approval after its pose test._
+_Last updated: 2026-11-16 — Phase 3 done: `apply_animations` + `pose_test`; the wizard animates, exports with all 8 clips
+and is **approved** (Marcel); next: Phase 4 (parts library)._
 
 ---
 
@@ -14,8 +14,8 @@ _Last updated: 2026-11-16 (end of session, committed `035a557`) — repo on the 
 |---|---|
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
 | 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
-| 3 — Skinning & animation | **next**: start with the `lowpoly` wizard (look accepted, full body); painted/knight body later |
-| 4 — Parts library | — |
+| 3 — Skinning & animation | ✅ done, wizard approved 2026-11-16 (animated, GLB plays in three.js) |
+| 4 — Parts library | **next** |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
 
@@ -23,23 +23,24 @@ _Last updated: 2026-11-16 (end of session, committed `035a557`) — repo on the 
 |---|---|---|
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
-| `lowpoly` | draft; flat shading, chibi | wizard (full body; look "perfect", approval waits for the pose test) |
+| `lowpoly` | draft; flat shading, chibi | wizard (approved 2026-11-16, animated) |
 
 ## Next session: start here
 
-1. **Phase 3 (skinning & animation) on the wizard**: chibi limbs are short (KayKit factors leg 0.71, arm 0.52,
-   head 1.63), so check the clips for intersections (sleeves, beard vs. chest, hat vs. arms); edge loops at
-   joints and foot contact are still unchecked by `validate` (`pose_test`); the staff's upright grip must stay
-   upright in clips (in T-pose it floats beside the hand; in `idle` it should stand on the floor).
-2. **Then the wizard's approval** (Marcel, 2026-11-16: wait for the pose test, as STYLE.md §14 says): show him the
-   comparison + pose test sheets; on yes, add the `approval` block to `specs/wizard/spec.json` (`by`, `date`,
-   `spec_hash` = `C.spec_hash(spec)`, `parts` = each part's `script_sha256` from
-   `styles/lowpoly/parts/<slot>/<part>.json`) and a test like `test_mage_approval_still_valid`.
-3. Small wizard differences left (optional): hat tip curls less than the sheet, brim a little high at the sides;
-   hands cost 464 tris (could round less).
-4. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint (faces under brims go tan),
-   the model's mouth spilling onto the beard top, iron lighter/more even than the knight sheet, 512 px per view may
-   be thin for a full body; the knight body.
+1. **Phase 4 — parts library** (PLAN.md): 3–5 variants per slot against the templates, a second archetype, the parts
+   catalog for choosing; done when 5 characters come from specs only. Decide with Marcel which style first
+   (`lowpoly` has the approved wizard; `clean` the approved mage).
+2. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run (cloth-like
+   fix out of scope); in `die` the held staff lies 2–3 cm across his face; `pose_test` penetrations are noisy for
+   overlaps hidden by design (maybe a "visible" check); the mage's staff dipped into the floor on `jump` landing
+   before the slide fix (re-check; the mage is not re-approved, its approval binds only spec + part scripts);
+   per-character clip mapping (`attack` → `Ranged_Magic_Shoot` for casters, §8) needs that clip in
+   `library/animations.blend`.
+3. Small wizard look points (optional): hat tip curls less than the sheet, brim a little high at the sides, hands
+   464 tris.
+4. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint (faces under brims go tan), the
+   model's mouth spilling onto the beard top, iron lighter/more even than the knight sheet, 512 px per view may be
+   thin for a full body; the knight body.
 
 ### Phase 1 delivered
 - MCP server `server/main.py` (stdio, registered in `.mcp.json`): `get_style`, `init_character`, `import_glb`, `stats`, `render_preview`, `validate`, `export`.
@@ -259,7 +260,67 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   is `styles/lowpoly/parts/<slot>/<part>.py`.
 - 62 tests.
 
+## Phase 3: skinning & animation (2026-11-16)
+
+- **`apply_animations(name)`** (job `jobs/apply_animations.py`, `jobs/lib/anim.py`, tool `server/tools/animate.py`):
+  appends the 8 §8 clips from `library/animations.blend` (replacing earlier copies), scales location keys by the
+  template's `offset_factors`, then a **floor clamp** (hips raised per frame by the depth of the body's lowest point
+  under the floor: wizard walk 5.2 cm at heel strike/toe-off, run 2.7 cm, die 16 cm for the 1.6× head), then bakes
+  **upright grips** (`spec.grip`): the slot bone keeps its rest orientation and follows the hand's position;
+  in `die` (`skinning.upright_held_clips`) upright at frame 0, then held in the hand.
+- **Assembly:** upright items weighted 100 % to their slot bone, which deforms (validate allows it); **skirt
+  weights** for a torso part below the hips with `legs` empty (blend hips → thigh, 0 at the hips to `follow` 0.85 at
+  the hem, faded out within 8 cm of the centre; core.json `skinning`).
+- **`pose_test(name, clips?)`** (`jobs/pose_test.py`): every clip sampled every 2 frames: penetration of parts into
+  other parts' closed shells vs the rest pose (ray parity per shell, > 1 cm), anything below the floor, foot contact
+  on walk/run, upright tilt; sheet one row per clip (4 frames front + side, framed per clip). ~2.5 s for the wizard.
+- STYLE.md §7a (floor clamp), new **§8a** (pose test), §9a (skirt, upright weights, held clips) ↔ core.json
+  `skinning` / `pose_test`. `pytest.ini` (`testpaths = tests`: `jobs/pose_test.py` was collected as a test).
+- **Wizard:** feet on the floor in walk/run (0 cm), nothing below the floor, staff tilt 0° (except die), validate
+  0 hard; export: 8 animations, glTF validator 0/0, three.js plays all clips (walk checked: staff upright).
+  Remaining penetrations are mostly hidden (boots inside the robe, sleeve tops vs beard 4 cm, staff through the
+  sleeve 4–7 cm).
+- **Mage** (cross-check, not re-approved; its approval binds spec + part scripts, both unchanged): same rules work;
+  robe stretches a lot in run; staff 10 cm below the floor on `jump` landing.
+- **Joint blends** (Marcel in the viewer: the sleeve's inner end showed at the shoulder in `run`, boots too):
+  rigid parts crossing a joint swing their inner end out of the body. Now vertices on the body side go to the
+  parent bone with a linear blend (`skinning.joint_blends`: sleeves upperarm → chest 5 cm, boot shafts foot →
+  lowerleg 4 cm). Sleeve-into-beard/head findings dropped from 4–5 cm in every clip to one vertex in die/interact.
+  Left: a dark wedge under the hem in `walk` when a leg lifts (robe inside).
+- **Round 2** (Marcel in the viewer: robe and feet weird in `run`, black robe inside): the skirt's hard fade to the
+  hips at the centre line sheared the hem open at the front → leg share now split between both thighs across
+  ±12 cm, full follow from halfway down (`skirt.follow` 1.0, `full_at` 0.5); centre vertices use 3 bones, so the
+  soft weight rule is now `skinning.max_bones_per_vertex` = 3. Lowpoly palette cell 37 (blue violet) → dark robe
+  purple `#5A3473`; wizard `dark` 9 → 37 (robe/sleeve insides; eyes stay 9) → **9 colours** (soft warning, max 8).
+  Left: a bit of boot shows between the legs when the robe front parts in `walk`.
+- **Round 3** (Marcel: thumb through the sleeve, staff should be behind the hat in `run`): KayKit bends the hands
+  50–76° against the forearm; chibi mittens in wide cuffs swing their thumb through the cuff → per-archetype
+  **`clip_damping`** (lowpoly `chibi`: `hand.l/r` rotations at 50 %, slerp to rest). Staff: **hat clearance**
+  in the upright bake: the hat's radial profile in head-bone space vs the staff's per-height radius; the staff leans
+  outward around the grip just enough (`skinning.upright_clearance` 1.5 cm; 10° in idle, ≤ 18°), and slides up in
+  the hand where its foot would go below the floor; quaternion keys kept on one hemisphere (no flips).
+  `pose_test` upright tilt now a finding only above `max_upright_tilt_deg` 30°. Left: in `die` (held) the staff
+  ends up 2–3 cm across the face when he lies down.
+- **Round 4** (Marcel: robe not overlapping the boots in `attack`): the hem (z 0.19) sits at the knee (0.199) and the
+  boot shafts ended at 0.2, so a bent knee swung the shaft top out over the hem or opened a gap. Boot shafts now reach
+  0.25 (loft with a ring at the knee; boots 320 → 512 tris, character 2,472) + a knee joint blend `lowerleg` →
+  `upperleg` (4 cm): the shaft above the knee moves with the thigh and the robe. `attack` from behind is clean now.
+  Tried and dropped: shins sharing the skirt below the knee (no effect, the hem is at the knee) and the back hem
+  following the shin (hem twisted, still pierced). **Left:** in `walk`/`run` a shin kicked back comes out through
+  the back of the robe instead of lifting it; a cloth-like fix (simulation or per-clip corrective) is out of scope
+  for now.
+- Tests: `tests/test_animate.py` (docs sync, wizard end-to-end incl. export); 63 pass, 1 skipped.
+
 ## Decisions (with reasons)
+
+- **Wizard keeps 9 colours** (Marcel, 2026-11-16): the dark robe purple (lowpoly cell 37) for the robe/sleeve insides
+  instead of black; `validate`'s soft `colours` warning (max 8) is accepted for this character.
+- **Floor clamp on the body, not just the feet** (2026-11-16): feet-only lifted `die` 15 cm (the lying body's head
+  is lowest there); hand accessories excluded so a staff touching the floor doesn't lift the character.
+- **Upright staff is held in `die`** (2026-11-16): standing upright beside a lying character looked wrong; following
+  the hand freely snapped it sideways at frame 0 (it's modelled upright in the T-pose).
+- **Skirt weights instead of rigid robes** (2026-11-16): rigid on `hips`, the legs swung out through the robe front
+  in walk/run (boots 13 cm through).
 
 - **AI texture model: full SDXL, not Lightning** (Marcel, 2026-11-16): 27 s per image is fine; Lightning (6 s) looks flatter and less painterly.
 - **Auto paint look** (Marcel, 2026-11-15: "looks ok"): hue-shifted ramps, per-piece light gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo; tuned on the knight against the sheet's per-material colour stats.
@@ -311,7 +372,7 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (62, ~50 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (64, ~60 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -320,6 +381,14 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
+- **2026-11-16** — Round 4 (taller boots + knee blend: robe covers the boots in `attack`); **wizard approved**
+  (Marcel; spec + 10 part hashes in `specs/wizard/spec.json`, `test_approval_still_valid[wizard]`). Phase 3 done. 64 tests.
+- **2026-11-16** — Rounds 2–3 from Marcel's viewer checks: skirt split across both thighs, dark purple robe inside
+  (9 colours accepted), chibi hand damping, staff leans clear of the hat brim. Marcel: "amazing".
+- **2026-11-16** — Phase 3 built: `apply_animations` (clips, location scaling, floor clamp, upright staff bake),
+  skirt weights, `pose_test` (penetration / floor / foot contact / sheet). Wizard + mage animate; wizard GLB has 8
+  clips, validator 0/0, three.js plays them. 63 tests. Marcel: "works quite well", sleeve end showed at the
+  shoulder → joint blends (shoulder, ankle). Waiting for his approval.
 - **2026-11-16** — Session end: everything committed + pushed (`035a557`). Next: Phase 3 on the wizard, approval after its pose test (Marcel).
 - **2026-11-16** — New style `lowpoly` (flat shading, chibi) from Marcel's wizard sheet; full wizard built (10 parts, IoU ≈ 0.75), exports clean; round 1 (rounder hands/feet, shoulder gap, brighter colours), round 2 (closed mitten tips, `paint.sl` preview light, skin 1). Marcel: "perfect".
 - **2026-11-16** — Repo set up on the M4 Max / 64 GB (Blender 5.2.4, arm64 Python 3.13, 54 tests pass). AI spike `a1`: ~35 s per image (was ~18 min on 16 GB). Plank lines traced to the depth ControlNet, fixed with a subdivided depth guide. Lightning tested, full SDXL kept. `ai` approach in `paint_surface` (58 tests). Wizard head test: `ai` reinterprets simple faces → `keep_roles` + purple cell 38.

@@ -99,9 +99,8 @@ game-pack-generator/
 ### Rig & animation
 | Tool | Purpose |
 |---|---|
-| `skin(name, method="auto"\|"parts")` | auto weights, or rigid weights per part (more robust for modular characters) |
-| `apply_animations(name, set="default")` | links actions from animations.blend |
-| `pose_test(name)` | renders extreme poses (arms up, squat, walk-cycle frames) → for checking deformation |
+| `apply_animations(name)` | adds the §8 clips from animations.blend: location keys scaled, floor clamp, upright grips baked (skinning happens in `assemble_from_parts`: rigid per part, skirt weights for long robes) |
+| `pose_test(name)` | plays every clip: penetration / floor / foot-contact checks + a sheet (4 frames per clip, front + side) |
 
 ### QA
 | Tool | Purpose |
@@ -171,7 +170,7 @@ packs/<pack-name>/
 4. `render_parts_catalog` → choose parts → `assemble_from_parts`
 5. `apply_palette` (palette styles; done by assembly) or `paint_surface` (painted styles) → `validate` → `compare_reference`
 6. Max. 3 correction rounds on the spec or parts, then hand over to a human
-7. `skin` → `apply_animations` → `pose_test` (the skeleton is already in place from step 4)
+7. `apply_animations` → `pose_test` (skeleton and weights are already in place from step 4)
 8. **Human approval** (preview + pose sheet)
 9. `export` → `build_pack`
 
