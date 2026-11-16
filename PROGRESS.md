@@ -5,7 +5,7 @@ Living status of the project. **Read this first in every session; update it befo
 
 _Last updated: 2026-11-16 — Phase 4 in `lowpoly`: 8 characters from specs only (wizard, knight, rogue, villager,
 dwarf + test mixes ranger, farmer, paladin); every slot has 3–5 parts; catalog is a labelled grid; awaiting Marcel's
-look at the new parts; Heerschar in-game test briefed (other agent)._
+look at the new parts; Heerschar in-game test briefed (other agent). All committed + pushed (`fb66f17`)._
 
 ---
 
@@ -485,12 +485,17 @@ GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; n
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
 npm install --prefix node && npx --prefix node playwright install chromium
+.venv/bin/python workspace/lib4/run.py <name> [--build [part ...]] [--anim] [--export]   # Phase 4 dev loop
+.venv/bin/python -m http.server 8000   # then http://localhost:8000/viewer/viewer.html?model=/workspace/<name>/export/character-<name>.glb&anim=walk
 ```
+Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; needs internet for three.js).
+Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
 
 - **2026-11-16** — Knight + villager OK'd by Marcel. 11 new lowpoly parts (every slot ≥ 3), test mixes ranger/farmer/
   paladin (built, animated, exported), catalog as a labelled grid. Heerschar in-game test briefed. 64 tests.
+  Committed + pushed `fb66f17`; session ends here.
 
 - **2026-11-16** — Marcel's viewer rounds: rogue hood as one loft ("much better"), knight helmet/chest/pauldrons,
   villager hair/collar. Waiting for his check of knight + villager. 64 tests.
