@@ -5,7 +5,7 @@
   "colors": {
     "skin": 1,
     "eyes": 9,
-    "metal": 41,
+    "metal": 51,
     "primary": 33,
     "accent": 42,
     "leather": 46,
@@ -21,7 +21,7 @@
     "arms": "arms-armored-chibi",
     "hands": "hands-gauntlet-block",
     "legs": "legs-pants-chibi",
-    "feet": "feet-boots-chibi",
+    "feet": "feet-boots-low-chibi",
     "accessory_hand_r": "accessory_hand_r-sword-block",
     "accessory_hand_l": "accessory_hand_l-shield-round-block"
   },

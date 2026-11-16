@@ -40,11 +40,14 @@ Headwear may add at most 60 % of body height on top (the wizard hat: ≈ 0.35 m 
 
 | Asset | Target | Hard limit |
 |---|---|---|
-| Character complete | 1,500–2,500 tris | 3,000 |
+| Character complete | 1,500–3,500 tris | 4,000 |
 | Head incl. hair/headwear | ≤ 1,000 | 1,400 |
 | Hand-held accessory (weapon, tool) | ≤ 300 | 500 |
 | Back accessory (cape, backpack) | ≤ 300 | 500 |
 | Prop (later) | ≤ 1,000 | 1,600 |
+
+Raised from 2,500 / 3,000 (Marcel, 2026-11-16): the knight next to the wizard in-game read as unfinished; the detail
+that makes it read finished (bevelled trims, buckle frame, slit tabard, chevron brow band, crest) costs ~4,000 tris.
 
 **Segment & bevel guide:** the facets are the look, so keep counts low. Hats, robes, sleeves, heads: 8–10 sides;
 staffs, fingers, small round things: 6; spheres/crystals: 8 × 5. Boxy shapes (boots, belts, pouches, hands):

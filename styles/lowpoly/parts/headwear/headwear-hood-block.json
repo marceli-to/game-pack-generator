@@ -5,7 +5,7 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "8a1071ec7b1440df25333822ea84ebf2ad593529dbceecb8f04e94211c04f73c",
+ "script_sha256": "f5ecba56e7be618489fbbfee4879c18e88cbbd6e193793a2f72f18788e0448a3",
  "built": "2026-11-16",
  "blender": "5.2.4",
  "tris": 310,
@@ -17,14 +17,14 @@
  "shells": 1,
  "bbox": [
   [
-   -0.3481,
-   -0.27,
+   -0.2699,
+   -0.196,
    0.745
   ],
   [
-   0.3481,
-   0.28,
-   1.4623
+   0.2699,
+   0.248,
+   1.4298
   ]
  ],
  "warnings": [

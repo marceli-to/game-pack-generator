@@ -5,11 +5,11 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "931660f63f948e0eda0c045966277c0e578de10c2eb22b0b895ac8653fcb6c2a",
+ "script_sha256": "b35576e54726882618571931aac76a9fcd95890042c03aac55343a237cdbf127",
  "built": "2026-11-16",
  "blender": "5.2.4",
- "tris": 400,
- "verts": 210,
+ "tris": 946,
+ "verts": 485,
  "roles": [
   "accent",
   "dark",
@@ -17,18 +17,20 @@
   "metal",
   "primary"
  ],
- "shells": 6,
+ "shells": 8,
  "bbox": [
   [
-   -0.2264,
-   -0.185,
-   0.28
+   -0.2615,
+   -0.2207,
+   0.23
   ],
   [
-   0.2264,
-   0.182,
+   0.2615,
+   0.218,
    0.8
   ]
  ],
- "warnings": []
+ "warnings": [
+  "asymmetric: 16 of 485 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
 }

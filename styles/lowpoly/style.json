@@ -56,8 +56,8 @@
   "headwear_max_ratio": 0.6,
   "budget": {
     "character": {
-      "target": [1500, 2500],
-      "hard": 3000
+      "target": [1500, 3500],
+      "hard": 4000
     },
     "head": {
       "target": 1000,

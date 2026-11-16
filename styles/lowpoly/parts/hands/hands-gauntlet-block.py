@@ -11,4 +11,7 @@ thumb = [(-0.035, 0.03, 0.028, 0.02), (-0.075, 0.03, 0.028, 0.02), (-0.094, 0.02
 faces += P.loft([P.rrect((tx, y, tz), sx, sz, r, seg=1, axis="y") for y, sx, sz, r in thumb], "metal")
 faces += P.loft([P.rrect((wr.x + dx, 0, z), sy, sz, 0.025, seg=1, axis="x")
                  for dx, sy, sz in ((-0.02, 0.07, 0.066), (0.03, 0.074, 0.07))], "metal")
+# bigger mitts, like the sheet: scale the whole gauntlet round a point just behind the wrist
+c = Vector((wr.x + 0.01, 0, z))
+P.transform(faces, Matrix.Translation(c) @ Matrix.Diagonal((1.15, 1.28, 1.28, 1)) @ Matrix.Translation(-c))
 P.mirror_x(faces)

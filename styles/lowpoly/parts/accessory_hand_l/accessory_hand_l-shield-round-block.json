@@ -5,28 +5,28 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "041bd40605850d9936f15be6cdbc554d114de1f7a43e48071f83aa91442293b5",
+ "script_sha256": "8c016d329d016834814ce27323f963380a7a679998a01af3618a23e955a57168",
  "built": "2026-11-16",
  "blender": "5.2.4",
- "tris": 156,
- "verts": 84,
+ "tris": 260,
+ "verts": 138,
  "roles": [
   "accent",
   "leather",
   "metal",
   "primary"
  ],
- "shells": 3,
+ "shells": 4,
  "bbox": [
   [
-   0.3909,
-   -0.178,
+   0.3554,
+   -0.2048,
    0.6677
   ],
   [
-   0.7295,
-   0.178,
-   0.875
+   0.765,
+   0.2048,
+   0.888
   ]
  ],
  "warnings": []

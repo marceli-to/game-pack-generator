@@ -5,11 +5,11 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "79d215774bdedfb872c61c24d395b07cd786a1a24575b94b11f24d746bfd0c69",
+ "script_sha256": "1eb54780a2f427b7807faa7ca1dc5ccb3b7e93c40e591cb7acf85cd45e28ca83",
  "built": "2026-11-16",
  "blender": "5.2.4",
- "tris": 632,
- "verts": 328,
+ "tris": 716,
+ "verts": 370,
  "roles": [
   "accent",
   "dark",
@@ -19,13 +19,13 @@
  "bbox": [
   [
    -0.515,
-   -0.1454,
+   -0.1519,
    0.6282
   ],
   [
    0.515,
-   0.1454,
-   0.8634
+   0.1519,
+   0.8695
   ]
  ],
  "warnings": []
