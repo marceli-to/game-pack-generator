@@ -3,7 +3,8 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-16 — repo on the M4 Max; `ai` paint built + `keep_roles` (wizard head test); new style `lowpoly` (flat shading) with a full wizard preview (1,784 tris); next: Marcel reviews the lowpoly wizard._
+_Last updated: 2026-11-16 (end of session, committed `035a557`) — repo on the M4 Max; `ai` paint + `keep_roles`; new style
+`lowpoly` (flat shading) with a full wizard Marcel called "perfect"; next: Phase 3 on the wizard; approval after its pose test._
 
 ---
 
@@ -13,10 +14,32 @@ _Last updated: 2026-11-16 — repo on the M4 Max; `ai` paint built + `keep_roles
 |---|---|
 | 1 — Foundations: wrapper, QA, skeleton, proportions | ✅ done (`ea6705e`) |
 | 2 — First static character (the mage) | ✅ done, mage approved 2026-11-15 (`21656d4`) |
-| 3 — Skinning & animation | after the painted-texture route is settled (AI spike) and the knight body |
+| 3 — Skinning & animation | **next**: start with the `lowpoly` wizard (look accepted, full body); painted/knight body later |
 | 4 — Parts library | — |
 | 5 — Packs & batch | — |
 | 6 — Integration & extensions (image route, props, …) | — |
+
+| Style | Status | Character |
+|---|---|---|
+| `clean` | in use | mage (approved 2026-11-15) |
+| `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
+| `lowpoly` | draft; flat shading, chibi | wizard (full body; look "perfect", approval waits for the pose test) |
+
+## Next session: start here
+
+1. **Phase 3 (skinning & animation) on the wizard**: chibi limbs are short (KayKit factors leg 0.71, arm 0.52,
+   head 1.63), so check the clips for intersections (sleeves, beard vs. chest, hat vs. arms); edge loops at
+   joints and foot contact are still unchecked by `validate` (`pose_test`); the staff's upright grip must stay
+   upright in clips (in T-pose it floats beside the hand; in `idle` it should stand on the floor).
+2. **Then the wizard's approval** (Marcel, 2026-11-16: wait for the pose test, as STYLE.md §14 says): show him the
+   comparison + pose test sheets; on yes, add the `approval` block to `specs/wizard/spec.json` (`by`, `date`,
+   `spec_hash` = `C.spec_hash(spec)`, `parts` = each part's `script_sha256` from
+   `styles/lowpoly/parts/<slot>/<part>.json`) and a test like `test_mage_approval_still_valid`.
+3. Small wizard differences left (optional): hat tip curls less than the sheet, brim a little high at the sides;
+   hands cost 464 tris (could round less).
+4. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint (faces under brims go tan),
+   the model's mouth spilling onto the beard top, iron lighter/more even than the knight sheet, 512 px per view may
+   be thin for a full body; the knight body.
 
 ### Phase 1 delivered
 - MCP server `server/main.py` (stdio, registered in `.mcp.json`): `get_style`, `init_character`, `import_glb`, `stats`, `render_preview`, `validate`, `export`.
@@ -187,8 +210,8 @@ could close the gap → AI-texture spike below.
 - Tests: `test_ai_guides_on_painted_mannequin`, `test_ai_paint_needs_subject_and_environment`,
   `test_paint_approaches_documented`, and `test_ai_paint_end_to_end` (only with `GPG_AI_TESTS=1`). 58 pass.
 
-- **Second head: wizard (2026-11-16)**, from a new sheet of Marcel's (kept local in `workspace/wizard-head/ref/`,
-  not yet cleared for the repo). Parts `head-round-chibi`, `face-beard-wizard`, `hair-white-sides`,
+- **Second head: wizard (2026-11-16)**, from Marcel's wizard sheet (his own work; later committed as
+  `specs/wizard/reference/turnaround.webp`). Parts `head-round-chibi`, `face-beard-wizard`, `hair-white-sides`,
   `headwear-wizard-hat-chibi` (painted, chibi; 1,474 tris), scripts in `workspace/wizard-head/parts/`, built into
   `styles/painted/parts/`. `ai` paint ~50 s, works on hat/band/star/beard, but **reinterprets the face**: adds a
   nose, drops the smile (knight style ref worse than the wizard sheet as ref; strength 0.45 + "nose" in the
@@ -204,19 +227,19 @@ could close the gap → AI-texture spike below.
   in the brim's shadow; the sheet keeps faces light). Sheets `workspace/wizard-head/cmp_ai3.png`, `cmp_ai4.png`
   (H = wizard sheet as style ref looks closest).
 
-Next: Marcel looks at `cmp_ai4.png` → maybe: lighter skin treatment in auto paint (less shadow/AO on faces),
-bigger keep margin or "mouth" in the negative prompt; then the knight body (Marcel's sheet) → paint with `ai` → approval → Phase 3. Open: iron lighter/more even than
-the sheet; generation at 512 px per view may be thin for a full body (try 768 or per-region passes).
+Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on faces), bigger keep margin or
+"mouth" in the negative prompt; iron lighter/more even than the sheet; 512 px per view may be thin for a full body
+(try 768 or per-region passes); the knight body.
 
 ## `lowpoly` style (2026-11-16)
 
 - Marcel's wizard sheet (his own work, now `specs/wizard/reference/turnaround.webp`) is a new look → style
   **`lowpoly`** (draft): palette surface, **flat shading** (new `shading.mode: flat` in `jobs/lib/shading.py`;
   `validate` warns on smooth faces instead), chibi archetype (painted chibi targets, checked against the sheet at
-  2.18 mm/px), clean palette with cell 38 → `#8A45AC`, low segment counts (8–10 sides, single chamfers).
+  2.18 mm/px), clean palette with cell 38 → a magenta-purple (now `#9A5BBA`, see round 1), low segment counts (8–10 sides, single chamfers).
   `styles/lowpoly/` (STYLE.md ↔ style.json, palette.png, proportions/chibi.json + preview), root STYLE.md table.
 - **Wizard** (`specs/wizard/spec.json`, style lowpoly): 10 parts (scripts in `workspace/wizard/parts/`, built into
-  `styles/lowpoly/parts/`), **1,784 tris**, 8 colours; IoU front 0.73 / side 0.76 / back 0.76 (arms_down 50°, staff
+  `styles/lowpoly/parts/`), first pass **1,784 tris**, 8 colours; IoU front 0.73 / side 0.76 / back 0.76 (arms_down 50°, staff
   hidden); validate 0 hard (soft: asymmetry from hat tip + pouch); export ok (glTF validator, three.js load:
   `workspace/wizard/export/character-wizard-testload.png`, colours match the sheet). Not approved yet.
 - Marcel's round 1 (rounder hands/feet, gap at the shoulders, colours too dark): hands and boots with two chamfer
@@ -228,6 +251,12 @@ the sheet; generation at 512 px per view may be thin for a full body (try 768 or
   rectangles that taper and close at the tip; previews use Blender's `paint.sl` studio light (`preview.studio_light`)
   instead of the exposure boost (exposure clipped the lit faces towards white); skin back to cell 1. 2,280 tris,
   IoU 0.73 / 0.75 / 0.76. Sheet: `workspace/wizard/preview_r2.png`.
+- Marcel: "perfect" → committed + pushed `035a557` (everything from 2026-11-16). Final: 2,280 tris, 8 colours
+  (primary 38, accent 42, skin 1, hair 13, leather 46, secondary 45, eyes/dark 9, special 58).
+- Rebuild loop: `.venv/bin/python workspace/wizard/run.py [part ...]` (builds the named parts from
+  `workspace/wizard/parts/*.py` into the library, re-inits from `specs/wizard/spec.json`, assembles); then
+  `compare_reference("wizard")`, `validate`, `export`. `workspace/` is gitignored: the committed source of truth
+  is `styles/lowpoly/parts/<slot>/<part>.py`.
 - 62 tests.
 
 ## Decisions (with reasons)
@@ -258,14 +287,18 @@ the sheet; generation at 512 px per view may be thin for a full body (try 768 or
 - **Budget raised** (Marcel, 2026-11-15) from 600–1,000 (Kenney-chunky, looked too edgy) to **1,500–2,500, hard 3,000**; head group ≤ 700 / 1,000; accessories ≤ 300 / 500. Segment & bevel guide in STYLE.md §3.
 - **Smooth by angle, 40°** replaces flat shading (Marcel, 2026-11-15): flat shading was what read as 'hard', not the triangle count (tested: same GLB, smoothed normals looked soft). Applied at assembly (`jobs/lib/shading.py`), split normals go into the GLB; `validate` warns on flat faces / unmarked creases. Round things use < 40° steps (heads/beards: 30° corner steps).
 - Reference images in the repo only when Marcel says they're his to publish (the mage and the knight are).
+- **Wizard approval after the pose test** (Marcel, 2026-11-16): the static look is accepted, but approval follows STYLE.md §14 (comparison + pose test sheet), so it waits for Phase 3.
+- **Simple faces stay procedural under `ai`** (Marcel, 2026-11-16): `keep_roles`; the image model redraws them (nose, lost smile).
+- **Preview light per style** (2026-11-16): `preview.studio_light` (lowpoly: `paint.sl`); the default Workbench studio light made flat palettes look dark and dull, and raising the exposure washed them out.
 - **New style `lowpoly`** (Marcel, 2026-11-16): the wizard sheet is a different look (flat facets, chibi, few segments), so it gets its own style instead of changing `clean` (whose smooth-by-angle shading Marcel chose for the mage).
 - **Style profiles** (Marcel, 2026-11-15): packs may need different looks (clean now, painted next, others later). The shared pipeline (skeleton, roles, parts mechanics, QA, export) stays one; the look is a folder. Roles are the bridge: palette colour in `clean`, material treatment in `painted`.
 - The mage spec has no `style` key (adding one would change its hash and void the approval) → it relies on `default_style = clean`. Add `"style": "clean"` at the next re-approval.
 
 ## Environment & gotchas
 
-- **Blender 5.2.4 LTS** at `/Applications/Blender.app/Contents/MacOS/Blender` (installed from blender.org; Homebrew here is Intel/Rosetta and the cask is arm-only). Override with `BLENDER_BIN`.
-- **Python:** use `/opt/homebrew/bin/python3.13` (arm64) for `.venv`. The Intel `/usr/local` Python can't build the MCP SDK's `cryptography`.
+- **Machine (since 2026-11-16):** M4 Max, 64 GB. Two Homebrews: `/usr/local` (Intel) and `/opt/homebrew` (arm64).
+- **Blender 5.2.4 LTS** at `/Applications/Blender.app/Contents/MacOS/Blender` (macos-arm64 .dmg from download.blender.org, checksum verified). Override with `BLENDER_BIN`.
+- **Python:** use `/opt/homebrew/bin/python3.13` (arm64, `brew install python@3.13`) for every venv (`.venv`, `ai/.venv`, `spikes/ai-texture/.venv`). The Intel `/usr/local` Pythons can't build the MCP SDK's `cryptography`.
 - **MCP SDK is 2.x:** `from mcp.server.mcpserver import MCPServer` (FastMCP was renamed).
 - **Blender 5 actions are layered** (slots/channelbags): use `jobs/lib/scene.py` helpers (`action_fcurves`, `assign_action`), not `action.fcurves`.
 - **glTF importer** adds bone display shapes (icosphere) → `import_glb` removes them; glTF can't carry face attributes, so imported GLBs always fail `no_role`.
@@ -278,7 +311,8 @@ the sheet; generation at 512 px per view may be thin for a full body (try 768 or
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (58, ~100 s; AI end-to-end only with GPG_AI_TESTS=1)
+.venv/bin/python -m pytest -q                       # all tests (62, ~50 s; 1 skipped: the AI end-to-end test)
+GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
 npm install --prefix node && npx --prefix node playwright install chromium
@@ -286,7 +320,8 @@ npm install --prefix node && npx --prefix node playwright install chromium
 
 ## Log
 
-- **2026-11-16** — New style `lowpoly` (flat shading, chibi) from Marcel's wizard sheet; full wizard built (10 parts, IoU ≈ 0.75), exports clean; round 1 (rounder hands/feet, shoulder gap, brighter colours + preview exposure). Awaiting Marcel.
+- **2026-11-16** — Session end: everything committed + pushed (`035a557`). Next: Phase 3 on the wizard, approval after its pose test (Marcel).
+- **2026-11-16** — New style `lowpoly` (flat shading, chibi) from Marcel's wizard sheet; full wizard built (10 parts, IoU ≈ 0.75), exports clean; round 1 (rounder hands/feet, shoulder gap, brighter colours), round 2 (closed mitten tips, `paint.sl` preview light, skin 1). Marcel: "perfect".
 - **2026-11-16** — Repo set up on the M4 Max / 64 GB (Blender 5.2.4, arm64 Python 3.13, 54 tests pass). AI spike `a1`: ~35 s per image (was ~18 min on 16 GB). Plank lines traced to the depth ControlNet, fixed with a subdivided depth guide. Lightning tested, full SDXL kept. `ai` approach in `paint_surface` (58 tests). Wizard head test: `ai` reinterprets simple faces → `keep_roles` + purple cell 38.
 
 - **2026-11-15** — AI-texture spike (local SDXL + depth ControlNet + IP-Adapter, projected): clearly better than auto paint, ~18 min/image on 16 GB. Repo moved to `~/Jamon.digital/Webroot/game-pack-generator`; spike scripts committed under `spikes/ai-texture/`. Next: Mac Studio.
