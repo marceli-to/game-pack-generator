@@ -1,0 +1,33 @@
+{
+ "part": "torso-robe-chibi",
+ "slot": "torso",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "b204398a9b82d884c1e11663d38b362578eade184807fd3b04f552a3704f5a1f",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 222,
+ "verts": 115,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.2463,
+   -0.1823,
+   0.19
+  ],
+  [
+   0.2463,
+   0.203,
+   0.765
+  ]
+ ],
+ "warnings": []
+}

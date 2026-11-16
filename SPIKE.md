@@ -4,6 +4,16 @@
 
 > **Status: postponed.** The tool starts with the procedural route. Run this spike only before adding the image route (PLAN.md, Phase 6).
 
+> **Notes for when this is revived (2026-11-16):**
+> - **Turnaround generation: FLUX.1 [schnell]** (Apache 2.0, ~4 steps, fits the 64 GB M4 Max) — stronger than SDXL at
+>   clean, consistent multi-view sheets and prompt adherence. Also useful *before* Phase 6: generated sheets as
+>   `add_reference` / `compare_reference` input for the procedural route, so a pack doesn't need a hand-drawn sheet per character.
+> - **Licence caveat:** FLUX.1 [dev], BFL's own depth/redux models and most Flux ControlNets/adapters are under the
+>   non-commercial dev licence → check each one; packs are commercial CC0. Use only Apache/MIT-licensed parts.
+> - **Image-to-3D can run locally** now (Marcel prefers local): open models such as TRELLIS (MIT) instead of
+>   Tripo/Meshy. Check licence and Apple Silicon (MPS) support before relying on one.
+> - The cost is still the cleanup (dense, unrigged, baked-texture meshes → budget, roles, palette/paint, skeleton), so §4 stays the core of the test.
+
 ## Goal
 Find out which route produces Kenney-like characters with less effort:
 

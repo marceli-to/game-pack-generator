@@ -388,7 +388,10 @@ def violations(m, spec=None):
     if m["ngons_over_max"]:
         W("ngons", f"{m['ngons_over_max']} n-gons with more than {style['topology']['max_ngon']} vertices")
     if m["flat_faces"]:
-        W("flat_shading", f"{m['flat_faces']} faces are flat-shaded (smooth by angle required, STYLE.md §5)")
+        if style["shading"]["mode"] == "flat":
+            W("smooth_shading", f"{m['flat_faces']} faces are smooth-shaded (flat shading required, STYLE.md §5)")
+        else:
+            W("flat_shading", f"{m['flat_faces']} faces are flat-shaded (smooth by angle required, STYLE.md §5)")
     if m["unmarked_creases"]:
         W("unmarked_creases", f"{m['unmarked_creases']} edges sharper than {style['shading']['crease_deg']}° are not marked sharp")
     if m["vertex_color_layers"]:

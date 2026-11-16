@@ -8,6 +8,7 @@ This file is the binding spec for every character, in every style. Every value m
 |---|---|---|
 | `clean` | flat palette colours, smooth by angle, Kenney-like but rounder | in use (mage) |
 | `painted` | chibi, baked hand-painted texture (light, wear, grime; auto paint) | draft (knight head) |
+| `lowpoly` | chibi, flat palette colours, flat shading (visible facets), few segments | draft (wizard) |
 
 ---
 

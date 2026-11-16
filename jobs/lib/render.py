@@ -44,8 +44,12 @@ def setup(size, light=None):
     sc.render.image_settings.file_format = "PNG"
     sc.render.image_settings.color_mode = "RGB"
     sc.view_settings.view_transform = "Standard"
+    exposure = pv.get("exposure", 0.0)   # brighter previews for styles lit like their sheet (lowpoly)
+    sc.view_settings.exposure = exposure
     sh = sc.display.shading
     sh.light = light or pv.get("light", "STUDIO")
+    if sh.light == "STUDIO" and pv.get("studio_light"):   # e.g. lowpoly: paint.sl (bright, saturated, like its sheet)
+        sh.studio_light = pv["studio_light"]
     sh.color_type = "TEXTURE"
     sh.show_shadows = False
     sh.show_specular_highlight = False
@@ -53,7 +57,7 @@ def setup(size, light=None):
     sh.show_object_outline = False
     if sc.world is None:
         sc.world = bpy.data.worlds.new("Preview")
-    sc.world.color = [_srgb_to_linear(c) for c in _hex(pv["background"])]
+    sc.world.color = [_srgb_to_linear(c) / 2 ** exposure for c in _hex(pv["background"])]  # background stays as given
     for img in bpy.data.images:  # nearest filtering in the viewport/workbench too
         pass
 

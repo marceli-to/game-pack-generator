@@ -40,14 +40,21 @@ spikes/ai-texture/.venv/bin/python spikes/ai-texture/gen.py a1                  
 .venv/bin/python spikes/ai-texture/project.py a1                                  # -> runs/a1/compare.png
 ```
 
-`gen.py` options: `--strength` (img2img, 0.6), `--cn` (depth ControlNet weight, 0.6), `--ip` (style weight, 0.8),
+`gen.py` options: `--guides` (folder), `--init-blur` / `--depth-blur` (px, masked), `--helmet` / `--neg-extra`
+(prompt words), `--lightning N` / `--cfg` (few-step LoRA, needs `peft`), `--strength` (img2img, 0.6), `--cn` (depth ControlNet weight, 0.6), `--ip` (style weight, 0.8),
 `--seed`, `--steps` (30; img2img runs strength × steps). It encodes prompt and style image first and frees those
 encoders before the UNet goes to the GPU (needed at 16 GB; harmless with more RAM).
 
 ## Known issues / next
 
-- Vertical "plank" lines on the dome: the model reads the 16 flat dome segments (visible in the faceted auto-paint
-  start image) as panels → smooth the start image / depth, or lower `--cn`.
+- ~~Plank lines on the dome~~ fixed (2026-11-16): the **depth ControlNet** read the 16 flat dome segments as panels
+  (`--cn 0` → no planks; no style ref, smooth start image, blurred depth, lower `--cn` or prompt words → still
+  planks). `guides.py` now renders depth from a subdivided copy (`GUIDE_SUBSURF`, default 2; edges over 40°
+  creased, so only soft facets round off). Runs `f1`/`f2` (seeds 1/2): clean dome, detail kept.
 - Iron still lighter and more even than the sheet.
-- Speed: try a few-step SDXL variant (SDXL-Lightning, 4–8 steps) and the Studio's RAM/GPU.
-- If it holds up: an `ai` approach in `paint_surface` (guides → generation → projection in one call).
+- Speed (2026-11-16, M4 Max): full SDXL 27 s/image; **SDXL-Lightning** (`--lightning 8 --steps 13`, 7 steps run)
+  6 s, `--cfg 2` 11 s. Lightning looks cleaner/flatter and stays closer to the start image (hole keeps the
+  procedural star shape, less painterly damage); strength 0.75 / ip 1.1 / cfg 2 change little. Runs `g1`–`g6` vs `f1`.
+- ~~An `ai` approach in `paint_surface`~~ done (2026-11-16): `paint_surface(name, approach="ai", subject=…)`,
+  code in `ai/gen.py`, `jobs/ai_guides.py`, `server/ai.py`; settings in `styles/painted/style.json` `paint.ai`.
+  This folder stays as the experiment bench (blur/prompt/Lightning knobs, comparison sheets).

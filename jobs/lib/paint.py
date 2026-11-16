@@ -628,6 +628,20 @@ def _view_xy(P, view):
     return P[:, 1], P[:, 2]  # side (+X camera): screen right = +Y; mirror uses the same image
 
 
+def near_mask(P, sel, dist):
+    """Texels (positions P, n x 3) within ~dist (voxel hash: dist .. 2 dist) of any texel in `sel`."""
+    if not sel.any():
+        return np.zeros(len(P), dtype=bool)
+    cells = np.floor(P / dist).astype(np.int64)
+    lo = cells.min(0) - 1
+    dims = cells.max(0) - lo + 2
+    key = lambda c: ((c[:, 0] - lo[0]) * dims[1] + (c[:, 1] - lo[1])) * dims[2] + (c[:, 2] - lo[2])
+    src = np.unique(cells[sel], axis=0)
+    offs = np.array([(i, j, k) for i in (-1, 0, 1) for j in (-1, 0, 1) for k in (-1, 0, 1)])
+    near = np.unique(key((src[:, None, :] + offs[None]).reshape(-1, 3)))
+    return np.isin(key(cells), near)
+
+
 def zbuffer(obj, view, shape, to_px):
     """Orthographic depth buffer of the whole mesh for a view, at reference pixel resolution.
     Depth = distance towards the camera (bigger = closer)."""

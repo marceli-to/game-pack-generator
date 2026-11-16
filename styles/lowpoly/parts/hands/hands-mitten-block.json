@@ -1,0 +1,30 @@
+{
+ "part": "hands-mitten-block",
+ "slot": "hands",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "b683aacb3d3f140050cd6deb014f9b5e0c9ae1dacd49684c1bbc57f152f81a55",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 464,
+ "verts": 240,
+ "roles": [
+  "skin"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.644,
+   -0.104,
+   0.6512
+  ],
+  [
+   0.644,
+   0.06,
+   0.7592
+  ]
+ ],
+ "warnings": []
+}

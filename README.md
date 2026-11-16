@@ -6,7 +6,7 @@ Headless tool that lets agents create low-poly, rigged, animated game characters
 - [`PROGRESS.md`](PROGRESS.md): current status, decisions, next step — read first
 - [`PLAN.md`](PLAN.md): architecture, tools, phases
 - [`STYLE.md`](STYLE.md): binding shared spec (skeleton, roles, slots, export, approval) — `core.json` is its machine-readable twin
-- [`styles/`](styles/): one folder per look (`clean`: the mage), each with its own `STYLE.md` + `style.json`, templates and parts
+- [`styles/`](styles/): one folder per look, each with its own `STYLE.md` + `style.json`, templates and parts: `clean` (the mage), `painted` (chibi, baked painted texture; the knight), `lowpoly` (chibi, flat palette, flat shading; the wizard)
 - [`SPIKE.md`](SPIKE.md): image-to-3D route comparison (archived until Phase 6)
 
 ## Requirements
@@ -18,6 +18,12 @@ Headless tool that lets agents create low-poly, rigged, animated game characters
 ```sh
 python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 npm install --prefix node && npx --prefix node playwright install chromium
+```
+Optional, for `paint_surface(approach="ai")` (painted styles): a separate torch environment and ~13 GB of models
+(downloaded from Hugging Face on first use, cached in `~/.cache/huggingface`). Needs a Mac with enough unified
+memory (64 GB: ~30 s per generation; 16 GB swaps, ~18 min):
+```sh
+/opt/homebrew/bin/python3.13 -m venv ai/.venv && ai/.venv/bin/pip install -r ai/requirements.txt
 ```
 
 The built library (`library/skeleton.blend`, `animations.blend`) and each style's `palette.png` and `proportions/` are committed. To rebuild it from the KayKit download ([KayKit Character Animations 1.1](https://kaylousberg.itch.io/kaykit-character-animations), free, CC0):
@@ -46,6 +52,7 @@ Every tool runs one headless Blender process and returns `{ ok, outputs, stats, 
 ## Tests
 ```sh
 .venv/bin/python -m pytest -q
+GPG_AI_TESTS=1 .venv/bin/python -m pytest -q    # + the end-to-end AI paint test (needs ai/.venv + models)
 ```
 Blender tests build their fixtures (a mannequin on the standard skeleton, plus copies with planted defects) at run time; nothing binary lives in `tests/`.
 

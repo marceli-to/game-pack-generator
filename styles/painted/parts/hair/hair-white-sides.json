@@ -1,0 +1,30 @@
+{
+ "part": "hair-white-sides",
+ "slot": "hair",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "8bd0fcd2d45eda318f2f47d094233f9e9d587cc45aed4ffd68da3bd75c9371e0",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 256,
+ "verts": 130,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.2192,
+   0.0042,
+   0.7276
+  ],
+  [
+   0.2192,
+   0.1974,
+   1.13
+  ]
+ ],
+ "warnings": []
+}

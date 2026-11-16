@@ -97,3 +97,33 @@ def test_auto_paint_on_mannequin(mannequin, tmp_path):
     assert st["texels"] > 5000
     assert 0.1 < st["ao_mean"] <= 1.0
     assert -1.0 < st["light_mean"] < 1.0
+
+
+def test_ai_guides_on_painted_mannequin(mannequin, tmp_path):
+    """`ai` guides (STYLE.md painted §4): start image, smoothed depth and mask per view + reference.json.
+    The smoothed depth must differ from the raw one, the mask (real outline) must not."""
+    colors = {"skin": 6, "primary": 17, "secondary": 46, "accent": 42, "metal": 40, "leather": 45,
+              "dark": 54, "special": 32, "hair": 8}
+    painted = tmp_path / "painted.blend"
+    run_job_checked("paint_surface", {"approach": "auto", "colors": colors, "out_dir": str(tmp_path / "paint"),
+                                      "size": 256, "out_blend": str(painted)}, blend=mannequin, timeout=600,
+                    style="painted")
+    out = {}
+    for sub in (0, 2):
+        d = tmp_path / f"guides{sub}"
+        r = run_job_checked("ai_guides", {"out_dir": str(d), "ai": {"view_size": 128, "depth_subsurf": sub}},
+                            blend=painted, timeout=600, style="painted")
+        out[sub] = d
+        for kind in ("init", "depth", "mask"):
+            for v in ("front", "side", "back", "side_mirror"):
+                assert png_size(d / f"{kind}_{v}.png") == (128, 128), (kind, v)
+        ref = json.loads((d / "reference.json").read_text())
+        assert list(ref["views"]) == ["front", "side", "back", "side_mirror"]
+        assert ref["views"]["back"]["x_range"] == [256, 384]
+        fr = r["stats"]["frame"]
+        assert fr["center"][:2] == [0.0, 0.0] and 1.8 < fr["extent"] < 2.2  # 1.8 m mannequin x margin
+        assert abs(ref["floor_y"] - (64 + fr["center"][2] / ref["m_per_px"])) < 1e-6
+    with pytest.raises(Exception, match="not painted"):
+        run_job_checked("ai_guides", {"out_dir": str(tmp_path / "x")}, blend=mannequin, style="painted")
+    assert (out[0] / "mask_front.png").read_bytes() == (out[2] / "mask_front.png").read_bytes()
+    assert (out[0] / "depth_front.png").read_bytes() != (out[2] / "depth_front.png").read_bytes()

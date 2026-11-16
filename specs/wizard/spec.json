@@ -1,0 +1,37 @@
+{
+  "archetype": "chibi",
+  "colors": {
+    "accent": 42,
+    "dark": 9,
+    "eyes": 9,
+    "hair": 13,
+    "leather": 46,
+    "primary": 38,
+    "secondary": 45,
+    "skin": 1,
+    "special": 58
+  },
+  "compare": {
+    "arms_down_deg": 50,
+    "hide_slots": ["accessory_hand_r"]
+  },
+  "grip": {
+    "accessory_hand_r": "upright"
+  },
+  "name": "wizard",
+  "parts": {
+    "accessory_hand_r": "accessory_hand_r-staff-crystal-block",
+    "accessory_waist": "accessory_waist-pouch-block",
+    "arms": "arms-sleeves-chibi",
+    "face": "face-beard-block",
+    "feet": "feet-boots-chibi",
+    "hair": "hair-back-block",
+    "hands": "hands-mitten-block",
+    "head": "head-chibi-block",
+    "headwear": "headwear-wizard-hat-block",
+    "legs": null,
+    "torso": "torso-robe-chibi"
+  },
+  "reference": "specs/wizard/reference/turnaround.webp",
+  "style": "lowpoly"
+}

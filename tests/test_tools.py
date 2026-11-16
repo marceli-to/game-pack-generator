@@ -1,9 +1,11 @@
 """End-to-end through the tool functions (what the MCP server calls)."""
 import asyncio
+import os
 import shutil
 
 import pytest
 
+from server import ai as AI
 from server.blender import run_job_checked
 from server.main import mcp
 from server.tools import assemble as T_assemble
@@ -109,3 +111,40 @@ def test_painted_character_paints_validates_and_exports_unlit(workspace, mannequ
     assert g["texcoords"] == 1
     assert g["samplers"][0]["magFilter"] == 9729  # LINEAR
     assert e["report"]["gltf_validator"]["errors"] == 0
+
+
+@needs_blender
+def test_ai_paint_needs_subject_and_environment(workspace, mannequin, monkeypatch):
+    """approach 'ai' refuses to run without a subject or without the AI environment (before any Blender run)."""
+    T_project.init_character("ai-dummy", {"style": "painted", "colors": {"primary": 17}})
+    shutil.copy(mannequin, workspace / "ai-dummy" / "character.blend")
+    with pytest.raises(Exception, match="needs a subject"):
+        T_paint.paint_surface("ai-dummy", approach="ai")
+    monkeypatch.setenv("GPG_AI_PYTHON", "/nonexistent/python")
+    with pytest.raises(Exception, match="AI environment"):
+        T_paint.paint_surface("ai-dummy", approach="ai", subject="a test dummy")
+    assert T_project.C.load_spec("ai-dummy")["paint"] == {"approach": "ai", "subject": "a test dummy"}
+    with pytest.raises(Exception, match="unknown roles"):
+        T_paint.paint_surface("ai-dummy", keep_roles=["face"])
+    with pytest.raises(Exception, match="AI environment"):
+        T_paint.paint_surface("ai-dummy", keep_roles=["skin", "eyes"])
+    assert T_project.C.load_spec("ai-dummy")["paint"]["keep_roles"] == ["skin", "eyes"]
+
+
+@needs_blender
+@pytest.mark.skipif(os.environ.get("GPG_AI_TESTS") != "1" or not AI.available(),
+                    reason="AI generation test: set GPG_AI_TESTS=1 (needs ai/.venv and ~13 GB of cached models)")
+def test_ai_paint_end_to_end(workspace, mannequin):
+    """Full `ai` approach on the mannequin: auto -> guides -> SDXL -> projection; validates clean."""
+    colors = {"skin": 6, "primary": 17, "secondary": 46, "accent": 42, "metal": 40, "leather": 45,
+              "dark": 54, "special": 32, "hair": 8, "eyes": 56}
+    T_project.init_character("ai-dummy", {"style": "painted", "colors": colors})
+    shutil.copy(mannequin, workspace / "ai-dummy" / "character.blend")
+    r = T_paint.paint_surface("ai-dummy", approach="ai", subject="chibi wooden training dummy, blue cloth wraps",
+                              keep_roles=["eyes"])
+    assert r["ok"], r.get("error")
+    st = r["stats"]
+    assert st["kept_texels"] > 0
+    assert st["approach"] == "ai" and st["ai"]["gen_s"] > 0 and 0 < st["projection"]["coverage"] <= 1
+    v = T_qa.validate("ai-dummy")
+    assert not {h["code"] for h in v["hard"]} & {"not_painted", "texture", "uv_overlap", "not_unlit"}

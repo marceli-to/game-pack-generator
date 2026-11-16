@@ -1,0 +1,30 @@
+{
+ "part": "face-beard-wizard",
+ "slot": "face",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "422106e3c0ef77a0fb82ab938bf70457b4b513a6d9d20744ecc4f55884384180",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 416,
+ "verts": 210,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.219,
+   -0.2162,
+   0.675
+  ],
+  [
+   0.219,
+   0.0235,
+   1.098
+  ]
+ ],
+ "warnings": []
+}

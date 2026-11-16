@@ -1,0 +1,30 @@
+{
+ "part": "hair-back-block",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "67b742e3a15978bf4b1ac3bc6ae723f44ef28f6c520b416f8bafccb752ad197d",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 80,
+ "verts": 42,
+ "roles": [
+  "hair"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.2241,
+   -0.0029,
+   0.7272
+  ],
+  [
+   0.2241,
+   0.202,
+   1.13
+  ]
+ ],
+ "warnings": []
+}

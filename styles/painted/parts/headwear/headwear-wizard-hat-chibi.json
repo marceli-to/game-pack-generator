@@ -1,0 +1,33 @@
+{
+ "part": "headwear-wizard-hat-chibi",
+ "slot": "headwear",
+ "style": "painted",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "b6fe9ebf378f534dd29aabce6c9cefc98746b328e6e17b509a381a5991aff4b9",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 374,
+ "verts": 191,
+ "roles": [
+  "accent",
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.3912,
+   -0.4014,
+   0.9092
+  ],
+  [
+   0.3912,
+   0.3639,
+   1.5683
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 95 of 191 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

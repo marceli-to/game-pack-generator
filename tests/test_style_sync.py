@@ -65,8 +65,11 @@ def test_roles_match():
 def test_shading_matches(name):
     S, STYLE_MD = load_style(name), style_md(name)
     sh = S["shading"]
-    assert sh["mode"] == "smooth_by_angle"
-    assert f"**Smooth by angle, {sh['crease_deg']}°**" in STYLE_MD
+    assert sh["mode"] in ("smooth_by_angle", "flat")
+    if sh["mode"] == "flat":
+        assert "**Flat shading**" in STYLE_MD
+    else:
+        assert f"**Smooth by angle, {sh['crease_deg']}°**" in STYLE_MD
 
 
 def test_slots_match():
@@ -98,3 +101,18 @@ def test_unknown_style_is_rejected():
     from server.style import StyleError, style_name
     with pytest.raises(StyleError):
         style_name("no-such-style")
+
+
+@pytest.mark.parametrize("name", [n for n in STYLES_ALL if load_style(n).get("surface") == "painted"])
+def test_paint_approaches_documented(name):
+    S, md = load_style(name), style_md(name)
+    p = S["paint"]
+    for a in p["approaches"]:
+        assert f"`{a}`" in md, a
+    assert p["default_approach"] in p["approaches"]
+    if "ai" in p["approaches"]:
+        ai = p["ai"]
+        assert (STYLES / name / ai["style_ref"]).exists()
+        assert f"`steps` {ai['steps']}" in md
+        for key in ("view_size", "frame_margin", "depth_subsurf", "crease_deg", "projection"):
+            assert f"`ai.{key}`" in md, key

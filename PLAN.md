@@ -94,7 +94,7 @@ game-pack-generator/
 |---|---|
 | `apply_palette(name)` | resolves each face's `role` → `spec.colors` → palette cell, writes UVs |
 | `recolor(name, role, palette_index)` | changes one role's colour (for variants), re-applies the palette |
-| `paint_surface(name, approach?, seed?)` | `painted` styles only: unwraps and bakes the painted texture (auto paint; projection for hero characters) into one material, unlit if the style says so; re-run after every assembly |
+| `paint_surface(name, approach?, seed?, subject?)` | `painted` styles only: unwraps and bakes the painted texture (auto paint; projection for hero characters; `ai`: a local SDXL paints the views from our renders, then projected, needs `subject`) into one material, unlit if the style says so; re-run after every assembly |
 
 ### Rig & animation
 | Tool | Purpose |

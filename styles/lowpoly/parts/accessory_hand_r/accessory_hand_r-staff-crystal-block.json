@@ -1,0 +1,32 @@
+{
+ "part": "accessory_hand_r-staff-crystal-block",
+ "slot": "accessory_hand_r",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "19b8d768efcf99838881c4e255c23aa3777b7eac52507e80370dbfcc4a53cb68",
+ "built": "2026-11-16",
+ "blender": "5.2.4",
+ "tris": 192,
+ "verts": 106,
+ "roles": [
+  "accent",
+  "secondary",
+  "special"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.6323,
+   -0.051,
+   0.2777
+  ],
+  [
+   -0.5081,
+   0.051,
+   1.2057
+  ]
+ ],
+ "warnings": []
+}

@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-15 — AI-texture spike (local SDXL) clearly beats auto paint but takes ~18 min/image on the 16 GB MacBook; repo moved to `~/Jamon.digital/Webroot/game-pack-generator`; next: run the spike on the Mac Studio._
+_Last updated: 2026-11-16 — repo on the M4 Max; `ai` paint built + `keep_roles` (wizard head test); new style `lowpoly` (flat shading) with a full wizard preview (1,784 tris); next: Marcel reviews the lowpoly wizard._
 
 ---
 
@@ -155,12 +155,84 @@ could close the gap → AI-texture spike below.
   `gen.py` already loads in stages (encoders freed before the UNet). Expected on the Mac Studio: ~1 min (Max)
   or less (Ultra); a few-step SDXL variant (SDXL-Lightning) should cut it ~3× more.
 
-Next: Marcel sets up the repo on the Mac Studio (README + `spikes/ai-texture/README.md`), then: run `a1` there
-for timing → fix the plank lines (smoother start image/depth, lower `--cn`) → few-step model → if it holds, an
-`ai` approach in `paint_surface`; then the knight body → approval → Phase 3.
+- **Timing on the M4 Max / 64 GB (2026-11-16):** `gen.py a1` loads in 6 s (models cached) and generates in 27–29 s
+  (18 steps at ~1.4 s/step, no swapping); ~35 s total. Knight build ~10 s, guides ~2 s, projection ~8 s → one full
+  round in under a minute. Result looks like the M1 run (glowing eyes, shaded teeth, torn hole; plank lines on the
+  dome still there).
+
+- **Plank lines fixed (2026-11-16):** cause is the depth ControlNet reading the 16 flat dome segments as panels
+  (isolated: `--cn 0` → gone; smooth start image, blurred depth, lower `--cn`, prompt words, no style ref → still
+  there). Fix: `guides.py` renders depth from a subdivided copy (subsurf 2, edges > 40° creased). Runs `f1`/`f2`
+  clean with detail kept. Spike knobs added: `gen.py --guides/--init-blur/--depth-blur/--helmet/--neg-extra`,
+  `knight_v3.py --facet/--smooth`, `paint_surface` job arg `auto` (overrides of `paint.auto`, not used by the tools).
+
+- **SDXL-Lightning tested (2026-11-16):** `gen.py --lightning 8 --steps 13` → 6 s instead of 27 s (LoRA, Euler
+  trailing, no CFG; `peft` added to the spike requirements). Cleaner and flatter than full SDXL, closer to the
+  start image; strength/ip/cfg tweaks change little. Both are fast enough here (a full round < 1 min).
+- Flux / image-to-3D notes added to SPIKE.md (Phase 6; FLUX.1 [schnell] for turnarounds, licence caveat, local TRELLIS).
+
+- **Decided (Marcel, 2026-11-16):** full SDXL (30 steps, ~27 s) is the default; Lightning stays an option (`--lightning 8`).
+
+## `ai` paint approach (2026-11-16)
+
+- **`paint_surface(name, approach="ai", subject=…)`**: auto paint (start image + fallback) → `ai_guides` job
+  (`jobs/ai_guides.py`, `jobs/lib/aiguides.py`: framing from the bounding box, smoothed depth, real-outline mask,
+  reference.json) → `ai/gen.py` in its own env `ai/.venv` (`server/ai.py` runs it; `GPG_AI_PYTHON` overrides) →
+  projection (`paint_surface` job, approach `ai`, `paint.ai.projection` overrides). `subject` stored in
+  `spec.paint` (required for `ai`); prompt = subject + `paint.ai.style_prompt`.
+- Settings in `styles/painted/style.json` `paint.ai` (↔ STYLE.md §4); style reference moved to
+  `styles/painted/style_ref.png` (crop of Marcel's knight sheet).
+- Knight v3 head via the tool: ~49 s total (auto 4 s, guides 6 s, generation 33 s, projection 5 s); validate 0 hard;
+  export ok.
+- Tests: `test_ai_guides_on_painted_mannequin`, `test_ai_paint_needs_subject_and_environment`,
+  `test_paint_approaches_documented`, and `test_ai_paint_end_to_end` (only with `GPG_AI_TESTS=1`). 58 pass.
+
+- **Second head: wizard (2026-11-16)**, from a new sheet of Marcel's (kept local in `workspace/wizard-head/ref/`,
+  not yet cleared for the repo). Parts `head-round-chibi`, `face-beard-wizard`, `hair-white-sides`,
+  `headwear-wizard-hat-chibi` (painted, chibi; 1,474 tris), scripts in `workspace/wizard-head/parts/`, built into
+  `styles/painted/parts/`. `ai` paint ~50 s, works on hat/band/star/beard, but **reinterprets the face**: adds a
+  nose, drops the smile (knight style ref worse than the wizard sheet as ref; strength 0.45 + "nose" in the
+  negative prompt doesn't help). Hat colour: painted palette has no mid magenta-purple (cell 15 reads pink).
+  Sheets: `workspace/wizard-head/cmp_ai.png`, `cmp_ai2.png`.
+
+- **Decided (Marcel, 2026-11-16):** keep simple faces procedural; add a purple to the painted palette.
+  → `spec.paint.keep_roles` (projection/ai; tool arg `keep_roles`, validated against the roles) keeps the auto
+  paint on those roles + `paint.ai.keep_margin` (2 cm, voxel-hash `near_mask`) around them; painted palette cell
+  38 `#3A2672` (unused deep indigo) → `#8A45AC` magenta-purple, `palette.png` regenerated. Wizard: primary 38,
+  skin 0, keep `["skin", "eyes", "dark"]` → face stays (dot eyes, smile, no nose), hat reads purple. Left: the
+  model's mouth still spills a few cm onto the beard top (smaller); the kept skin is tan (auto paint puts the face
+  in the brim's shadow; the sheet keeps faces light). Sheets `workspace/wizard-head/cmp_ai3.png`, `cmp_ai4.png`
+  (H = wizard sheet as style ref looks closest).
+
+Next: Marcel looks at `cmp_ai4.png` → maybe: lighter skin treatment in auto paint (less shadow/AO on faces),
+bigger keep margin or "mouth" in the negative prompt; then the knight body (Marcel's sheet) → paint with `ai` → approval → Phase 3. Open: iron lighter/more even than
+the sheet; generation at 512 px per view may be thin for a full body (try 768 or per-region passes).
+
+## `lowpoly` style (2026-11-16)
+
+- Marcel's wizard sheet (his own work, now `specs/wizard/reference/turnaround.webp`) is a new look → style
+  **`lowpoly`** (draft): palette surface, **flat shading** (new `shading.mode: flat` in `jobs/lib/shading.py`;
+  `validate` warns on smooth faces instead), chibi archetype (painted chibi targets, checked against the sheet at
+  2.18 mm/px), clean palette with cell 38 → `#8A45AC`, low segment counts (8–10 sides, single chamfers).
+  `styles/lowpoly/` (STYLE.md ↔ style.json, palette.png, proportions/chibi.json + preview), root STYLE.md table.
+- **Wizard** (`specs/wizard/spec.json`, style lowpoly): 10 parts (scripts in `workspace/wizard/parts/`, built into
+  `styles/lowpoly/parts/`), **1,784 tris**, 8 colours; IoU front 0.73 / side 0.76 / back 0.76 (arms_down 50°, staff
+  hidden); validate 0 hard (soft: asymmetry from hat tip + pouch); export ok (glTF validator, three.js load:
+  `workspace/wizard/export/character-wizard-testload.png`, colours match the sheet). Not approved yet.
+- Marcel's round 1 (rounder hands/feet, gap at the shoulders, colours too dark): hands and boots with two chamfer
+  steps (`seg=2`); sleeves start inside the robe (x 0.06) and the robe shoulders are broader (gap under the beard
+  closed); colours: lowpoly cell 38 → `#9A5BBA` (lighter, softer), skin 0; the dark look was mostly the Blender
+  preview (Workbench studio light) → new optional `preview.exposure` (lowpoly: +1.0, background compensated).
+  Now 1,992 tris, IoU 0.73 / 0.76 / 0.75. Sheet: `workspace/wizard/preview_bright.png`.
+- Round 2 (mittens ended in a flat cut, colours not saturated enough): mittens and thumbs are lofts of rounded
+  rectangles that taper and close at the tip; previews use Blender's `paint.sl` studio light (`preview.studio_light`)
+  instead of the exposure boost (exposure clipped the lit faces towards white); skin back to cell 1. 2,280 tris,
+  IoU 0.73 / 0.75 / 0.76. Sheet: `workspace/wizard/preview_r2.png`.
+- 62 tests.
 
 ## Decisions (with reasons)
 
+- **AI texture model: full SDXL, not Lightning** (Marcel, 2026-11-16): 27 s per image is fine; Lightning (6 s) looks flatter and less painterly.
 - **Auto paint look** (Marcel, 2026-11-15: "looks ok"): hue-shifted ramps, per-piece light gradient, brush dabs/bands, rim light/shadow, rust from edges, glow halo; tuned on the knight against the sheet's per-material colour stats.
 - **Painted export unlit** (Marcel, 2026-11-15): the light is painted into the texture; scene lights would light it twice and flatten the painted contrast.
 - **AI texturing runs locally** (Marcel, 2026-11-15): no hosted service; heavy runs on the office Mac Studio.
@@ -186,6 +258,7 @@ for timing → fix the plank lines (smoother start image/depth, lower `--cn`) �
 - **Budget raised** (Marcel, 2026-11-15) from 600–1,000 (Kenney-chunky, looked too edgy) to **1,500–2,500, hard 3,000**; head group ≤ 700 / 1,000; accessories ≤ 300 / 500. Segment & bevel guide in STYLE.md §3.
 - **Smooth by angle, 40°** replaces flat shading (Marcel, 2026-11-15): flat shading was what read as 'hard', not the triangle count (tested: same GLB, smoothed normals looked soft). Applied at assembly (`jobs/lib/shading.py`), split normals go into the GLB; `validate` warns on flat faces / unmarked creases. Round things use < 40° steps (heads/beards: 30° corner steps).
 - Reference images in the repo only when Marcel says they're his to publish (the mage and the knight are).
+- **New style `lowpoly`** (Marcel, 2026-11-16): the wizard sheet is a different look (flat facets, chibi, few segments), so it gets its own style instead of changing `clean` (whose smooth-by-angle shading Marcel chose for the mage).
 - **Style profiles** (Marcel, 2026-11-15): packs may need different looks (clean now, painted next, others later). The shared pipeline (skeleton, roles, parts mechanics, QA, export) stays one; the look is a folder. Roles are the bridge: palette colour in `clean`, material treatment in `painted`.
 - The mage spec has no `style` key (adding one would change its hash and void the approval) → it relies on `default_style = clean`. Add `"style": "clean"` at the next re-approval.
 
@@ -198,19 +271,23 @@ for timing → fix the plank lines (smoother start image/depth, lower `--cn`) �
 - **glTF importer** adds bone display shapes (icosphere) → `import_glb` removes them; glTF can't carry face attributes, so imported GLBs always fail `no_role`.
 - **Export** unparents the mesh from the armature for the session (validator: `NODE_SKINNED_MESH_NON_ROOT`).
 - **Repo location:** `/Users/marceli.to/Jamon.digital/Webroot/game-pack-generator` (moved from a scratch folder on 2026-11-15; venvs recreated). Old scratch files (animation comparison report, retarget tests) are in `workspace/_archive/` (local only).
+- **`ai` approach** runs `ai/gen.py` in `ai/.venv` (torch + diffusers + peft; `GPG_AI_PYTHON` overrides); models shared with the spike via the Hugging Face cache. On this M4 Max: model load ~4 s, generation ~27 s.
 - **AI spike** has its own venv (`spikes/ai-texture/.venv`, torch + diffusers); models (~13 GB) are cached in `~/.cache/huggingface`. 16 GB RAM is not enough to run it without swapping.
 - **KayKit source** is not in the repo (only the built `.blend`s). Download "Free 1.1" from https://kaylousberg.itch.io/kaykit-character-animations to rebuild the library.
 
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (54, ~90 s)
+.venv/bin/python -m pytest -q                       # all tests (58, ~100 s; AI end-to-end only with GPG_AI_TESTS=1)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
 npm install --prefix node && npx --prefix node playwright install chromium
 ```
 
 ## Log
+
+- **2026-11-16** — New style `lowpoly` (flat shading, chibi) from Marcel's wizard sheet; full wizard built (10 parts, IoU ≈ 0.75), exports clean; round 1 (rounder hands/feet, shoulder gap, brighter colours + preview exposure). Awaiting Marcel.
+- **2026-11-16** — Repo set up on the M4 Max / 64 GB (Blender 5.2.4, arm64 Python 3.13, 54 tests pass). AI spike `a1`: ~35 s per image (was ~18 min on 16 GB). Plank lines traced to the depth ControlNet, fixed with a subdivided depth guide. Lightning tested, full SDXL kept. `ai` approach in `paint_surface` (58 tests). Wizard head test: `ai` reinterprets simple faces → `keep_roles` + purple cell 38.
 
 - **2026-11-15** — AI-texture spike (local SDXL + depth ControlNet + IP-Adapter, projected): clearly better than auto paint, ~18 min/image on 16 GB. Repo moved to `~/Jamon.digital/Webroot/game-pack-generator`; spike scripts committed under `spikes/ai-texture/`. Next: Mac Studio.
 - **2026-11-15** — Painted head budget raised to 3,000 / 3,500 (Marcel); knight v3 head route kept.

@@ -47,7 +47,8 @@ at once, not for file size (the texture is ~85 % of a painted GLB).
 ## 4. Surface: painted (draft) → style.json
 
 Surface mode **`painted`**: roles (root STYLE.md §4) still drive colour, but each role resolves to a *base
-colour* (palette cell, `styles/painted/palette.png`, mid-tones) plus a *treatment*; the result is baked into one
+colour* (palette cell, `styles/painted/palette.png`, mid-tones; cell 38 is a magenta-purple `#8A45AC`, added
+for the wizard hat on 2026-11-16 in place of an unused deep indigo) plus a *treatment*; the result is baked into one
 texture per character.
 
 - **One material** `M_Painted`, base colour = the character's baked texture (`texture_size` 1024², UVs per
@@ -71,15 +72,38 @@ texture per character.
   front/side/back views are projected onto the mesh (z-buffer visibility, facing weights), auto paint fills what
   no view sees. Needs parts fitted to that sheet (overlay check); fitted parts are not reusable across characters,
   and views the sheet doesn't show (¾, top, under the chin) stretch or fall back to auto.
+- **Optional: `ai`** (AI-texture spike, 2026-11-16): an image model paints the views *from our own renders*, so
+  they match the mesh by construction (unlike `projection`, no hand-drawn sheet, no fitted parts). Steps, all in
+  one `paint_surface` call:
+  1. `auto` paint (start image and fallback for what no view sees);
+  2. **guides** per view (front, side, back, side_mirror; `ai.view_size` px, one framing from the character's
+     bounding box × `ai.frame_margin`): the auto paint rendered unlit, a **depth map from a smoothed copy**
+     (subdivision `ai.depth_subsurf` levels, edges over `ai.crease_deg`° creased; the depth ControlNet reads flat
+     mesh segments as panels otherwise) and the silhouette mask;
+  3. **generation**: the 4 views as one 2×2 image in one SDXL pass (one style across views): img2img from the
+     start image (`strength`) + depth ControlNet (`controlnet`) + IP-Adapter style reference (`ip_adapter`, style
+     blocks only; `styles/painted/style_ref.png`, a crop of Marcel's knight sheet); prompt = the character's
+     `spec.paint.subject` + `ai.style_prompt`; full SDXL, `steps` 30 (decided by Marcel, 2026-11-16: ~27 s on
+     the M4 Max; SDXL-Lightning looked flatter). Runs locally (decided by Marcel, 2026-11-15) in its own
+     environment `ai/.venv` (torch + diffusers); all model licences allow commercial use of the outputs;
+  4. **projection** of the generated views (the `projection` code with `ai.projection` overrides).
+  **`spec.paint.keep_roles`** (also for `projection`): roles that keep the `auto` paint after projection. For
+  simple cartoon faces (dot eyes, line mouth): the image model redraws them (adds a nose, drops the smile; seen on
+  the wizard head, 2026-11-16), so e.g. `["skin", "eyes", "dark"]`, plus `ai.keep_margin` (2 cm) around them,
+  because the model's version of the face spills onto its neighbours (a painted mouth on the beard); leave it out where the model's face is
+  wanted (the knight's skull).
+  `spec.paint.subject` is required (what the character is: "chibi skeleton knight, purple iron helmet with gold
+  trim, …"); it is stored in the spec, so the approval covers it. Output is deterministic per seed on one machine,
+  not across machines or library versions (the approval binds the texture hash anyway).
 - **Export unlit** (decided by Marcel, 2026-11-15): the GLB material uses `KHR_materials_unlit`; the light lives
   in the painted texture, so scene lights don't light it a second time. A lit variant (less painted light) may
   come later as a per-pack option. The material is texture → Background shader (what Blender's glTF exporter
   writes as `KHR_materials_unlit`), single-sided, linear filter; `export` fails without the extension.
 - Max. 8 base colours per character, as in `clean`.
-- **Tool:** `paint_surface(name, approach?, seed?)` after every `assemble_from_parts` (assembly puts the palette
+- **Tool:** `paint_surface(name, approach?, seed?, subject?, keep_roles?)` after every `assemble_from_parts` (assembly puts the palette
   material back, and `validate` reports `not_painted` until the character is painted). It unwraps to one UV layer
   `Paint` (the palette UVs are removed), bakes `workspace/<name>/paint/<approach>.png`, packs it into the
-  `.blend` and renders lit + unlit sheets. `approach`/`seed` are stored in `spec.paint`. Colour changes: edit
+  `.blend` and renders lit + unlit sheets. `approach`/`seed`/`subject`/`keep_roles` are stored in `spec.paint`. Colour changes: edit
   `spec.colors`, re-run `paint_surface` (`apply_palette`/`recolor` are palette-only).
 
 ## 5. Shading & normals

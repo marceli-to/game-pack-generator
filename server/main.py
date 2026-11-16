@@ -183,14 +183,20 @@ def compare_reference(name: str, arms_down_deg: float | None = None, hide_slots:
 
 @mcp.tool()
 @_safe
-def paint_surface(name: str, approach: str | None = None, seed: int | None = None) -> dict:
+def paint_surface(name: str, approach: str | None = None, seed: int | None = None,
+                  subject: str | None = None, keep_roles: list[str] | None = None) -> dict:
     """Painted styles only (surface 'painted'): UV-unwrap the assembled character and bake its painted
     texture from the face roles + spec.colors into one material (unlit when the style says so), saved in
     character.blend. Run after every assemble_from_parts. approach: 'auto' (default; procedural, works for
-    any parts) or 'projection' (hero characters: projects the add_reference sheet, auto fills the rest).
-    seed varies brush dabs/cracks/rust. approach/seed default to spec.paint and are stored there when
-    given. Previews: lit and unlit (flat) turnaround sheets; stats.texture_sha256 goes into an approval."""
-    return T_paint.paint_surface(name, approach, seed)
+    any parts), 'projection' (hero characters: projects the add_reference sheet, auto fills the rest) or
+    'ai' (a local image model paints front/side/back from our own renders in the style's look, then they
+    are projected; needs subject = what the character is, e.g. 'chibi skeleton knight, purple iron helmet
+    with gold trim, glowing blue eyes'; ~1 min). keep_roles (projection/ai): roles that keep the procedural
+    paint, e.g. ['skin', 'eyes', 'dark'] for a simple cartoon face the image model would redraw (adds a nose,
+    drops the smile); [] clears it. seed varies brush dabs/cracks/rust (and the generation).
+    approach/seed/subject/keep_roles default to spec.paint and are stored there when given. Previews: lit and unlit
+    (flat) turnaround sheets (+ the generated views for 'ai'); stats.texture_sha256 goes into an approval."""
+    return T_paint.paint_surface(name, approach, seed, subject, keep_roles)
 
 
 def main() -> None:
