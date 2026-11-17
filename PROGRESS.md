@@ -4,9 +4,9 @@ Living status of the project. **Read this first in every session; update it befo
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
 _Last updated: 2026-11-17 (session end) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard done; rifle guard + stride fix with the game (replies pending). **Officer done** (Marcel OK'd it,
-2026-11-17): GLB + `OFFICER.md` ready in `~/Desktop/tinfox` for Marcel to hand to the game. **Next: `hero-f` + the worker**
-(new session). Lowpoly Phase 4 items below still wait for Marcel._
+there). Guard done; rifle guard + stride fix in the game (reply received; open: vest colour). **Officer done** (Marcel OK'd it,
+2026-11-17): GLB + `OFFICER.md` ready in `~/Desktop/tinfox` for Marcel to hand to the game. **Next: weapons** (prop mode +
+pistol, new session), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -35,26 +35,38 @@ there). Guard done; rifle guard + stride fix with the game (replies pending). **
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-1. **Next character: the worker** (Marcel, 2026-11-17: in a new session). Sheet
-   `~/Desktop/tinfox/characters/sheets/04-worker.png` (`looks.worker`, NPC in depot and training). Needs the second
-   body archetype first: **`hero-f`** (slimmer waist, narrower shoulders; GENERATOR.md) as a proportion template in
-   `styles/tinfox/proportions/` (as `hero-m` was made from the guard sheet: metric grid, `make_template` +
-   `make_mannequin` jobs, STYLE.md ↔ style.json). Then worker parts: overalls (torso + legs), utility belt with
-   pouches, hard hat, ponytail, brown work gloves, brown boots (guard boots recoloured). Follow the workflow below.
-2. **Officer handed over** (Marcel OK'd it after the badge fix): `~/Desktop/tinfox/OFFICER.md`,
+1. **Next: weapons** (Marcel, 2026-11-17: before the worker; in a new session). Why first: in first person the
+   player's gun is always on screen, and every enemy in the game still holds a Kenney blaster. Sheets in
+   `~/Desktop/tinfox/weapons/sheets/` (01 pistol … 06 ammo), prompts in `weapons/prompts/`, notes in
+   `GENERATOR.md` §5 (sniper top view drawn ~10 % short: length from the side view; grenade ring upright; ammo: use
+   side + front views; magazine colour: pick one look). Plan:
+   a. **Prop mode** in the generator: STYLE.md ↔ core.json/style.json first (no rig, no animation, size in metres,
+      origin rules, own tris budget: first-person guns get more than barrels/boxes), spec kind `prop`, `validate`
+      rules for props, export of named empty nodes **`grip`** (where the hand holds it) and **`muzzle`** (barrel
+      tip). Grip frame must match the characters' `handslot.r` (gun axis = +X) so the game can parent it directly.
+   b. **Pistol** first as the test (sheet 01), then a brief for the game (it guesses grip/muzzle today in
+      `attachHeldGun` / `findMuzzle`, `src/render/modelCharacter.ts`, and will switch to the named points).
+   c. Then the other guns and the ammo/grenade pickups.
+2. **Then the worker** (after weapons). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
+   (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
+   narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
+   `styles/tinfox/proportions/` (as `hero-m` from the guard sheet: metric grid, `make_template` + `make_mannequin`
+   jobs, STYLE.md ↔ style.json). Worker parts: overalls (torso + legs), utility belt with pouches, hard hat,
+   ponytail, brown work gloves, brown boots (guard boots recoloured). Follow the workflow below.
+3. **Officer handed over** (Marcel OK'd it after the badge fix): `~/Desktop/tinfox/OFFICER.md`,
    `characters/glb/officer.glb` (sha `b088f6da…`, 7,322 tris, 1.856 m with the cap), `officer-preview.png`,
    `officer-vs-sheet.png`. Wait for the game's reply (coat hem in run/crouch walk, read at mid distance, epaulettes
    while firing). Possible polish: fringe more visible from the front, tris under 7,000.
-3. **Game replied to update 3 + rifle guard** (`GUARD-UPDATE-3-REPLY.md`, 2026-11-17): both in the game; walk/run
+4. **Game replied to update 3 + rifle guard** (`GUARD-UPDATE-3-REPLY.md`, 2026-11-17): both in the game; walk/run
    feet planted (game now has `groundSpeed` per profile, Tin Fox 1.6 / 4.0); rifle guard is a drop-in
    (`PROFILES.tinfox.archetypes.guard_rifle`), crouch/firing clean. **Open design call for Marcel:** at 7 m the rifle
    guard and the guard both read mostly olive; the game suggests a darker or grey vest. The vest's plates/collar
    share `primary` with the jacket, so this needs a new role (e.g. `secondary`-like `armor`) on the vest pieces.
    Possible later polish (not asked for): rounder shoulder pads, puffier plates.
-4. Still open from the guard rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a
+5. Still open from the guard rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a
    `validate` rule "face/detail islands must touch or enter their base shell".
-5. Then players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
-6. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
+6. Then players (two suits, four heads; `hero-m` + `hero-f`).
+7. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
 
 **Workflow for a new Tinfox character** (as used for the rifle guard): copy the sheet to
 `specs/<name>/reference/turnaround.png`; spec from the guard's (parts, colours, `extra_clips`,
@@ -957,6 +969,7 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-17** — Order changed (Marcel): weapons next (prop mode + pistol), then `hero-f` + worker.
 - **2026-11-17** — ump: officer + parts committed; next session: `hero-f` template + worker.
 - **2026-11-17** — Game reply to update 3: stride fix confirmed, rifle guard in. Open: vest colour (Marcel).
 - **2026-11-17** — Officer: cap badge lower, leaning with the crown (Marcel); OK'd → `OFFICER.md` + GLB in
