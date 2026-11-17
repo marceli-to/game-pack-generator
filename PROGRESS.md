@@ -4,11 +4,8 @@ Living status of the project. **Read this first in every session; update it befo
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
 _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard: built through Marcel's viewer rounds, flat palette + baked vertex AO, fitted to the sheet
-(`fit_to_reference`), in the game (tin-wolf `?art=tinfox`). **Update 2 sent** (`GUARD-UPDATE-2.md`: fitted guard,
-crouch-aim clips for the game's "gun points at the floor when crouching", plain NEAREST sampler). **Rifle guard v1**
-built with the new workflow (3 new parts + fit; IoU 0.86 / 0.84 / 0.86). **Next session: hand the rifle guard to the
-game, then start the officer** (Marcel, 2026-11-17).
+there). Guard done (update 2 checked by the game). Marcel handed `RIFLE-GUARD.md` + `GUARD-UPDATE-3.md` (stride
+fix: walk/run planted for 1.6 / 4.0 m/s) to the game; replies pending. **Next: the officer** (Marcel, 2026-11-17).
 Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
@@ -35,19 +32,16 @@ Lowpoly Phase 4 items below still wait for Marcel._
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
 `~/Desktop/tinfox/GENERATOR.md`). Done: shooter clips (+ crouch-aim clips), style `tinfox` + `hero-m`, the
-**guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard").
+**guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
+the stride fix (see "Tinfox: stride").
 
-1. **Hand the rifle guard to the game** (Marcel, 2026-11-17: next session). Rebuild
-   (`.venv/bin/python workspace/lib4/run.py rifle-guard --anim --export`; the GLB is gitignored), copy
-   `workspace/rifle-guard/export/character-rifle-guard.glb` to `~/Desktop/tinfox/characters/glb/rifle-guard.glb`
-   + a preview, and write `~/Desktop/tinfox/RIFLE-GUARD.md` for the game agent: same rig, bone names, 18 clips,
-   palette, vertex AO and grip as the guard (the 2H clips are the rifle's); what's new (helmet with earcups, vest,
-   knee pads; 7,058 tris); please check it with a rifle at mid distance and crouched. Comparison:
-   `workspace/tinfox/rifle-guard/rifle_guard_v1.png`. Possible later polish (not asked for): rounder, fuller shoulder pads, puffier vest plates,
-   vest front a little proud in the side view.
-2. **Wait for the game agent's check of `GUARD-UPDATE-2.md`** (crouch-aim clips in the game: it needs a small change
-   to pick `crouch_aim_*` / `crouch_shoot_*` while crouched; fitted guard at mid distance).
-3. **Then build the officer** (`characters/sheets/02-officer.png`, ~25–30 %: peaked cap, coat, tall boots, moustache;
+1. **Build the officer** (Marcel, 2026-11-17: next character; details below in item 3).
+2. Replies pending from the game agent (Marcel handed both over 2026-11-17): `GUARD-UPDATE-3.md` (the game must play
+   `run` at `speed / 4.0` instead of `speed / 5`; check planted feet in walk/run) and `RIFLE-GUARD.md` (GLB sha
+   `291836f8…`, 7,058 tris; mid distance next to a guard, crouched with the SMG, firing). Possible later polish of
+   the rifle guard (not asked for): rounder, fuller shoulder pads, puffier vest plates, vest front a little proud
+   in the side view. The guard itself is closed (`GUARD-UPDATE-2-REPLY.md`).
+3. **Officer** (`characters/sheets/02-officer.png`, ~25–30 %: peaked cap, coat, tall boots, moustache;
    coat hem vs knees in walk/run is the risk). Workflow as for the rifle guard (below). Still open from the guard
    rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a `validate` rule "face/detail islands
    must touch or enter their base shell".
@@ -780,6 +774,24 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   guard's categories (73 vs the guard's 77; pads over the sleeve tops, thighs into the jacket hem in crouch, belt).
   Export ok (validator, three.js load).
 
+## Tinfox: stride (2026-11-17)
+
+- Marcel (in the game): run takes very big steps, walk looks like moonwalking. Measured: KayKit's run on hero-m legs
+  (1.95× KayKit's) = planted foot 6.4 m/s, 2.6 m steps (a sprint; the game plays run at `speed / 5` → 0.76× at
+  3.8 m/s); walk 1.5 m/s on average but 2.5 m/s after heel strike, 1.1 m/s before toe-off.
+- **`archetypes.<name>.clip_stride`** (`{clip: m/s}`, root STYLE.md §8 ↔ core.json `animations.stride`; tinfox
+  `hero-m`: walk 1.6, run 4.0, the game's guard speeds): `anim.bake_stride`, run in `apply_animations` after the
+  floor clamp. Stance = ankle or toe joint within 3 cm of its lowest (the longest run); the planted ankle moves
+  linearly at the speed, the swing is scaled about the stance centre by the same factor (run 0.62, walk ≈ 1.0),
+  hips raised where the planted leg would fold (run up to 8 cm; without it the shorter run stride squatted),
+  two-bone IK towards the clip's knee, foot orientation kept. Report `clips.<clip>.stride` incl. the measured
+  planted speed after baking (walk 1.58–1.70, run 4.00–4.03 m/s). Contact first read on the raw clip: the left heel
+  dips below the floor at heel strike (before the clamp) → asymmetric stances; hence after the clamp.
+- Gotcha: after resetting the pose, `frame_set(f)` on the current frame doesn't re-evaluate the action (frame 0 read
+  as the rest pose) → `frame_set(f0 - 1)` first.
+- Test `tests/test_stride.py` (doc sync, guard end-to-end). 84 tests. Sent: `GUARD-UPDATE-3.md` (guard sha
+  `56189789…`, rifle guard `291836f8…`, side views `characters/glb/stride-old-new.png`).
+
 ## Fit to the reference (2026-11-17, Marcel: "go ahead with the automatic fitting loop")
 
 - **`fit_to_reference(name, apply=True)`** (MCP tool; `server/tools/qa.py`, job `jobs/fit_reference.py`, numpy core
@@ -903,7 +915,7 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (82, ~90 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (84, ~90 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -915,6 +927,14 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — ump: rifle guard + update 3 handed to the game by Marcel; next: the officer.
+
+- **2026-11-17** — Stride bake (`clip_stride`): walk/run feet planted for 1.6 / 4.0 m/s (Marcel: big run steps,
+  moonwalking walk); guard + rifle guard re-sent (`GUARD-UPDATE-3.md`). 84 tests pass.
+
+- **2026-11-17** — Game confirmed guard update 2 (guard closed). Rifle guard rebuilt, exported (validator 0/0, 18
+  clips) and sent (`RIFLE-GUARD.md`). Next: the officer.
 
 - **2026-11-17** — Crouch-aim clips (`over`), NEAREST sampler, guard update 2 sent; rifle guard v1 (3 new parts,
   fitted, IoU ~0.85); `compare_reference` pose fix. 81 tests pass. Next session: rifle guard to the game, then the officer.

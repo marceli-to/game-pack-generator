@@ -23,6 +23,11 @@ def run(args):
     # arms-only clips (§8b) leave the hips to the clip they are layered over
     lifts = {a.name: round(A.floor_clamp(arm, char, a, body), 4) for a in acts
              if not A.is_arms_only(a.name)} if body else {}
+    # stride (STYLE.md §8): re-plant walk/run feet on the floor-clamped clip
+    stride = A.archetype_of(spec).get("clip_stride", {})
+    for a in acts:
+        if a.name in stride:
+            a["stride_report"] = A.bake_stride(arm, a, stride[a.name])
     upright = A.upright_slots(spec)
     leans = {}
     for slot, bone in upright.items():
@@ -41,6 +46,7 @@ def run(args):
     bpy.context.scene.frame_set(0)
     SC.save(args["out"])
     clips = {a.name: {"frames": int(round(a.frame_range[1] - a.frame_range[0])),
-                      **({"arms_only": a["arms_only_report"].to_dict()} if "arms_only_report" in a else {})}
+                      **({"arms_only": a["arms_only_report"].to_dict()} if "arms_only_report" in a else {}),
+                      **({"stride": a["stride_report"].to_dict()} if "stride_report" in a else {})}
              for a in acts}
     return {"outputs": [args["out"]], "stats": {"clips": clips, "upright": upright, "floor_lift_m": lifts, "upright_lean_deg": leans}}

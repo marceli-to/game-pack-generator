@@ -12,6 +12,7 @@
       ],
       "heads": 5,
       "template": "styles/tinfox/proportions/hero-m.json",
+      "clip_stride": { "walk": 1.6, "run": 4.0 },
       "targets": {
         "_comment": "Marcel's guard sheet (specs/guard/reference/turnaround.png) at 2.055 mm/px, 1.80 m to the skull top under the cap (STYLE.md §7a)",
         "hip_z": 0.86,

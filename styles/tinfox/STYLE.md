@@ -94,6 +94,10 @@ Templates live in `styles/tinfox/proportions/<archetype>.json` (+ `_preview.png`
   longer for the same reason), hips 0.86 m (x ±0.16: the guard stands with his legs apart, thighs centred at ≈ ±0.17, boots at ≈ ±0.22; the template legs are straight, so the boots sit 2.5 cm further out than the ankles; crotch ≈ 0.73), ankles 0.13 m, foot bone 0.26 m (the boot
   sole is ≈ 0.45 m long and 0.30 m wide, heel 0.16 m behind the ankle), head 0.30 × 0.30 m, torso 0.44 × 0.32 m
   without the pads.
+- **Stride (`clip_stride`):** `hero-m` re-plants `walk` for 1.6 m/s and `run` for 4.0 m/s (Tinfox's guards walk
+  1.5–1.8 m/s and run 3.8–4.0 m/s). KayKit's clips on these legs (1.95× KayKit's) came out at 1.5 m/s for `walk`, but
+  the stance foot slid at 2.5 m/s after heel strike and 1.1 m/s before toe-off (moonwalking, Marcel), and at
+  6.4 m/s with 2.6 m steps for `run` (a sprint, played at 0.76× in the game: big, slow steps).
 
 ## 11. Preview renders → style.json
 

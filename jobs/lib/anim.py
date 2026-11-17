@@ -296,6 +296,175 @@ def floor_clamp(arm, char, action, body_verts):
     return max(s[2] for s in samples)
 
 
+# --- stride (STYLE.md §8, clip_stride) --------------------------------------------------------------
+
+def _two_bone(S_, W, P, a, b):
+    """Knee/elbow position and reached end for a two-bone chain from S_ towards W, bending towards P."""
+    d_vec = W - S_
+    d = max(min(d_vec.length, a + b - 1e-4), abs(a - b) + 1e-4)
+    n = d_vec.normalized()
+    m = (P - S_) - n * n.dot(P - S_)
+    m = m.normalized() if m.length > 1e-6 else n.orthogonal().normalized()
+    cos_a = (a * a + d * d - b * b) / (2 * a * d)
+    sin_a = math.sqrt(max(0.0, 1 - cos_a * cos_a))
+    return S_ + n * a * cos_a + m * a * sin_a, S_ + n * d
+
+
+def bake_stride(arm, action, speed):
+    """Re-plant the feet of a looping locomotion clip for a ground speed of `speed` m/s (STYLE.md §8).
+
+    Per foot: the stance (frames where the ankle or the toe joint is within `animations.stride.contact` of
+    its lowest in the clip, the longest such run) moves backwards at exactly `speed`, centred where the clip centres it;
+    the swing is scaled about the same centre by the stance's factor, so it lifts off and lands where the new
+    stance ends and starts. The hips rise where a planted foot now stands closer under them, so the planted
+    leg is as extended as in the clip (interpolated over frames with no foot down). Other heights, sideways positions and the foot orientation stay as in the clip;
+    thigh and shin are solved with a two-bone IK bending towards the clip's knee. Assumes the clip loops
+    (last frame = first) and the armature has no object transform. Returns per side the source stance speed,
+    the stride factor, stance frames and the IK reach error."""
+    mw = arm.matrix_world
+    if any(abs(mw[r][c] - (r == c)) > 1e-4 for r in range(4) for c in range(4)):
+        raise RuntimeError("bake_stride needs an armature without object transform")
+    cfg = S.load()["animations"]["stride"]
+    fps = bpy.context.scene.render.fps
+    bones = arm.data.bones
+    rest = {b.name: b.matrix_local.copy() for b in bones}
+    f0, f1 = (int(round(x)) for x in action.frame_range)
+    N = f1 - f0
+    for pb in arm.pose.bones:   # bones the clip doesn't key keep the last pose otherwise
+        pb.location = (0, 0, 0)
+        pb.rotation_quaternion = (1, 0, 0, 0)
+    bpy.context.scene.frame_set(f0 - 1)   # else frame_set(f0) on the current frame keeps the reset pose
+    src = {f: _arm_space_pose(arm, action, f) for f in range(f0, f1 + 1)}
+    keys, report, legs = {}, {}, {}
+    for side in ("l", "r"):
+        U, L, F = (f"{b}.{side}" for b in cfg["leg_bones"])
+        # planted: the ankle (flat foot) or the toe joint (heel off) within `contact` of its own lowest
+        ankle = [src[f0 + i][F].translation.z for i in range(N)]
+        ball = [(src[f0 + i][F] @ Matrix.Translation((0, bones[F].length, 0))).translation.z for i in range(N)]
+        ys = [src[f0 + i][F].translation.y for i in range(N)]
+        on = [ankle[i] < min(ankle) + cfg["contact"] or ball[i] < min(ball) + cfg["contact"] for i in range(N)]
+        if all(on) or not any(on):
+            raise RuntimeError(f"{action.name}: no stance/swing split for foot.{side}")
+        # longest cyclic run of contact frames: start index a, length n
+        best = (0, 0)
+        for a in range(N):
+            if on[a] and not on[a - 1]:
+                n = 0
+                while on[(a + n) % N]:
+                    n += 1
+                best = max(best, (n, a))
+        n, a = best
+        b = a + n - 1
+        dur = (b - a) / fps
+        span = ys[b % N] - ys[a]
+        sgn = 1.0 if span > 0 else -1.0
+        span = abs(span)
+        y_m = (ys[b % N] + ys[a]) / 2
+        k = speed * dur / span
+        target, stance = {}, set()
+        for i in range(N):
+            j = (i - a) % N            # frames since the stance began
+            if j <= b - a:
+                target[i] = y_m + sgn * speed * ((j - (b - a) / 2) / fps)
+                stance.add(i)
+            else:
+                target[i] = y_m + k * (ys[i] - y_m)
+        legs[side] = (U, L, F, target, stance)
+        report[side] = {"source_speed_m_s": round(span / dur, 3), "factor": round(k, 3),
+                        "stance_frames": [f0 + a, f0 + b % N]}
+    # hips: raised where a planted foot comes closer under them, so the planted leg is as extended as in the
+    # clip (a shorter stride under sprint-low hips folds the knees); frames with no foot down are interpolated
+    lift = {}
+    for i in range(N):
+        need = []
+        for U, L, F, target, stance in legs.values():
+            if i in stance:
+                p = src[f0 + i]
+                H, Ws = p[U].translation, p[F].translation
+                D = (H - Ws).length
+                h2 = (H.x - Ws.x) ** 2 + (H.y - target[i]) ** 2
+                need.append(Ws.z + math.sqrt(max(0.0, D * D - h2)) - H.z)
+        if need:
+            lift[i] = max(0.0, max(need))
+    known = sorted(lift)
+    for i in range(N):
+        if i not in lift:
+            prev = max((j for j in known if j < i), default=known[-1] - N)
+            nxt = min((j for j in known if j > i), default=known[0] + N)
+            t = (i - prev) / (nxt - prev)
+            lift[i] = lift[prev % N] * (1 - t) + lift[nxt % N] * t
+    hips = bones[next(iter(legs.values()))[0]].parent.name
+    hp = arm.pose.bones[hips]
+    to_local = rest[hips].to_3x3().inverted()
+    hip_locs = {}
+    SC.assign_action(arm, action)
+    for i in range(N + 1):
+        bpy.context.scene.frame_set(f0 + i)
+        hip_locs[f0 + i] = hp.location.copy() + to_local @ Vector((0, 0, lift[i % N]))
+    for side, (U, L, F, target, stance) in legs.items():
+        a_len = (rest[U].inverted() @ rest[L]).translation.length
+        b_len = (rest[L].inverted() @ rest[F]).translation.length
+        v_u = (rest[U].inverted() @ rest[L]).translation
+        v_l = (rest[L].inverted() @ rest[F]).translation
+        err = 0.0
+        for i in range(N + 1):
+            f = f0 + i
+            p = src[f]
+            up = Matrix.Translation((0, 0, lift[i % N]))
+            H = p[U].translation + up.translation
+            W = p[F].translation.copy()
+            W.y = target[i % N]
+            E, W2 = _two_bone(H, W, p[L].translation + up.translation, a_len, b_len)
+            err = max(err, (W2 - W).length)
+            rots = {U: _swing(p[U].to_3x3().normalized(), v_u, E - H),
+                    L: _swing(p[L].to_3x3().normalized(), v_l, W2 - E),
+                    F: p[F].to_3x3().normalized()}
+            pp = up @ p[bones[U].parent.name]
+            for bn in (U, L, F):
+                base = pp @ (rest[bones[bn].parent.name].inverted() @ rest[bn])
+                tgt = Matrix.Translation(base.translation) @ rots[bn].to_4x4()
+                basis = base.inverted() @ tgt
+                _, q, _ = basis.decompose()
+                ks = keys.setdefault(bn, [])
+                if ks and ks[-1][1].dot(q) < 0:
+                    q.negate()
+                ks.append((f, q))
+                pp = base @ basis
+        report[side]["reach_error_m"] = round(err, 4)
+    report["hips_lift_m"] = round(max(lift.values()), 4)
+    if report["hips_lift_m"] > 1e-4:
+        SC.remove_fcurves(action, lambda fc: fc.data_path == f'pose.bones["{hips}"].location')
+        for f, loc in hip_locs.items():
+            hp.location = loc
+            hp.keyframe_insert("location", frame=f)
+    names = set(keys)
+    SC.remove_fcurves(action, lambda fc: any(fc.data_path == f'pose.bones["{bn}"].rotation_quaternion' for bn in names))
+    bag = action.layers[0].strips[0].channelbag(action.slots[0])
+    for bn, ks in keys.items():
+        arm.pose.bones[bn].rotation_mode = "QUATERNION"
+        for i in range(4):
+            fc = bag.fcurves.new(f'pose.bones["{bn}"].rotation_quaternion', index=i)
+            fc.keyframe_points.add(len(ks))
+            for kp, (f, q) in zip(fc.keyframe_points, ks):
+                kp.co = (f, q[i])
+                kp.interpolation = "LINEAR"
+            fc.update()
+    # measured on the baked clip: the planted ankle's speed between consecutive stance frames
+    for pb in arm.pose.bones:
+        pb.location = (0, 0, 0)
+        pb.rotation_quaternion = (1, 0, 0, 0)
+    bpy.context.scene.frame_set(f0 - 1)
+    baked = {f: _arm_space_pose(arm, action, f) for f in range(f0, f1 + 1)}
+    for side, (U, L, F, target, stance) in legs.items():
+        v = [(baked[f0 + i + 1][F].translation - baked[f0 + i][F].translation).length * fps
+             for i in range(N) if i in stance and (i + 1) % N in stance]
+        report[side]["stance_speed_m_s"] = [round(min(v), 3), round(max(v), 3)]
+    for pb in arm.pose.bones:
+        pb.location = (0, 0, 0)
+        pb.rotation_quaternion = (1, 0, 0, 0)
+    return {"speed_m_s": speed, **report}
+
+
 # --- arms-only clips (STYLE.md §8b) ------------------------------------------------------------------
 
 def arm_chain(side):

@@ -160,7 +160,9 @@
       {"name": "crouch_aim_2h", "source": "Ranged_2H_Aiming", "file": "Rig_Medium_CombatRanged.glb", "loop": true, "range": [8, 48], "arms_only": true, "over": "crouch", "stance": {"forward": 0.85, "inward": 0.25, "down": 0.3, "left": {"along": 0.18, "out": 0.08, "down": 0.02}, "elbow": {"out": 0.25, "forward": 0.2, "down": 0.15}, "shoulder": {"forward": 0.12, "in": 0.03}}, "frames": 40},
       {"name": "crouch_shoot_2h", "source": "Ranged_2H_Shooting", "file": "Rig_Medium_CombatRanged.glb", "loop": false, "range": [0, 8], "arms_only": true, "over": "crouch", "stance": {"forward": 0.85, "inward": 0.25, "down": 0.3, "left": {"along": 0.18, "out": 0.08, "down": 0.02}, "elbow": {"out": 0.25, "forward": 0.2, "down": 0.15}, "shoulder": {"forward": 0.12, "in": 0.03}}, "frames": 8}
     ],
-    "arms_only_bones": ["upperarm", "lowerarm", "wrist", "hand", "handslot"]
+    "arms_only_bones": ["upperarm", "lowerarm", "wrist", "hand", "handslot"],
+    "_comment_stride": "STYLE.md §8: archetypes.<name>.clip_stride re-plants walk/run feet for a ground speed; contact = how far above its lowest a foot may be and still count as planted (m)",
+    "stride": { "contact": 0.03, "leg_bones": ["upperleg", "lowerleg", "foot"] }
   },
   "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0 },
   "skinning": {
