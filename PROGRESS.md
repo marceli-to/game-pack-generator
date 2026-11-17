@@ -41,25 +41,30 @@ _Last updated: 2026-11-17 — Rogue + villager detail pass done (awaiting Marcel
    three test mixes `ranger` (elf head, short hair, gloves, cuffed boots, potions), `farmer` (short hair + beard,
    baggy trousers), `paladin` (stern head, armoured legs, sabatons, book): `workspace/<name>/renders/preview/view_sheet.png`,
    `pose_test/pose_test.png`, GLBs in `export/`. Paladin/ranger not rebuilt since the knight parts changed.
-2. **Heerschar in-game test** (Marcel has the wizard and the knight in the game now; wizard "finished", knight fixed
+2. **Cast sheet for the Heerschar agent** (Marcel, 2026-11-17: to see which characters the game still needs):
+   `workspace/_catalog/lowpoly/cast.png` (8 characters, front + 3/4, status, carried items). Rebuild:
+   `ai/.venv/bin/python -I workspace/lib4/cast.py "$PWD" "$PWD/workspace/_catalog/lowpoly/cast.png"` after
+   `run.py <name>` + `render_preview` per character (PIL lives only in `ai/.venv`). Wait for its list of missing
+   characters.
+3. **Heerschar in-game test** (Marcel has the wizard and the knight in the game now; wizard "finished", knight fixed
    after his round). Earlier agent brief (Marcel's game, `/Users/marceli.to/Jamon.digital/Webroot/heerschar`): brief handed to
    another agent (knight-lowpoly as the player `krieger`, driven by the game's KayKit Knight clips: same bone names;
    hips track × 0.689; `swaps: []`). Wait for its report; likely generator follow-ups: export with KayKit clip names
    (floor clamp / hand damping baked in), a recolour mapping for the palette texture, separate weapon nodes for the
    swing trail.
-3. Phase 4 wrap-up: dwarf slots still have one part each (dwarf parts only fit the dwarf template); decide whether
+4. Phase 4 wrap-up: dwarf slots still have one part each (dwarf parts only fit the dwarf template); decide whether
    Phase 4 needs dwarf variants or moves on to Phase 5 (`build_pack`, 10-character pack).
-4. Open from the earlier sheets: all sheets: boots closer together, arms hanging steeper. Dwarf: head group 1,248
+5. Open from the earlier sheets: all sheets: boots closer together, arms hanging steeper. Dwarf: head group 1,248
    tris (> 1,000); the left shoulder pad pushes 3.5–5 cm into the side of the beard in `attack`/`die` (the beard is
    as wide as the shoulders: narrow it where it meets the shoulders, if Marcel minds).
    **What the visible pose test now shows on every robed/tunic character** (real, was hidden in the noise):
    boots/shins come out through the back of skirts and tunics when the foot kicks back in walk/run/jump
    (villager 12 cm, rogue 10 cm, wizard, ranger, farmer); collars/mantles touch the head in `die`. Fix idea: the
    skirt weights' back hem following the shin, or shorter kick-back via per-clip `clip_offsets` on `lowerleg`.
-5. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
+6. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
    held staff lies across the wizard's face; knight `hit` 14 cm torso into helmet (probably the C-shaped guard
    shell fooling the parity test; not among the visible findings any more).
-6. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint, mouth spilling onto the beard,
+7. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint, mouth spilling onto the beard,
    iron too light/even, 512 px per view thin for a full body; the knight body.
 
 ### Phase 1 delivered
@@ -478,7 +483,7 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   a few-mm slit doesn't count). Not from below: under a hem every boot "enters" the skirt's underside (first try,
   −10°, flagged them all). Every penetration gets `visible` (+ `visible_depth_m` = depth of the vertices next to
   the visible crossings, so an armpit seam is shallow); findings only for visible ones deeper than
-  `visible_tolerance` = 3 cm. Wizard 70 pairs → 23 findings; what is left is real (see Next item 4).
+  `visible_tolerance` = 3 cm. Wizard 70 pairs → 23 findings; what is left is real (see Next item 5).
   `validate`: parts declare features they hide, `P.covers = ["ears"]` (core.json `part_covers`, stored in the part
   .json); soft `covered_visible` when ≥ 3 ear vertices are visible in the rest pose (`covers_check`). Ears = the
   head's islands out at the sides (> 70 % of the skull's half-width; the eyes and mouth are islands too).
@@ -577,6 +582,8 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Cast sheet of all 8 lowpoly characters for the Heerschar agent (`workspace/_catalog/lowpoly/cast.png`).
 
 - **2026-11-17** — Paladin metal → cell 51 (knight steel; Marcel), rebuilt, animated, exported.
 
