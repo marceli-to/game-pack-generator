@@ -5,7 +5,7 @@
   "colors": {
     "skin": 1,
     "eyes": 9,
-    "primary": 28,
+    "primary": 29,
     "secondary": 47,
     "dark": 9,
     "leather": 46,
@@ -21,7 +21,7 @@
     "arms": "arms-sleeves-slim-chibi",
     "hands": "hands-mitten-block",
     "legs": "legs-pants-chibi",
-    "feet": "feet-boots-chibi",
+    "feet": "feet-boots-low-chibi",
     "accessory_hand_r": "accessory_hand_r-dagger-block",
     "accessory_hand_l": "accessory_hand_l-dagger-block",
     "accessory_waist": "accessory_waist-pouch-small-block"

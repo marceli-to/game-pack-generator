@@ -14,18 +14,26 @@ def size(z):
             t = (z - z0) / (z1 - z0)
             return a0 + (a1 - a0) * t, b0 + (b1 - b0) * t, d0 + (d1 - d0) * t
     return rings[0][1:] if z > rings[0][0] else rings[-1][1:]
+# apron (v2 detail pass): ends 9 cm above the hem, bottom corners chamfered
 rows = []
-for z in (0.47, 0.39, 0.31, 0.25):
+for z, angs in ((0.47, (-46, -28, -9, 9, 28, 46)), (0.39, (-46, -28, -9, 9, 28, 46)), (0.33, (-46, -28, -9, 9, 28, 46)),
+                (0.29, (-36, -26, -9, 9, 26, 36))):
     rx, ry, dy = size(z)
     rows.append([Vector(((rx + 0.012) * math.sin(math.radians(a)), -(ry + 0.012) * math.cos(math.radians(a)) + dy, z))
-                 for a in (-50, -30, -10, 10, 30, 50)])
+                 for a in angs])
 P.shell(rows, 0.008, "secondary")
-# round white collar lying on the shoulders (Peter-Pan style): a cyclic sheet from the neck out over the bodice,
-# its outer edge dropping into two rounded points either side of the front
+# wide leather belt standing proud of the dress (v2)
+P.loft([P.ring((0, 0.0015, z), rx, ry, n=10) for z, rx, ry in
+        ((0.468, 0.188, 0.148), (0.474, 0.196, 0.156), (0.528, 0.188, 0.15), (0.534, 0.18, 0.142))], "leather")
+# small white collar (v2, Peter-Pan style) lying on the flat shoulder top round the neck, two rounded points
+# dropping onto the chest either side of a V at the front
+cols = [math.radians(360 * k / 16) for k in range(16)]
+bump = lambda t: math.exp(-((abs(math.degrees(t) if math.degrees(t) <= 180 else 360 - math.degrees(t)) - 34) / 30) ** 2)
 def on(th, z, out):
     rx, ry, dy = size(z)
     return Vector(((rx + out) * math.sin(th), -(ry + out) * math.cos(th) + dy, z))
-cols = [math.radians(360 * k / 16) for k in range(16)]
-bump = lambda t: math.exp(-((abs(math.degrees(t) if math.degrees(t) <= 180 else 360 - math.degrees(t)) - 28) / 22) ** 2)
-P.shell([[on(t, 0.772, 0.012) for t in cols], [on(t, 0.745, 0.016) for t in cols],
-         [on(t, 0.7 - 0.04 * bump(t), 0.02) for t in cols]], 0.012, "secondary", cyclic=True)
+flat = lambda t, rx, ry, z: Vector((rx * math.sin(t), -ry * math.cos(t), z))
+r0 = [flat(t, 0.088, 0.082, 0.786) for t in cols]
+r2 = [flat(t, 0.142, 0.122, 0.768).lerp(on(t, 0.716, 0.016), bump(t)) for t in cols]
+r1 = [a.lerp(b, 0.5) + Vector((0, 0, 0.006)) for a, b in zip(r0, r2)]
+P.shell([r0, r1, r2], 0.012, "secondary", cyclic=True)

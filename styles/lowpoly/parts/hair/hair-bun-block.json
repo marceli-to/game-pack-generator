@@ -5,19 +5,19 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "63060f9d28873e8000605acbe4581caf0d2a8f8db1a3bcf789904a29c49689e0",
- "built": "2026-11-16",
+ "script_sha256": "10f79a7a8b9a779cf56772531d2361416368aeafddf46ec4ee0c58ab70c41493",
+ "built": "2026-11-17",
  "blender": "5.2.4",
- "tris": 406,
- "verts": 211,
+ "tris": 616,
+ "verts": 330,
  "roles": [
   "hair"
  ],
- "shells": 4,
+ "shells": 11,
  "bbox": [
   [
    -0.3236,
-   -0.295,
+   -0.27,
    0.83
   ],
   [
@@ -26,5 +26,7 @@
    1.525
   ]
  ],
- "warnings": []
+ "warnings": [
+  "asymmetric: 63 of 330 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
 }

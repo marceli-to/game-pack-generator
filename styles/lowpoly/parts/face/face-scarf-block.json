@@ -5,11 +5,11 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "d0a45806162ac35e2ca3447e7b1d48e8d205d104105dda1fdbbe3d8ebaee42d6",
- "built": "2026-11-16",
+ "script_sha256": "ba21bd03722c1ecf3cba5215225d0c12b179d94a244c26a49bedaeaf46c0276b",
+ "built": "2026-11-17",
  "blender": "5.2.4",
- "tris": 92,
- "verts": 48,
+ "tris": 124,
+ "verts": 64,
  "roles": [
   "dark"
  ],
@@ -18,7 +18,7 @@
   [
    -0.2341,
    -0.2232,
-   0.7513
+   0.6669
   ],
   [
    0.2341,

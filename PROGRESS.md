@@ -3,10 +3,9 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-16 — Marcel put the wizard and knight in Heerschar: the wizard looks finished, the knight
-"very much work in progress" (missing details). Knight detail pass done (helmet, torso, pauldrons, gauntlets, low
-boots, sword, shield; helmet + rogue hood pulled close to the head): Marcel "all good now". Lowpoly budget raised to
-1,500–3,500 / hard 4,000; knight 3,964. Committed + pushed._
+_Last updated: 2026-11-17 — Rogue + villager detail pass done (same method as the knight): rogue mantle, olive
+tunic, stepped cuffs, low boots, leaf daggers, hood open behind the ears; villager dusty-rose dress, fringe locks,
+small collar, short apron, wide belt. "Finished look" checklist in lowpoly STYLE.md §1a. Awaiting Marcel's look._
 
 ---
 
@@ -29,17 +28,15 @@ boots, sword, shield; helmet + rogue hood pulled close to the head): Marcel "all
 
 ## Next session: start here
 
-0. **Same detail pass for rogue and villager** (they share the knight's problem: big shapes right, details
-   missing), then write the "finished look" rules into the lowpoly STYLE.md. Knight done (Marcel: "all good now",
-   not formally approved). Paladin/ranger share the knight's sword, shield, arms, gauntlets, tabard: re-check them.
-   How the knight was done (repeat for the rogue/villager): close-ups of the sheet next to renders at the same scale
-   (arms posed down 62°), one part at a time, check in three.js. Scripts (local, gitignored) in
-   `workspace/knight-lowpoly/detail/`: `head.sh <name> [part ...]` (any character: head close-ups vs its sheet),
-   `loop.sh [part ...]` + `shoulder.sh` (knight only: head/body/legs and shoulder rows); edit parts in
-   `workspace/lib4/parts/`, the scripts rebuild them into the library. Hidden-ear check: scratch `ear.py` (ray cast
-   from the ear vertices, everything else as occluder); worth turning into a `pose_test`/`validate` check.
-   Marcel's in-game eye catches things the sheets don't (ear through the helmet, the gold tab between the legs):
-   have him look in Heerschar after each character.
+0. **Marcel's look at the rogue and villager after their detail pass** (viewer / Heerschar; GLBs in
+   `workspace/<name>/export/`). Comparison sheets: `workspace/knight-lowpoly/detail/detail_<name>.png` (rows head /
+   body / legs: sheet | render per view), `head_<name>.png`, `full4.png` (rogue, villager, ranger, farmer).
+   Paladin rebuilt with the new knight parts (3,530 tris, soft over the 3,500 target; animates, exports; looks
+   pale: white tabard on light steel 41, maybe metal 51 like the knight: Marcel's call).
+   Scripts (local, gitignored) in `workspace/knight-lowpoly/detail/`: `body.sh <name> [part ...]` (any character:
+   rebuild parts, head/body/legs rows vs its sheet), `head.sh <name> [part ...]` (head close-ups), `loop.sh` +
+   `shoulder.sh` (knight only); edit parts in `workspace/lib4/parts/`. Marcel's in-game eye catches things the
+   sheets don't: have him look in Heerschar after each character.
 1. **Marcel's look at the new parts** (catalog `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`) and the
    three test mixes `ranger` (elf head, short hair, gloves, cuffed boots, potions), `farmer` (short hair + beard,
    baggy trousers), `paladin` (stern head, armoured legs, sabatons, book): `workspace/<name>/renders/preview/view_sheet.png`,
@@ -52,9 +49,12 @@ boots, sword, shield; helmet + rogue hood pulled close to the head): Marcel "all
    swing trail.
 3. Phase 4 wrap-up: dwarf slots still have one part each (dwarf parts only fit the dwarf template); decide whether
    Phase 4 needs dwarf variants or moves on to Phase 5 (`build_pack`, 10-character pack).
-4. Open from the earlier sheets (not modelled): knight split tabard; rogue shoulder cowl, wider leaf daggers; all
-   sheets: boots closer together, arms hanging steeper. Dwarf: head group 1,248 tris (> 1,000), arm through the beard
-   in `attack`/`die`, axe through the helmet in `interact`.
+4. Open from the earlier sheets: all sheets: boots closer together, arms hanging steeper. Dwarf: head group 1,248
+   tris (> 1,000), arm through the beard in `attack`/`die` (6–7 cm), axe through the head/helmet in `interact`.
+   Tried and dropped (2026-11-17): a per-archetype `clip_offsets` turning the upper arms outward 12° in every clip:
+   idle better, walk and the `interact` axe worse, beard hits unchanged (they come from the arm swinging across the
+   front). Next idea: a per-clip correction (forearm/hand) for `attack`/`die`/`interact`, or hide the weapon in
+   `interact`.
 5. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
    held staff lies across the wizard's face; `pose_test` counts are dominated by hidden overlaps (boots under
    hems/trousers: 4–10 cm on every trousered character) → a "visible" check would help; knight `hit` 14 cm torso
@@ -453,7 +453,27 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   Gold tab behind the slit removed (read as a band hanging between the legs). Knight 3,964 tris.
   Gotcha: running `jobs/lib/render` directly needs `GPG_STYLE=lowpoly`, else it uses `clean`'s light (dark faces).
 
+- **Rogue + villager detail pass (2026-11-17)**, rules written into lowpoly STYLE.md §1a ("finished look").
+  Rogue: `torso-tunic-chibi` v2 (leather mantle as a closed 5-ring loft: front/back hang onto the chest below the
+  hood rim, sides stay above the T-pose sleeve tops at z 0.78; thick stepped hem band; dark slit wedge; buckle
+  frame + prong), `face-scarf-block` longer and tapering to a point, `headwear-hood-block` v3 (opening reaches
+  behind the ears, a0 100–118° at ear level, lip pulled 24 % inwards there so the inner strip stays in the head:
+  ears show from the front, face + ear from the side), leaf daggers (ferrule, flared guard, 8-point leaf blade),
+  `feet-boots-low-chibi` instead of the wizard's tall boots, tunic olive (lowpoly cell 29 → `#566539`). 3,094
+  tris, IoU 0.77 / 0.75 / 0.78 (was 0.81 / 0.77 / 0.81: wider hood opening + mantle). Villager: `hair-bun-block` v2
+  (front sits back, overhang ~4 cm instead of 10; seven flat pointed fringe locks), `torso-dress-chibi` v2 (small
+  Peter-Pan collar on the shoulder top, apron ending 9 cm above the hem with chamfered corners, raised wide belt),
+  colours from the sheet: dress cell 23 → `#BE5F68`, hair 45, apron 13, hem 24. 2,804 tris, IoU 0.77 / 0.82 / 0.83.
+  Shared `arms-sleeves-slim-chibi`: thick two-step leather cuff (rogue, villager, ranger, farmer). Ranger and farmer
+  get the mantle too (shared tunic; reads as a capelet). All four animate (no floor/contact findings; overlaps are
+  the known hidden ones: boots inside skirts/tunics, mantle vs hood in attack/interact) and export.
+  First mantle try was a 1.8 cm shell: seen edge-on from the side it read as flaps/spikes → closed loft.
+
 ## Decisions (with reasons)
+
+- **Palette cells changed for the sheets** (2026-11-17): lowpoly 29 dark green → olive `#566539` (rogue tunic),
+  23 raspberry → dusty rose `#BE5F68` (villager dress); both were used only by those characters (the wizard's
+  approval binds spec + part hashes, not the palette).
 
 - **Lowpoly budget 1,500–3,500 tris, hard 4,000** (Marcel, 2026-11-16; was 2,500 / 3,000): the knight read as work in
   progress next to the wizard in Heerschar; the detail that makes it read finished costs ~4,000 tris.
@@ -530,6 +550,10 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Rogue + villager detail pass (tunic mantle, hood behind the ears, cuffs, daggers, low boots;
+  hair fringe, collar, apron, belt; two palette cells from the sheets); "finished look" checklist in lowpoly
+  STYLE.md §1a. Paladin re-checked; dwarf arm offset tried and dropped. 64 tests pass. Awaiting Marcel's look.
 
 - **2026-11-16** — Heerschar test: wizard finished, knight WIP → knight detail pass (7 parts, 3,964 tris), helmet
   and rogue hood close to the head, right-ear fix, slit tab removed. Marcel: "all good now". Lowpoly budget → 4,000.

@@ -13,7 +13,8 @@ def ring_pts(c, rx, ry, a0, o, rec=-0.06, frame=None):
             return c + r1 * math.cos(t) * u + r1 * math.sin(t) * w
         return c + Vector((r1 * math.sin(t), -r2 * math.cos(t), 0))
     pts = [at(a) for a in arc]
-    lip_r = c + Vector((rx * math.sin(math.radians(a0)) - 0.035, -ry * math.cos(math.radians(a0)) + 0.04, 0))
+    # lip: the opening edge pulled towards the axis (13 %; 24 % behind the ear, so the inner strip stays in the head)
+    lip_r = c + Vector((rx * math.sin(math.radians(a0)), -ry * math.cos(math.radians(a0)), 0)) * (0.87 if a0 < 70 else 0.76)
     lip_l = Vector((-lip_r.x + 2 * c.x, lip_r.y, lip_r.z))
     mid_o = Vector((c.x, rec, c.z))
     full_r, full_l, full_m = at(a0 / 2), at(360 - a0 / 2), at(0)
@@ -21,8 +22,10 @@ def ring_pts(c, rx, ry, a0, o, rec=-0.06, frame=None):
     return [mix(full_r, lip_r)] + pts + [mix(full_l, lip_l), mix(full_m, mid_o)]
 # (z, rx, ry, y offset, a0, opening 0..1)
 # snug: 2.5-3 cm outside the head and ears (head +-0.19, ears to +-0.235)
-rows = [(0.745, 0.22, 0.185, 0.0, 30, 0.0), (0.77, 0.27, 0.215, 0.0, 62, 1.0), (0.85, 0.268, 0.226, 0.0, 56, 1.0),
-        (0.95, 0.265, 0.232, 0.0, 50, 1.0), (1.05, 0.268, 0.236, -0.005, 46, 1.0), (1.13, 0.258, 0.232, -0.008, 40, 1.0),
+# v3 (side view of the sheet): the opening runs back behind the ears (a0 > 90 deg at ear level), so face and ears
+# show from the front and the side
+rows = [(0.745, 0.22, 0.185, 0.0, 30, 0.0), (0.77, 0.27, 0.215, 0.0, 100, 1.0), (0.85, 0.268, 0.226, 0.0, 114, 1.0),
+        (0.95, 0.265, 0.232, 0.0, 118, 1.0), (1.05, 0.268, 0.236, -0.005, 78, 1.0), (1.13, 0.258, 0.232, -0.008, 46, 1.0),
         (1.19, 0.235, 0.22, -0.008, 34, 0.6), (1.235, 0.195, 0.188, -0.008, 30, 0.0)]
 rings = [ring_pts(Vector((0, dy, z)), rx, ry, a0, o) for z, rx, ry, dy, a0, o in rows]
 opens = [o for *_, o in rows]

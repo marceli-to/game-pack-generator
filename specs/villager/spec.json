@@ -5,10 +5,10 @@
   "colors": {
     "skin": 1,
     "eyes": 9,
-    "hair": 8,
+    "hair": 45,
     "primary": 23,
-    "secondary": 48,
-    "accent": 25,
+    "secondary": 13,
+    "accent": 24,
     "leather": 46,
     "dark": 23
   },

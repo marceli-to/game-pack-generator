@@ -27,6 +27,26 @@ the facets themselves are the shading.
 
 **Not allowed:** smooth shading, photo textures, normal maps, gradients, transparency, more than one material.
 
+### 1a. Finished look (detail checklist)
+
+Learnt from the knight, rogue and villager detail passes (2026-11-16/17): characters with only the big shapes right
+read as work in progress next to the wizard. A finished character has:
+
+- **Trims stand proud:** hem bands, cuffs, collars and belts are their own raised loft or sweep (1–1.5 cm out from
+  the cloth, bevelled or stepped), not just a colour change on the same surface.
+- **Hardware is framed:** buckles are a bevelled frame with a prong, not a solid block; guards flare at the ends;
+  pommels and ferrules are separate faceted pieces.
+- **Layers overlap:** a mantle over the shoulders, an apron on the skirt (ending above the hem, corners chamfered),
+  a scarf over the mantle, a cuff over the sleeve: the eye reads each layer by its edge.
+- **Thick, closed shapes, not sheets:** a cloth layer that can be seen edge-on (mantles, collars) is a closed loft
+  ≥ 2 cm thick; a 1–2 cm shell reads as a flap or spike from the side.
+- **Headwear and hair hug the head:** 1–3 cm outside the head; openings show the ears when the sheet does; hair
+  overhangs the forehead ≤ 4 cm and ends in a row of pointed locks, not a straight brim.
+- **Colours from the sheet:** sample the lit flat areas of the sheet and use the nearest palette cell; if none is
+  close (> ~20 in any channel), change an unused cell (§4) rather than settle for a saturated neighbour.
+- **Check:** close-ups of the sheet next to renders at the same scale (arms down 62°), one part at a time, front,
+  side and back; then the pose test, and an in-game look by Marcel.
+
 ## 2a. Archetypes & height → style.json
 
 | Archetype | Body height | Heads tall (approx.) |
@@ -61,7 +81,9 @@ Surface mode **`palette`**, as in `clean`: every face resolves its role (root ST
 - **palette.png:** 256 × 256 px, 8 × 8 grid → 64 cells of 32 × 32 px each, closest filtering, UVs collapsed to
   cell centres. Same layout and colours as `clean`, except cell 38: a soft magenta-purple `#9A5BBA` (the wizard's robe and
   hat; lighter than `painted`'s `#8A45AC`, so the lit GLB matches the sheet) instead of a deep indigo, and cell 37: its
-  dark shade `#5A3473` (inside of robes and sleeves, role `dark`) instead of a blue violet.
+  dark shade `#5A3473` (inside of robes and sleeves, role `dark`) instead of a blue violet, and cell 29: an olive
+  `#566539` (the rogue's tunic, from his sheet) instead of a dark green, and cell 23: a dusty rose `#BE5F68` (the
+  villager's dress, from her sheet) instead of a raspberry.
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals
