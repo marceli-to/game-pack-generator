@@ -31,8 +31,8 @@ _Last updated: 2026-11-17 — Rogue + villager detail pass done (awaiting Marcel
 0. **Marcel's look at the rogue and villager after their detail pass** (viewer / Heerschar; GLBs in
    `workspace/<name>/export/`). Comparison sheets: `workspace/knight-lowpoly/detail/detail_<name>.png` (rows head /
    body / legs: sheet | render per view), `head_<name>.png`, `full4.png` (rogue, villager, ranger, farmer).
-   Paladin rebuilt with the new knight parts (3,530 tris, soft over the 3,500 target; animates, exports; looks
-   pale: white tabard on light steel 41, maybe metal 51 like the knight: Marcel's call).
+   Paladin rebuilt with the new knight parts (3,530 tris, soft over the 3,500 target; animates, exports); metal
+   41 → 51 like the knight (Marcel, 2026-11-17).
    Scripts (local, gitignored) in `workspace/knight-lowpoly/detail/`: `body.sh <name> [part ...]` (any character:
    rebuild parts, head/body/legs rows vs its sheet), `head.sh <name> [part ...]` (head close-ups), `loop.sh` +
    `shoulder.sh` (knight only); edit parts in `workspace/lib4/parts/`. Marcel's in-game eye catches things the
@@ -578,8 +578,10 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-17** — Paladin metal → cell 51 (knight steel; Marcel), rebuilt, animated, exported.
+
 - **2026-11-17** — Visible-overlap pose test, `P.covers` + `covered_visible` in validate, dwarf `interact` axe fix
-  (`clip_offsets`). 67 tests pass. Not committed yet.
+  (`clip_offsets`). 67 tests pass. Committed + pushed `9360318`.
 
 - **2026-11-17** — Rogue + villager detail pass (tunic mantle, hood behind the ears, cuffs, daggers, low boots;
   hair fringe, collar, apron, belt; two palette cells from the sheets); "finished look" checklist in lowpoly
