@@ -6,7 +6,8 @@ Living status of the project. **Read this first in every session; update it befo
 _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** built through Marcel's viewer rounds
 (V chest, pads that follow the arms, face, smaller boots, 2H stance with shoulders forward); committed + pushed
-`ee4f964`. Lowpoly Phase 4 items below still wait for Marcel._
+`ee4f964`. **Next session: subdivision + paint test on the guard** (how close to the sheet can we get?).
+Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -35,7 +36,24 @@ there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** b
 9 colours, 14 clips; see "Tinfox: guard" below). GLB `workspace/guard/export/character-guard.glb` (gitignored:
 rebuild with `.venv/bin/python workspace/lib4/run.py guard --anim --export`; the committed part scripts in
 `styles/tinfox/parts/` are the source). Views: `workspace/tinfox/guard/guard_v7.png`, `face_v6.png`, `aim2h_v8.png`.
-**Next:**
+**Next (Marcel, 2026-11-17: do these first):** two cheap tests to find out how much of the gap to the sheet is
+smoothness vs surface detail vs the code-built geometry itself. Background: honest estimate given to Marcel: the
+procedural route tops out around 75–80 % of the sheet (organic shapes like faces and hands are slow to author as
+code); 90 % would need a different base-mesh source (image-to-3D such as TRELLIS / Hunyuan3D-2, an artist, or a
+hybrid: procedural gear + sculpted/generated head and hands).
+- **A. Subdivision test:** guard parts subdivided once (Catmull-Clark; keep creases where the shape needs hard
+  edges), smooth by angle, decimated back to ≈ 8,000 tris; side by side with v7 (current flat look) against the
+  sheet (front / side / back / ¾). Note what reads better/worse (silhouette, facets, face, pads, boots) and whether
+  roles/colours survive the decimation (per-face `role` attribute) and the clips still skin cleanly.
+- **B. Paint test:** `paint_surface` on a guard copy with `auto`, then `ai` (subject e.g. "soldier guard in olive
+  jacket with orange shoulder pads"; style ref = crop of the guard sheet, `keep_roles` for the face if it gets
+  redrawn). The paint config lives in `styles/painted/` → either a test style `tinfox-painted` (copy of tinfox
+  with surface `painted` + paint/ai config) or the guard spec on `painted`; don't change `tinfox` itself. Compare
+  flat vs subdivided vs subdivided + paint against the sheet in one sheet.
+- Outcome for Marcel: one comparison sheet + a rough % per step, then decide: stay procedural (+ subdivision /
+  paint) or spike image-to-3D.
+
+**Then:**
 1. Marcel's last look at the guard (2H aim after the shoulder fix; `walk` arm swing with the pads).
 2. **Guard in the game** (GENERATOR.md step 4: art-set profile, Kenney blasters for now, one level). Tell the game
    the clip names (8 base + `aim_1h`, `shoot_1h`, `aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`), that `run` tilts
@@ -753,6 +771,9 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Marcel asked how close to the sheet we can get (90 %?): estimate 75–80 % procedurally; next
+  session runs the subdivision test and the paint test on the guard (start-here list).
 
 - **2026-11-17** — ump: PROGRESS start-here rewritten for Tinfox (guard done, next: guard in the game).
 
