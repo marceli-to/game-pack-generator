@@ -181,6 +181,26 @@
     "min_verts": 3
   },
   "foot_contact_tolerance": 0.02,
+  "fit": {
+    "_comment": "automatic fit to the reference sheet (STYLE.md §7b): width/depth scale curves per body region, scored against the sheet's outline and colour classes",
+    "groups": {
+      "head": {"slots": ["head", "hair", "headwear", "face"], "axis": "z"},
+      "torso": {"slots": ["torso", "accessory_waist", "accessory_back"], "axis": "z"},
+      "arms": {"slots": ["arms"], "axis": "x", "centre": "shoulder.l", "meets": {"end": "hands"}},
+      "hands": {"slots": ["hands"], "axis": "x", "centre": "shoulder.l"},
+      "legs": {"slots": ["legs"], "axis": "z", "centre": "hip.l", "meets": {"start": "feet"}},
+      "feet": {"slots": ["feet"], "axis": "z", "centre": "hip.l"}
+    },
+    "size": 256,
+    "w_silhouette": 0.4,
+    "colour_merge": 14,
+    "bounds": [0.75, 1.35],
+    "steps": [0.08, 0.04, 0.02],
+    "passes": 2,
+    "smooth_penalty": 0.05,
+    "arms_down_step": 3,
+    "arms_down_range": [50, 85]
+  },
   "pose_test": {
     "penetration_tolerance": 0.01,
     "step": 2,

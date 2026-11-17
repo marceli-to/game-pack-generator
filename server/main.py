@@ -185,6 +185,17 @@ def compare_reference(name: str, arms_down_deg: float | None = None, hide_slots:
 
 @mcp.tool()
 @_safe
+def fit_to_reference(name: str, apply: bool = True) -> dict:
+    """Automatic fit to the add_reference sheet (STYLE.md §7b): scales body regions (head group, torso, arms +
+    hands, legs + feet; width and depth at three stations along each) and the comparison arm angle so the
+    render matches the sheet's outline and colour areas. No part script changes: the factors go into spec.fit
+    (applied at every assemble). apply=false only reports. Previews: class maps (sheet / before / after) and the
+    new comparison sheet. Run apply_animations (and pose_test) afterwards."""
+    return T_qa.fit_to_reference(name, apply)
+
+
+@mcp.tool()
+@_safe
 def paint_surface(name: str, approach: str | None = None, seed: int | None = None,
                   subject: str | None = None, keep_roles: list[str] | None = None) -> dict:
     """Painted styles only (surface 'painted'): UV-unwrap the assembled character and bake its painted

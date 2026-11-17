@@ -2,7 +2,8 @@
 
 args: { spec: {...}, out: <character.blend> }
 Template -> standard skeleton -> parts appended -> `slot` attribute -> rigid weights (nearest allowed
-bone) -> joined into `Character`, parented to `Armature` -> palette applied from spec.colors.
+bone) -> joined into `Character` -> spec.fit (region scale curves, §7b) -> parented to `Armature` -> palette
+applied from spec.colors.
 """
 import json
 
@@ -10,6 +11,9 @@ import bpy
 import numpy as np
 
 from lib import anim as A
+from lib import fit as FIT
+from lib import measure as M
+from lib import overlap as OV
 from lib import palette as PAL
 from lib import parts as PT
 from lib import rig as R
@@ -85,6 +89,26 @@ def joint_blends(obj, arm, blends):
     return out
 
 
+def apply_fit(char, spec, style, tpl_rel):
+    """STYLE.md §7b: scale the body regions of the joined rest mesh by spec.fit. Returns vertices moved."""
+    if not spec.get("fit"):
+        return 0
+    me = char.data
+    co = np.empty(len(me.vertices) * 3)
+    me.vertices.foreach_get("co", co)
+    co = co.reshape(-1, 3)
+    tpl = json.loads(S.repo_path(tpl_rel).read_text())
+    vslot = OV.vertex_slots(me, M._int_face_attr(me, "slot"))
+    fr = FIT.frames(co, vslot, style["slots"], style["fit"]["groups"], tpl["landmarks"])
+    unknown = [g for g in spec["fit"] if g not in style["fit"]["groups"]]
+    if unknown:
+        raise RuntimeError(f"spec.fit: unknown groups {unknown} (known: {list(style['fit']['groups'])})")
+    new = FIT.apply(co, fr, spec["fit"])
+    me.vertices.foreach_set("co", new.ravel())
+    me.update()
+    return int((np.abs(new - co).sum(1) > 1e-7).sum())
+
+
 def run(args):
     style = S.load()
     spec = args["spec"]
@@ -143,6 +167,7 @@ def run(args):
     for g in [g for g in char.vertex_groups if g.index not in used]:
         char.vertex_groups.remove(g)
 
+    fitted = apply_fit(char, spec, style, tpl_rel)   # spec.fit: region scale curves from fit_to_reference (§7b)
     SH.apply(char.data)
     used_idx, missing = PAL.apply_roles(char, spec.get("colors") or {})
     ao = SH.bake_ao(char)   # styles with shading.ao: AO in vertex colours, before skinning (rest pose, §5)
@@ -154,5 +179,5 @@ def run(args):
     if missing:
         warnings.append(f"roles without a colour in spec.colors: {missing} (validate will fail)")
     return {"outputs": [args["out"]], "warnings": warnings,
-            "stats": {"tris": sum(per_part.values()), "part_tris": per_part, "palette_indices": used_idx, "skirt_verts": skirt, "ao": ao, "joint_blend_verts": blended,
+            "stats": {"tris": sum(per_part.values()), "part_tris": per_part, "palette_indices": used_idx, "skirt_verts": skirt, "ao": ao, "joint_blend_verts": blended, "fit_verts": fitted,
                       "missing_roles": missing}}

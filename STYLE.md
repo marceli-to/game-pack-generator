@@ -125,6 +125,15 @@ A proportion template = the rest-pose joint positions of the skeleton for one ar
   - `pose_test` includes a foot-contact check on walk/run (each foot's lowest point over the cycle within ±2 cm of the floor, §8a).
 - A part may support several archetypes only if it was checked against each template.
 
+## 7b. Fit to the reference → core.json (`fit`)
+
+`fit_to_reference` matches a character to its `add_reference` sheet without touching any part script: it scales body regions across their main axis and stores the factors in `spec.fit`, which `assemble_from_parts` applies to the joined rest mesh (so the spec hash covers them; joints and heights stay where the template puts them).
+- **Regions** (`fit.groups`): `head` (head, hair, headwear, face), `torso` (+ waist and back accessories), `arms`, `hands`, `legs`, `feet`. Each has a width (`u`) and a depth (`v`) scale curve: factors at three stations along the region's axis (its start, middle and end; linear in between). Vertical regions scale about the body's centre line (legs and feet about each hip's line); arms and hands (axis along the T-pose arm) scale front–back (`u`) and up–down (`v`) about the arm line. Factors stay within `bounds` = 0.75–1.35.
+- **Score** per view, over the union of the two outlines (renders at `size` = 256 px, same framing as `compare_reference`): silhouette IoU and colour agreement. The sheet's pixels are classified to the character's palette colours (nearest in Lab, lightness weighted half: the sheet is shaded); colours closer than `colour_merge` = 14 form one class (black gloves and a dark grey belt). Score = `w_silhouette` = 0.4 × silhouette + 0.6 × colour; minus `smooth_penalty` = 0.05 × the squared log-steps between neighbouring stations (no wobbly outlines).
+- **Search:** coordinate descent on the log factors, steps 0.08 → 0.04 → 0.02 (`steps`, `passes` = 2 per step), plus the comparison pose's arm angle (`arms_down_step` = 3°, within `arms_down_range` = 50–85°; stored in `spec.compare.arms_down_deg`). One Blender session, ~300 evaluations, ~20 s.
+- **Kept as modelled:** `spec.compare.fit_exclude` lists regions that deviate from the sheet on purpose (Tinfox guard: `feet`, smaller boots than drawn). A region's end that meets an excluded region (`meets`: the trousers' lower end at the feet, the sleeves' end at the hands) stays as modelled too, so it keeps fitting inside it.
+- It fits outline and colour areas, not crafted detail: it can make the sleeves as thick as drawn, not add a fold. Re-run `apply_animations` (and `pose_test`) afterwards. On a character already tuned by hand, run it with `apply=false` first: it will undo deliberate deviations from the sheet unless they are excluded.
+
 ## 8. Animations → core.json
 
 **Source: KayKit Character Animations 1.1** (Kay Lousberg, CC0, `License.txt` in the download dated 10/12/2025; https://kaylousberg.itch.io/kaykit-character-animations), `Rig_Medium` clips. Recorded in `library/CREDITS.md`. Agents keyframing through bpy produces stiff motion; this is the biggest quality risk of the tool.
