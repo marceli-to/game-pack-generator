@@ -1,0 +1,50 @@
+{
+ "prop": "sniper-heron",
+ "type": "weapon",
+ "style": "tinfox",
+ "script_sha256": "61496de2890a48558a3d93b5e18a0d9d590a556fe7202b1a1ab93440ba700000",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 1832,
+ "verts": 1022,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 53,
+ "bbox": [
+  [
+   0.0,
+   -0.05,
+   0.01
+  ],
+  [
+   1.32,
+   0.05,
+   0.485
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.3978,
+   0.0,
+   0.09
+  ],
+  "grip_l": [
+   0.825,
+   0.0,
+   0.195
+  ],
+  "muzzle": [
+   1.32,
+   0.0,
+   0.28
+  ]
+ },
+ "warnings": []
+}

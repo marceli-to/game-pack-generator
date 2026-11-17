@@ -1,0 +1,37 @@
+{
+ "prop": "grenade-pulse",
+ "type": "thrown",
+ "style": "tinfox",
+ "script_sha256": "91b4ad581539bd1bf27c4d664fe6ca413a7ac2fc892261fe93f4cb81830d0c43",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 476,
+ "verts": 248,
+ "roles": [
+  "accent",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.0446,
+   -0.0446,
+   0.0
+  ],
+  [
+   0.0446,
+   0.0446,
+   0.1469
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.0,
+   -0.0455,
+   0.0455
+  ]
+ },
+ "warnings": []
+}

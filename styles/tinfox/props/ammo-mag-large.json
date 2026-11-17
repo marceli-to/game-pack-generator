@@ -1,0 +1,32 @@
+{
+ "prop": "ammo-mag-large",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "69777ab707d614590891fed206528c6eb20c22698e9bc411f4caf51cd517e04c",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 664,
+ "verts": 360,
+ "roles": [
+  "accent",
+  "dark",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 14,
+ "bbox": [
+  [
+   -0.0602,
+   -0.03,
+   0.0
+  ],
+  [
+   0.06,
+   0.03,
+   0.242
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

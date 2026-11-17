@@ -1,0 +1,32 @@
+{
+ "prop": "ammo-cell-small",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "1e3881f10f36e6807119d2aaad6d2845a16cac2569493b5f46669378c5eaef8e",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 428,
+ "verts": 232,
+ "roles": [
+  "accent",
+  "dark",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 9,
+ "bbox": [
+  [
+   -0.0485,
+   -0.031,
+   0.0
+  ],
+  [
+   0.049,
+   0.031,
+   0.144
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

@@ -4,10 +4,9 @@ Living status of the project. **Read this first in every session; update it befo
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
 _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard, rifle guard, officer in the game. **Weapons started:** prop mode (STYLE.md §9b) built, **pistol** done
-(924 tris, IoU ~0.89 vs its sheet; Marcel's fixes in), GLB + `PISTOL.md` in `~/Desktop/tinfox`, Marcel hands it to the game.
-**Next:** Marcel's look at the pistol, then the other guns (SMG, sniper: two-handed) and the grenade / ammo pickups;
-then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+there). Guard, rifle guard, officer in the game. **Weapons done:** prop mode (STYLE.md §9b); pistol (`PISTOL.md`) and the other six
+(silenced pistol, SMG, sniper, grenade, two ammo pickups; `WEAPONS.md`), GLBs in `~/Desktop/tinfox/weapons/glb/`.
+**Next:** Marcel's look at the six, the game's replies; then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -40,11 +39,9 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    a. **Pistol OK'd** (Marcel, after removing the sight post and shrinking the trigger guard); `PISTOL.md` goes to
       the game. Wait for its reply (grip in the mitten, muzzle flash at the ring, size, first
       person; whether two-handed guns want a `grip_l` node).
-   b. **Next guns** (sheets `~/Desktop/tinfox/weapons/sheets/`, notes `GENERATOR.md` §5): `02-pistol-silenced`
-      (pistol + silencer, reuse the pistol script), `03-smg`, `04-sniper` (length from the side view; the top view
-      is ~10 % short), both two-handed (`hold: "two"`: check with `aim_2h`, maybe a `grip_l` anchor for the left
-      hand), then `05-grenade` (type `thrown`, ring upright) and `06-ammo` (type `pickup`; side + front views;
-      magazine colour: pick one look). Sizes relative to the pistol (0.30 m). Workflow below.
+   b. **The other six built** (see "Tinfox: weapons"): **Marcel's look** at `~/Desktop/tinfox/weapons/glb/<name>-vs-sheet.png`
+      / `-preview.png` / `-in-hand.png`, then he hands `WEAPONS.md` to the game. Open for him: magazine look (guns
+      silver as drawn, pickups grey; one spec colour), sniper 1.32 m (longer than Kenney's 1.06 m).
 2. **Then the worker** (after weapons). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
    (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
    narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
@@ -832,6 +829,17 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - Handed over: `~/Desktop/tinfox/PISTOL.md`, `weapons/glb/pistol.glb` (sha `cf2b3a25…`) + previews.
 - Tests: `tests/test_props.py` (names/types, missing anchor, end-to-end incl. GLB nodes and frame), style sync for
   the props table and the weapon budget row. 87 pass, 1 skipped.
+- **The other six** (specs `pistol-sd`, `smg`, `sniper`, `grenade`, `ammo-pistol`, `ammo-smg`; parts
+  `pistol-kestrel-sd`, `smg-vireo`, `sniper-heron`, `grenade-pulse`, `ammo-cell-small`, `ammo-mag-large`): sizes =
+  1.2 × the sheet prompt (the pistol's factor): 0.49 / 0.60 / 1.32 / 0.15 (grenade × 1.3 more, Marcel) / 0.14 / 0.24 m; tris 1,172 / 1,752 /
+  1,832 / 476 / 428 / 664; IoU per view 0.81–0.90 (grenade top/bottom 0.74: drawn ~10 % larger than its side view).
+  Shared helpers in `workspace/tinfox/weapons/_lib.py`, pasted into each script by `run.py` (`# @include _lib.py`;
+  the library script stays self-contained); the SD script is the pistol's with a suppressor instead of the ring.
+  New: optional anchor `grip_l` (SMG front grip, sniper fore-end; the 2H clips keep the left hand ~10 cm in front of
+  the right); `item_bottom` view; `reference.views` boxes can blank areas (`{"box", "blank"}`: the sniper's top view
+  reaches under its side view). Grenade grip moved 3.5 cm beside the ball (centred on the slot it vanished in the
+  mitten; §9b rule for thrown items). Magazines: guns silver (role `leather`), pickups grey.
+- Handed over: `~/Desktop/tinfox/WEAPONS.md` + six GLBs and previews.
 
 ## Tinfox: officer (2026-11-17)
 
@@ -895,6 +903,10 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 
 ## Decisions (with reasons)
 
+- **Weapon sizes = 1.2 × the sheet prompts** (2026-11-17): the pistol's factor (0.30 m = its Kenney size in the
+  hand); one rule keeps the guns in proportion to each other. The sniper comes out longer than Kenney's.
+- **Guns keep silver magazines, pickups grey** (2026-11-17, open to Marcel): both as drawn; role `leather` makes it
+  one spec colour to unify.
 - **Weapon sheets go in the repo** (Marcel, 2026-11-17), like the character sheets (`specs/<name>/reference/`).
 - **Weapons export in the hand's frame, origin at the grip** (2026-11-17): the game parents the GLB to `handslot.r`
   with no transform and reads `muzzle` as a node; guessing grip and muzzle from the mesh (today) breaks on every new
@@ -1018,6 +1030,9 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-17** — Grenade 1.3 × bigger (Marcel), re-sent.
+- **2026-11-17** — Silenced pistol, SMG, sniper, grenade, ammo pickups built, checked in the guard's hands,
+  exported; `WEAPONS.md` + GLBs in `~/Desktop/tinfox`. Awaiting Marcel's look.
 - **2026-11-17** — Pistol: Marcel's fixes (no sight post, smaller trigger guard), OK'd; GLB re-sent.
 - **2026-11-17** — Fidelity brief checked (nothing that changes the build). Prop mode (§9b) + pistol (936 tris, IoU
   ~0.89, grip/muzzle nodes, held on the guard's `handslot.r` with no transform); `PISTOL.md` + GLB in

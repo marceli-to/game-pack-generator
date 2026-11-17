@@ -1,7 +1,7 @@
 """Prop vs its sheet (STYLE.md §9b): each drawn view cropped, the same view rendered at the same metres per pixel,
 both aligned by the centres of their outlines; rows: sheet / render / overlay (red = sheet only, blue = render only).
 
-args: { image: <abs path>, length_m, views: {view: [x0, y0, x1, y1]}, out_dir, size? }
+args: { image: <abs path>, length_m, views: {view: [x0, y0, x1, y1] | {box, blank: [[x0, y0, x1, y1], ...]}}, out_dir, size? }
 The scale comes from the item_side view: the outline's width there is `length_m`.
 """
 from pathlib import Path
@@ -30,8 +30,13 @@ def run(args):
     if "item_side" not in views:
         raise RuntimeError("spec.reference.views needs item_side (its width sets the scale)")
     crops = {}
-    for v, (x0, y0, x1, y1) in views.items():
-        c = img[y0:y1, x0:x1]
+    for v, box in views.items():
+        # a box, or {"box": [...], "blank": [[...], ...]}: blanked areas (another view inside the box) become background
+        spec = box if isinstance(box, dict) else {"box": box}
+        x0, y0, x1, y1 = spec["box"]
+        c = img[y0:y1, x0:x1].copy()
+        for bx0, by0, bx1, by1 in spec.get("blank", []):
+            c[max(0, by0 - y0):max(0, by1 - y0), max(0, bx0 - x0):max(0, bx1 - x0)] = bg
         m = RD.mask(c, bg, threshold=0.16)
         crops[v] = (c, m, bbox(m))
     bx0, _, bx1, _ = crops["item_side"][2]

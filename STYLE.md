@@ -231,7 +231,8 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
   prop's build script in the library) and `colors` (roles → palette cells, as for characters). A spec without
   `kind` is a character. Optional `reference` (for `compare_reference`): `image` (repo-relative), `length_m` (the
   item's length in the side view, sets the scale), `views` = `{view: [x0, y0, x1, y1]}` (a pixel box around each
-  drawn view, views from `props.views`).
+  drawn view, views from `props.views` or `item_bottom`; `{"box": [...], "blank": [[...]]}` blanks parts of the box
+  where another view reaches into it, e.g. the sniper's top view under its side view's barrel).
 - **Built like a part** (§9a): `build_prop(prop, script, type)` runs an agent-written script with the same builder
   `P` (no template: `lm`, `bones` and `guides` are empty) and stores `styles/<style>/props/<prop>.{py,blend,json,png}`.
   Hard checks as for parts (roles, closed shells, not inside-out, the type's hard budget) plus the type's anchors.
@@ -243,8 +244,12 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
 - **Anchors:** the script names points with `P.anchor(name, point)`; assembly exports each as an empty glTF node of
   that name (identity rotation: its +X is the item's forward). Required per type (`props.types.<type>.anchors`):
   - `grip`: the point that sits at the hand's slot (the `handslot` origin). Weapons: on the handle's centre line, at
-    the height where the fist closes round it. Thrown items: their centre.
+    the height where the fist closes round it. Thrown items: offset from their centre towards the item's right side
+    (−Y) so that the item sits on the palm side of the fist and shows: the slot lies deep inside a mitten (Tinfox: a
+    7 cm grenade centred on it vanished in the fist).
   - `muzzle`: the barrel tip on the bore axis; shots and the muzzle flash start there, along +X.
+  - Optional: `grip_l`, where the left hand holds a two-handed gun (front grip, fore-end), for the game to place or
+    solve the left hand; the 2H clips (§8b) put it a fixed ~10 cm in front of the right hand.
 - **Origin** (`props.types.<type>.origin`): `grip` (held items: assembly moves the mesh so the `grip` anchor is at
   0, 0, 0; the GLB's origin is the grip) or `floor` (pickups: the footprint's centre at x = y = 0, bottom at z = 0).
 - **Types:**
@@ -267,10 +272,11 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
   load without a clip); no skin, no animations; nodes: the mesh and the anchor empties, all at the scene root.
 - **Views** (`props.views`, used by `render_preview` and `compare_reference` on props) named like the sheets:
   `item_side` (from −Y: the right side, muzzle to the right), `item_top` (from above, muzzle to the right),
-  `item_front` (from +X, into the muzzle), `item_three_quarter` (perspective, front right, from above).
+  `item_front` (from +X, into the muzzle), `item_three_quarter` (perspective, front right, from above); extra:
+  `item_bottom` (from below, +X to the right).
   `compare_reference` crops each drawn view from `spec.reference`, renders the same view at the same metres per
   pixel, aligns the two by the centres of their outlines (sheets are not always consistent between views; the
-  sniper's top view is drawn ~10 % short), and reports IoU per view plus an overlay (red = sheet only, blue = render
+  sniper's top view is drawn ~5 % short), and reports IoU per view plus an overlay (red = sheet only, blue = render
   only).
 
 ## 10. Export → core.json

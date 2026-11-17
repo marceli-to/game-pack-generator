@@ -109,12 +109,20 @@ Templates live in `styles/tinfox/proportions/<archetype>.json` (+ `_preview.png`
 Weapon sheets: `~/Desktop/tinfox/weapons/sheets/` (01 pistol … 06 ammo; side, top and front view, muzzle to the
 right), names and roles in the game from its `src/data/weapons.json`.
 - **Size:** at the in-game size next to the characters, not real-world: the pistol is 0.30 m long (the Kenney
-  blaster the game held before measured 0.46 m × its grip scale 0.65 = 0.30 m; the guard's mitten is ~0.2 m long).
-  The other guns keep their sheet proportions relative to the pistol.
+  blaster the game held before measured 0.46 m × its grip scale 0.65 = 0.30 m; the guard's mitten is ~0.2 m long),
+  1.2 × the length its sheet prompt gives (25 cm). Every other item uses the same factor: silenced pistol 0.49 m
+  (its sheet: pistol + suppressor), SMG 0.60 m, sniper 1.32 m, ammo cell 0.14 m, SMG
+  magazine 0.24 m (Kenney in hand: 0.42 / 0.59 / 1.06 m for the guns). The grenade 1.3 × that again, 0.15 m with
+  the ring, ball 9 cm (Marcel: at 7 cm it looked like a marble in the mitten).
 - **Look:** as the characters: big faceted volumes, 8-sided barrels and rings, single 45° chamfers, details as
   geometry (stripes, rings, ridges, sights). The bore is a dark recess, not a hole (shells stay closed).
 - **Colours** (roles → cells): `primary` body 52 gun grey, `secondary` grip and details 54 black, `metal` 51 silver,
   `accent` 19 orange, `special` 39 light blue (energy window), `dark` 55 (bore).
+- **Magazines:** the guns keep the sheets' silver magazines, the pickups are dark grey with an orange top and a blue
+  window (as drawn). The guns' magazines use role `leather` (→ 51 silver), so one spec colour (`leather` → 52)
+  gives them the pickups' grey.
+- **Two-handed guns** (SMG, sniper) carry a `grip_l` anchor (front grip, fore-end); the 2H clips hold the left hand
+  ~10 cm in front of the right one, so the game decides whether to solve the left hand onto it.
 - **Grip:** on the handle's centre line where the mitten closes (≈ the middle of the handle); checked with the
   guard holding the gun in `aim_1h`. Around `handslot.r` in that pose the guard's mitten reaches ~13 cm back and
   ~8 cm forward, 7.5 cm down and 12 cm up (thumb), 3 cm to the inner side and 13 cm to the outer side: the handle

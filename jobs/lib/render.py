@@ -81,6 +81,7 @@ VIEWS = {
     "item_side": (Vector((0, -1, 0)), False),           # the item's right side, muzzle to the right
     "item_top": (Vector((0, 0, 1)), False),             # from above, muzzle to the right
     "item_front": (Vector((1, 0, 0)), False),           # into the muzzle
+    "item_bottom": (Vector((0, 0, -1)), False),         # from below (e.g. the grenade sheet)
     "item_three_quarter": (Vector((0.8, -1, 0.55)), True),  # front right, from above
 }
 

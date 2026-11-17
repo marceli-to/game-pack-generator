@@ -1,0 +1,50 @@
+{
+ "prop": "smg-vireo",
+ "type": "weapon",
+ "style": "tinfox",
+ "script_sha256": "e8e459c112fd7cb857dab14728a442a0c15e825b2b0d3027fc92ccb6971f63df",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 1752,
+ "verts": 984,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 54,
+ "bbox": [
+  [
+   0.01,
+   -0.054,
+   0.014
+  ],
+  [
+   0.6,
+   0.054,
+   0.334
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.2125,
+   0.0,
+   0.08
+  ],
+  "grip_l": [
+   0.503,
+   0.0,
+   0.1
+  ],
+  "muzzle": [
+   0.6,
+   0.0,
+   0.225
+  ]
+ },
+ "warnings": []
+}

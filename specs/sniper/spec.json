@@ -1,0 +1,50 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 55,
+    "leather": 51,
+    "metal": 51,
+    "primary": 52,
+    "secondary": 54,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "sniper",
+  "part": "sniper-heron",
+  "reference": {
+    "image": "specs/sniper/reference/sheet.png",
+    "length_m": 1.32,
+    "views": {
+      "item_front": [
+        1957,
+        139,
+        2106,
+        571
+      ],
+      "item_side": {
+        "blank": [
+          [
+            852,
+            440,
+            1151,
+            570
+          ]
+        ],
+        "box": [
+          22,
+          136,
+          1151,
+          570
+        ]
+      },
+      "item_top": [
+        839,
+        437,
+        1910,
+        571
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "weapon"
+}

@@ -1,0 +1,40 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 55,
+    "leather": 51,
+    "metal": 51,
+    "primary": 52,
+    "secondary": 54,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "smg",
+  "part": "smg-vireo",
+  "reference": {
+    "image": "specs/smg/reference/sheet.png",
+    "length_m": 0.6,
+    "views": {
+      "item_front": [
+        1895,
+        93,
+        2111,
+        590
+      ],
+      "item_side": [
+        25,
+        94,
+        953,
+        604
+      ],
+      "item_top": [
+        978,
+        227,
+        1841,
+        428
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "weapon"
+}

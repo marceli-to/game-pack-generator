@@ -1,0 +1,37 @@
+{
+  "colors": {
+    "accent": 19,
+    "metal": 51,
+    "primary": 29,
+    "secondary": 53
+  },
+  "kind": "prop",
+  "name": "grenade",
+  "part": "grenade-pulse",
+  "reference": {
+    "image": "specs/grenade/reference/sheet.png",
+    "length_m": 0.0923,
+    "views": {
+      "item_bottom": [
+        1522,
+        149,
+        2025,
+        674
+      ],
+      "item_side": [
+        164,
+        2,
+        627,
+        709
+      ],
+      "item_top": [
+        831,
+        150,
+        1328,
+        672
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "thrown"
+}

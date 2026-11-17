@@ -1,0 +1,39 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 55,
+    "metal": 51,
+    "primary": 52,
+    "secondary": 54,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "pistol-sd",
+  "part": "pistol-kestrel-sd",
+  "reference": {
+    "image": "specs/pistol-sd/reference/sheet.png",
+    "length_m": 0.494,
+    "views": {
+      "item_front": [
+        1908,
+        143,
+        2133,
+        577
+      ],
+      "item_side": [
+        35,
+        149,
+        873,
+        576
+      ],
+      "item_top": [
+        906,
+        244,
+        1804,
+        450
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "weapon"
+}

@@ -1,0 +1,32 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 53,
+    "primary": 52,
+    "secondary": 54,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "ammo-pistol",
+  "part": "ammo-cell-small",
+  "reference": {
+    "image": "specs/ammo-pistol/reference/sheet.png",
+    "length_m": 0.094,
+    "views": {
+      "item_front": [
+        1143,
+        45,
+        1307,
+        375
+      ],
+      "item_side": [
+        232,
+        45,
+        463,
+        378
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}
