@@ -32,13 +32,20 @@ boots, sword, shield; helmet + rogue hood pulled close to the head): Marcel "all
 0. **Same detail pass for rogue and villager** (they share the knight's problem: big shapes right, details
    missing), then write the "finished look" rules into the lowpoly STYLE.md. Knight done (Marcel: "all good now",
    not formally approved). Paladin/ranger share the knight's sword, shield, arms, gauntlets, tabard: re-check them.
-   GLB: `workspace/knight-lowpoly/export/character-knight-lowpoly.glb`. Close-up loop:
-   `workspace/knight-lowpoly/detail/loop.sh [part ...]` (sheet crops next to renders, arms down) and `shoulder.sh`.
+   How the knight was done (repeat for the rogue/villager): close-ups of the sheet next to renders at the same scale
+   (arms posed down 62°), one part at a time, check in three.js. Scripts (local, gitignored) in
+   `workspace/knight-lowpoly/detail/`: `head.sh <name> [part ...]` (any character: head close-ups vs its sheet),
+   `loop.sh [part ...]` + `shoulder.sh` (knight only: head/body/legs and shoulder rows); edit parts in
+   `workspace/lib4/parts/`, the scripts rebuild them into the library. Hidden-ear check: scratch `ear.py` (ray cast
+   from the ear vertices, everything else as occluder); worth turning into a `pose_test`/`validate` check.
+   Marcel's in-game eye catches things the sheets don't (ear through the helmet, the gold tab between the legs):
+   have him look in Heerschar after each character.
 1. **Marcel's look at the new parts** (catalog `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`) and the
    three test mixes `ranger` (elf head, short hair, gloves, cuffed boots, potions), `farmer` (short hair + beard,
    baggy trousers), `paladin` (stern head, armoured legs, sabatons, book): `workspace/<name>/renders/preview/view_sheet.png`,
-   `pose_test/pose_test.png`, GLBs in `export/`. Paladin 2,772 tris (soft, target 2,500).
-2. **Heerschar in-game test** (Marcel's game, `/Users/marceli.to/Jamon.digital/Webroot/heerschar`): brief handed to
+   `pose_test/pose_test.png`, GLBs in `export/`. Paladin/ranger not rebuilt since the knight parts changed.
+2. **Heerschar in-game test** (Marcel has the wizard and the knight in the game now; wizard "finished", knight fixed
+   after his round). Earlier agent brief (Marcel's game, `/Users/marceli.to/Jamon.digital/Webroot/heerschar`): brief handed to
    another agent (knight-lowpoly as the player `krieger`, driven by the game's KayKit Knight clips: same bone names;
    hips track × 0.689; `swaps: []`). Wait for its report; likely generator follow-ups: export with KayKit clip names
    (floor clamp / hand damping baked in), a recolour mapping for the palette texture, separate weapon nodes for the
