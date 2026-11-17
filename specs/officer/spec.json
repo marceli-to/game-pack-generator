@@ -1,0 +1,111 @@
+{
+  "name": "officer",
+  "style": "tinfox",
+  "archetype": "hero-m",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 8,
+    "primary": 29,
+    "secondary": 54,
+    "accent": 19,
+    "leather": 54,
+    "metal": 43,
+    "dark": 54,
+    "special": 45
+  },
+  "parts": {
+    "head": "head-hero-square",
+    "hair": "hair-short-hero",
+    "headwear": "headwear-cap-peaked-hero",
+    "face": "face-moustache-hero",
+    "torso": "torso-coat-hero",
+    "arms": "arms-sleeves-padded-hero",
+    "hands": "hands-mitten-hero",
+    "legs": "legs-trousers-slim-hero",
+    "feet": "feet-boots-tall-hero",
+    "accessory_waist": "accessory_waist-belt-buckle-hero"
+  },
+  "reference": "specs/officer/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 72.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "extra_clips": [
+    "aim_1h",
+    "shoot_1h",
+    "aim_2h",
+    "shoot_2h",
+    "crouch",
+    "crouch_walk",
+    "crouch_aim_1h",
+    "crouch_shoot_1h",
+    "crouch_aim_2h",
+    "crouch_shoot_2h"
+  ],
+  "fit": {
+    "arms": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.15,
+        1.15,
+        1.197
+      ]
+    },
+    "hands": {
+      "u": [
+        1.0,
+        1.02,
+        1.041
+      ],
+      "v": [
+        1.221,
+        1.297,
+        1.323
+      ]
+    },
+    "head": {
+      "u": [
+        1.02,
+        1.0,
+        0.923
+      ],
+      "v": [
+        0.98,
+        0.942,
+        0.887
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        1.0,
+        0.923
+      ],
+      "v": [
+        1.0,
+        1.02,
+        1.02
+      ]
+    },
+    "torso": {
+      "u": [
+        0.923,
+        0.923,
+        0.819
+      ],
+      "v": [
+        1.02,
+        1.083,
+        1.062
+      ]
+    }
+  }
+}

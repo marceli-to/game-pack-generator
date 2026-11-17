@@ -3,10 +3,10 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard done (update 2 checked by the game). Marcel handed `RIFLE-GUARD.md` + `GUARD-UPDATE-3.md` (stride
-fix: walk/run planted for 1.6 / 4.0 m/s) to the game; replies pending. **Next: the officer** (Marcel, 2026-11-17).
-Lowpoly Phase 4 items below still wait for Marcel._
+_Last updated: 2026-11-17 (session end) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+there). Guard done; rifle guard + stride fix with the game (replies pending). **Officer done** (Marcel OK'd it,
+2026-11-17): GLB + `OFFICER.md` ready in `~/Desktop/tinfox` for Marcel to hand to the game. **Next: `hero-f` + the worker**
+(new session). Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -26,37 +26,35 @@ Lowpoly Phase 4 items below still wait for Marcel._
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
-| `tinfox` | draft; flat shading, ~5 heads (hero-m) | guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (not reviewed) |
+| `tinfox` | draft; flat shading, ~5 heads (hero-m) | guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
 
 ## Next session: start here
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
 `~/Desktop/tinfox/GENERATOR.md`). Done: shooter clips (+ crouch-aim clips), style `tinfox` + `hero-m`, the
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
-the stride fix (see "Tinfox: stride").
+the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-1. **Build the officer** (Marcel, 2026-11-17: next character, in a new session; details below in item 3).
-   Started: sheet copied to `specs/officer/reference/turnaround.png` (1672×941, like the guard's). Measured: floor
-   y 926, belt centre y ≈ 455 → **2.043 mm/px, `top_y` 45** (same size as the guard); view centres front 309 /
-   side 797 / back 1339, x ranges 0–640 / 640–1000 / 1000–1672. From the profiles (front half-widths, side
-   front..back): cap top 1.87, crown ±0.195 at 1.74–1.78 (saucer, wider than the guard's cap), peak at 1.70 reaching
-   y −0.23; epaulettes ±0.39 at 1.26 (fringed, orange); coat hem ≈ 0.55 m, coat flares to ±0.25 at the hem
-   (front) / −0.22..+0.24 (side); boot shafts to ≈ 0.39 m (just under the knee 0.42; trousers show between boot
-   top and hem, 0.40–0.55; the hem over the knees in walk/run is the risk), boot ±0.28 wide, sole ±0.39 front. Plan:
-   reuse head, hair, mittens, trousers, belt; new `headwear-cap-peaked-hero` (brass badge), `face-moustache-hero`
-   (handlebar, hair colour), `torso-coat-hero` (stand-up collar with brass trim, buttons, name patch, epaulettes
-   on the torso like the guard's pads, skirt to 0.55), `feet-boots-tall-hero`; maybe sleeves with wide cuffs.
-2. Replies pending from the game agent (Marcel handed both over 2026-11-17): `GUARD-UPDATE-3.md` (the game must play
-   `run` at `speed / 4.0` instead of `speed / 5`; check planted feet in walk/run) and `RIFLE-GUARD.md` (GLB sha
-   `291836f8…`, 7,058 tris; mid distance next to a guard, crouched with the SMG, firing). Possible later polish of
-   the rifle guard (not asked for): rounder, fuller shoulder pads, puffier vest plates, vest front a little proud
-   in the side view. The guard itself is closed (`GUARD-UPDATE-2-REPLY.md`).
-3. **Officer** (`characters/sheets/02-officer.png`, ~25–30 %: peaked cap, coat, tall boots, moustache;
-   coat hem vs knees in walk/run is the risk). Workflow as for the rifle guard (below). Still open from the guard
-   rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a `validate` rule "face/detail islands
-   must touch or enter their base shell".
-4. Then `hero-f` + worker, players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
-5. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
+1. **Next character: the worker** (Marcel, 2026-11-17: in a new session). Sheet
+   `~/Desktop/tinfox/characters/sheets/04-worker.png` (`looks.worker`, NPC in depot and training). Needs the second
+   body archetype first: **`hero-f`** (slimmer waist, narrower shoulders; GENERATOR.md) as a proportion template in
+   `styles/tinfox/proportions/` (as `hero-m` was made from the guard sheet: metric grid, `make_template` +
+   `make_mannequin` jobs, STYLE.md ↔ style.json). Then worker parts: overalls (torso + legs), utility belt with
+   pouches, hard hat, ponytail, brown work gloves, brown boots (guard boots recoloured). Follow the workflow below.
+2. **Officer handed over** (Marcel OK'd it after the badge fix): `~/Desktop/tinfox/OFFICER.md`,
+   `characters/glb/officer.glb` (sha `b088f6da…`, 7,322 tris, 1.856 m with the cap), `officer-preview.png`,
+   `officer-vs-sheet.png`. Wait for the game's reply (coat hem in run/crouch walk, read at mid distance, epaulettes
+   while firing). Possible polish: fringe more visible from the front, tris under 7,000.
+3. **Game replied to update 3 + rifle guard** (`GUARD-UPDATE-3-REPLY.md`, 2026-11-17): both in the game; walk/run
+   feet planted (game now has `groundSpeed` per profile, Tin Fox 1.6 / 4.0); rifle guard is a drop-in
+   (`PROFILES.tinfox.archetypes.guard_rifle`), crouch/firing clean. **Open design call for Marcel:** at 7 m the rifle
+   guard and the guard both read mostly olive; the game suggests a darker or grey vest. The vest's plates/collar
+   share `primary` with the jacket, so this needs a new role (e.g. `secondary`-like `armor`) on the vest pieces.
+   Possible later polish (not asked for): rounder shoulder pads, puffier plates.
+4. Still open from the guard rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a
+   `validate` rule "face/detail islands must touch or enter their base shell".
+5. Then players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
+6. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
 
 **Workflow for a new Tinfox character** (as used for the rifle guard): copy the sheet to
 `specs/<name>/reference/turnaround.png`; spec from the guard's (parts, colours, `extra_clips`,
@@ -784,6 +782,25 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   guard's categories (73 vs the guard's 77; pads over the sleeve tops, thighs into the jacket hem in crouch, belt).
   Export ok (validator, three.js load).
 
+## Tinfox: officer (2026-11-17)
+
+- Sheet `specs/officer/reference/turnaround.png` (Marcel's set), 2.043 mm/px, `add_reference` top_y 45 / floor 926,
+  views front 309 / side 797 / back 1339. Guard parts reused (head, hair, sleeves, mittens, belt) + 5 new:
+  `torso-coat-hero` (guard jacket chest/collar, brass trim along the collar top + front V, six brass buttons, name
+  patch, coat flaring to a 0.55 m hem with a thick lip and an olive inside; epaulettes = smaller olive shoulder caps
+  under an orange board shell with a pleated fringe curtain and a brass button, guard pad weights/pre-tilt; 2,336),
+  `headwear-cap-peaked-hero` (black band, saucer crown sheared up at the front only, so its back stays over the
+  hair; black peak; brass badge on the crown front, leaning forward with it (Marcel: lower, other angle); 416), `face-moustache-hero` (handlebar: tapering sweep with a callable profile,
+  tips curling up; 248), `legs-trousers-slim-hero` (slim inside the coat so the thighs clear the skirt; 552),
+  `feet-boots-tall-hero` (guard foot + sole, straight shaft to 0.395 with a rim, just under the knee; 936).
+- Colours: as the guard but `dark` → 54 (black belt and soles, like the sheet). 9 colours (mouth `special`).
+- 7,322 tris (soft: > 7,000; head group 2,214 > 2,000), validate 0 hard. IoU unfitted 0.82/0.85/0.83 → fitted
+  0.84/0.86/0.84 (score 0.778; torso narrower 0.92 → 0.82 at the top, sleeves 1.15–1.2, gloves 1.22–1.32, head a
+  little narrower at the top). 18 clips, floor/contact ok (stride walk 1.58–1.70 m/s), export ok (validator 0/0).
+- Pose test: the coat front follows the lifted thigh (skirt weights) and opens like a vent in walk/run/crouch;
+  findings are the guard's seam categories plus coat hem vs boot tops 6–7 cm (walk/run/jump/crouch_walk) and coat
+  vs thighs in crouch 6.7 cm; in the frames it reads as a coat.
+
 ## Tinfox: stride (2026-11-17)
 
 - Marcel (in the game): run takes very big steps, walk looks like moonwalking. Measured: KayKit's run on hero-m legs
@@ -920,6 +937,8 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - **Tests and `GPG_STYLE`:** don't run pytest in a shell where `GPG_STYLE` is exported (e.g. after `export
   GPG_STYLE=tinfox` for the detail renders): the tests then default to that style and ~9 fail. Use a subshell.
 - **Detail renders for Tinfox:** `ARMS=72 GPG_STYLE=tinfox REG='{...}' workspace/knight-lowpoly/detail/body.sh guard [part ...]`.
+  `head.sh` frames a chibi head (z 1.02): for hero-m heads use `body.sh` with
+  `REG='{"h":[[0,0,1.66],0.42,["front","side","three_quarter"]]}'`.
 - **KayKit source** is not in the repo (only the built `.blend`s). A local copy is in `workspace/_sources/KayKit_Character_Animations_1.1` (gitignored); else download "Free 1.1" from https://kaylousberg.itch.io/kaykit-character-animations to rebuild the library. Animations only: `run_job_checked("build_animations", {"source_dir": ...})` (the full `build_library` also regenerates templates and palettes).
 
 ## Commands
@@ -937,6 +956,13 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — ump: officer + parts committed; next session: `hero-f` template + worker.
+- **2026-11-17** — Game reply to update 3: stride fix confirmed, rifle guard in. Open: vest colour (Marcel).
+- **2026-11-17** — Officer: cap badge lower, leaning with the crown (Marcel); OK'd → `OFFICER.md` + GLB in
+  `~/Desktop/tinfox`.
+- **2026-11-17** — Officer v1: 5 new parts (coat with epaulettes, peaked cap, moustache, slim trousers, tall
+  boots), fitted (IoU ~0.85), 18 clips, exported. Awaiting Marcel. 83 tests pass.
 
 - **2026-11-17** — Officer sheet copied + measured (2.043 mm/px, top_y 45); building starts next session.
 

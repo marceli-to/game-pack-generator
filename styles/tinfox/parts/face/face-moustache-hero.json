@@ -1,0 +1,30 @@
+{
+ "part": "face-moustache-hero",
+ "slot": "face",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "bf81c3f1bedae12d2655e8ee524e8ab5171d52b38786673d747168e142d6ab30",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 248,
+ "verts": 128,
+ "roles": [
+  "hair"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.093,
+   -0.176,
+   1.533
+  ],
+  [
+   0.093,
+   -0.12,
+   1.581
+  ]
+ ],
+ "warnings": []
+}

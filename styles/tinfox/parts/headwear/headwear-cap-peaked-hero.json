@@ -1,0 +1,33 @@
+{
+ "part": "headwear-cap-peaked-hero",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "1f983dd489a96a43ee6459fffdc4e9fa03e223e41ce79d6c6012cac1125f80f0",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 416,
+ "verts": 218,
+ "roles": [
+  "dark",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.21,
+   -0.2349,
+   1.6295
+  ],
+  [
+   0.21,
+   0.222,
+   1.8565
+  ]
+ ],
+ "warnings": []
+}

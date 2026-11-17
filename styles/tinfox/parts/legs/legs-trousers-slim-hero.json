@@ -1,0 +1,30 @@
+{
+ "part": "legs-trousers-slim-hero",
+ "slot": "legs",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "254ab011f6a63c79ffa2e5a1a727a41ddc8ee1d213bb9a3af363c138e6cc5a9c",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 552,
+ "verts": 280,
+ "roles": [
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.2614,
+   -0.119,
+   0.26
+  ],
+  [
+   0.2614,
+   0.108,
+   0.95
+  ]
+ ],
+ "warnings": []
+}

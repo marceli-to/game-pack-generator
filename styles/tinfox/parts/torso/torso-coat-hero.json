@@ -1,0 +1,35 @@
+{
+ "part": "torso-coat-hero",
+ "slot": "torso",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "8480600c7e9de5ac9b639790aca9def93483de372dc17048811025502852890c",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 2336,
+ "verts": 1218,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary"
+ ],
+ "shells": 26,
+ "bbox": [
+  [
+   -0.4971,
+   -0.2305,
+   0.55
+  ],
+  [
+   0.4971,
+   0.242,
+   1.51
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 16 of 1218 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}
