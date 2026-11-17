@@ -18,6 +18,10 @@ def clip_names(spec=None):
     unknown = [n for n in wanted if n not in extra]
     if unknown:
         raise ValueError(f"unknown extra clips {unknown}; have {sorted(extra)}")
+    by = {c["name"]: c for c in anim.get("extra_clips", [])}
+    missing = sorted({by[n]["over"] for n in wanted if by[n].get("over") and by[n]["over"] not in wanted})
+    if missing:
+        raise ValueError(f"extra clips {[n for n in wanted if by[n].get('over') in missing]} are baked over {missing}; add those too")
     return [c["name"] for c in anim["clips"]] + [n for n in wanted]
 
 
@@ -114,7 +118,9 @@ def add_clips(arm, spec):
     R.bind_actions(arm, acts)
     for a in acts:
         if is_arms_only(a.name):
-            a["arms_only_report"] = bake_arms_only(arm, a)
+            over = clip_config(a.name).get("over")
+            base = next(b for b in acts if b.name == over) if over else None
+            a["arms_only_report"] = bake_arms_only(arm, a, base)
     return sorted(acts, key=lambda a: names.index(a.name))
 
 
@@ -309,8 +315,10 @@ def _swing(rot, v_local, target_dir):
     return cur.rotation_difference(target_dir.normalized()).to_matrix() @ rot
 
 
-def bake_arms_only(arm, action):
-    """Rewrite `action` to arm-bone rotations only, for an upright, forward-facing torso (STYLE.md §8b).
+def bake_arms_only(arm, action, over=None):
+    """Rewrite `action` to arm-bone rotations only, for an upright, forward-facing torso (STYLE.md §8b),
+    or, with `over` (the base clip, e.g. `crouch`), for the torso as posed at that clip's first frame
+    (the hands keep their world orientation, so the gun stays level on a leaning chest).
 
     Per frame of the source clip: the hands keep their armature-space orientation (the gun points where the
     clip points it) and their position relative to the midpoint of the shoulders; the torso, legs and hips
@@ -325,11 +333,15 @@ def bake_arms_only(arm, action):
     f0, f1 = (int(round(x)) for x in action.frame_range)
     frames = list(range(f0, f1 + 1))
     src = {f: _arm_space_pose(arm, action, f) for f in frames}
+    # the torso the arms are solved on: rest, or the base clip's first frame (over, STYLE.md §8b)
+    torso = _arm_space_pose(arm, over, int(round(over.frame_range[0]))) if over else rest
+    par = {s: bones[chains[s][0]].parent.name for s in chains}
+    sh = {s: (torso[par[s]] @ (rest[par[s]].inverted() @ rest[chains[s][0]])).translation for s in chains}
 
     def anchor(pose):
         return (pose["upperarm.l"].translation + pose["upperarm.r"].translation) / 2
 
-    a_rest = anchor(rest)
+    a_rest = (sh["l"] + sh["r"]) / 2
     # stance (STYLE.md §8b, 2H clips): the right wrist goes to a fixed point forward of / inside / below the right
     # shoulder (fractions of the arm's length), the left hand keeps its place on the gun relative to the right,
     # the clip's sway and recoil ride on top, the elbows bend down
@@ -340,7 +352,7 @@ def bake_arms_only(arm, action):
         cr = chains["r"]
         L = ((rest[cr[0]].inverted() @ rest[cr[1]]).translation.length
              + (rest[cr[1]].inverted() @ rest[cr[2]]).translation.length)
-        st_target = rest[cr[0]].translation + Vector((stance["inward"] * L, -stance["forward"] * L, -stance["down"] * L))
+        st_target = sh["r"] + Vector((stance["inward"] * L, -stance["forward"] * L, -stance["down"] * L))
         mean_r = sum((src[f][cr[2]].translation for f in frames), Vector()) / len(frames)
         lft = stance["left"]
     keys = {b: [] for s in chains for b in chains[s]}
@@ -367,7 +379,7 @@ def bake_arms_only(arm, action):
                     up, lo, wr = chain[0], chain[1], chain[2]
                     reach = ((rest[up].inverted() @ rest[lo]).translation.length
                              + (rest[lo].inverted() @ rest[wr]).translation.length) * 0.995
-                    v = rest[up].translation - place[side]
+                    v = sh[side] - place[side]
                     excess = v.length - reach
                     if excess > 1e-4 and (worst is None or excess > worst[0]):
                         worst = (excess, v.normalized())
@@ -384,7 +396,7 @@ def bake_arms_only(arm, action):
                 up, lo, wr = chain[0], chain[1], chain[2]
                 reach = ((rest[up].inverted() @ rest[lo]).translation.length
                          + (rest[lo].inverted() @ rest[wr]).translation.length) * 0.995
-                v = rest[up].translation - (p[wr].translation + off)
+                v = sh[side] - (p[wr].translation + off)
                 excess = v.length - reach
                 if excess > 1e-4 and (worst is None or excess > worst[0]):
                     worst = (excess, v.normalized())
@@ -398,9 +410,8 @@ def bake_arms_only(arm, action):
             v_u = (rest[up].inverted() @ rest[lo]).translation
             v_l = (rest[lo].inverted() @ rest[wr]).translation
             a, b = v_u.length, v_l.length
-            par = bones[up].parent.name
-            parent_pose = rest[par]                      # the torso stays at rest
-            S_ = (parent_pose @ (rest[par].inverted() @ rest[up])).translation
+            parent_pose = torso[par[side]]               # the torso stays at rest (or in the base pose)
+            S_ = sh[side].copy()
             # stance: the shoulder joint comes forward (and a little in), standing in for the collarbone the
             # rig lacks, so the upper arms pass in front of the chest when both hands hold the gun
             prot = Vector((0.0, 0.0, 0.0))
@@ -482,7 +493,7 @@ def bake_arms_only(arm, action):
     for pb in arm.pose.bones:   # clear what the source frames left on the pose
         pb.location = (0, 0, 0)
         pb.rotation_quaternion = (1, 0, 0, 0)
-    return {"sides": sides, "reach_error_m": {s: round(e, 4) for s, e in err.items() if s in sides}, "hands_moved_in_m": round(shift, 4),
+    return {**({"over": over.name} if over else {}), "sides": sides, "reach_error_m": {s: round(e, 4) for s, e in err.items() if s in sides}, "hands_moved_in_m": round(shift, 4),
             "gun_max_yaw_deg": round(aim["yaw"], 1), "gun_max_pitch_deg": round(aim["pitch"], 1),
             **({"hand_spacing_change_m": round(aim["spacing"], 4)} if len(sides) == 2 else {}), "frames": [f0, f1],
             **({"stance": {"hands_forward_m": round(aim["forward"], 4), "hand_spacing_m": round(aim["stance_spacing"], 4),

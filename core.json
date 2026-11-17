@@ -95,7 +95,7 @@
       { "name": "die", "source": "Death_A", "file": "Rig_Medium_General.glb", "loop": false, "frames": 24 },
       { "name": "interact", "source": "Interact", "file": "Rig_Medium_General.glb", "loop": false, "frames": 39 }
     ],
-    "_comment_extra": "STYLE.md §8b: opt-in per character (spec.extra_clips); range = source frames kept, hold = one source frame held for `frames`; sides = arms keyed (1H: right only); breathe = one breath per loop (deg about local X)",
+    "_comment_extra": "STYLE.md §8b: opt-in per character (spec.extra_clips); range = source frames kept, hold = one source frame held for `frames`; sides = arms keyed (1H: right only); breathe = one breath per loop (deg about local X); over = arms solved on that clip's first-frame torso (crouch_*: gun level on the leaning chest)",
     "extra_clips": [
       {
         "name": "aim_1h",
@@ -154,7 +154,11 @@
         "loop": true,
         "arms_only": false,
         "frames": 32
-      }
+      },
+      {"name": "crouch_aim_1h", "source": "Ranged_1H_Aiming", "file": "Rig_Medium_CombatRanged.glb", "loop": true, "range": [12, 32], "arms_only": true, "over": "crouch", "sides": ["r"], "frames": 20},
+      {"name": "crouch_shoot_1h", "source": "Ranged_1H_Shooting", "file": "Rig_Medium_CombatRanged.glb", "loop": false, "range": [0, 12], "arms_only": true, "over": "crouch", "sides": ["r"], "frames": 12},
+      {"name": "crouch_aim_2h", "source": "Ranged_2H_Aiming", "file": "Rig_Medium_CombatRanged.glb", "loop": true, "range": [8, 48], "arms_only": true, "over": "crouch", "stance": {"forward": 0.85, "inward": 0.25, "down": 0.3, "left": {"along": 0.18, "out": 0.08, "down": 0.02}, "elbow": {"out": 0.25, "forward": 0.2, "down": 0.15}, "shoulder": {"forward": 0.12, "in": 0.03}}, "frames": 40},
+      {"name": "crouch_shoot_2h", "source": "Ranged_2H_Shooting", "file": "Rig_Medium_CombatRanged.glb", "loop": false, "range": [0, 8], "arms_only": true, "over": "crouch", "stance": {"forward": 0.85, "inward": 0.25, "down": 0.3, "left": {"along": 0.18, "out": 0.08, "down": 0.02}, "elbow": {"out": 0.25, "forward": 0.2, "down": 0.15}, "shoulder": {"forward": 0.12, "in": 0.03}}, "frames": 8}
     ],
     "arms_only_bones": ["upperarm", "lowerarm", "wrist", "hand", "handslot"]
   },

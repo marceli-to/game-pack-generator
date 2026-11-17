@@ -115,3 +115,18 @@ def keep_channels(path, keep):
     gltf, binary = _repack(gltf, binary)
     write(path, gltf, binary)
     return removed
+
+
+def nearest_samplers(path):
+    """Samplers with a NEAREST magFilter get a plain NEAREST minFilter (9728): Blender writes
+    NEAREST_MIPMAP_NEAREST (9984), which asks for mipmaps on a palette texture (STYLE.md §10).
+    Returns the number of samplers changed."""
+    gltf, binary = read(path)
+    n = 0
+    for s in gltf.get("samplers", []):
+        if s.get("magFilter") == 9728 and s.get("minFilter") != 9728:
+            s["minFilter"] = 9728
+            n += 1
+    if n:
+        write(path, gltf, binary)
+    return n

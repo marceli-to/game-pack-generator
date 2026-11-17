@@ -31,6 +31,9 @@ def test_extra_clips_documented():
             md = STYLE_MD.split("## 8b.")[1]
             assert f"`{c['name']}`: " + ", ".join(f"{b} {d}".replace("-", "−") for b, d in c["breathe"].items()) in md, c["name"]
             assert "one breath per loop" in row.group(2), c["name"]
+        if c.get("over"):   # solved on the base clip's torso; the base clip is an extra clip itself
+            assert f"over `{c['over']}`" in row.group(2), c["name"]
+            assert c["over"] in {e["name"] for e in EXTRA} and c["arms_only"], c["name"]
     for b in load_style()["animations"]["arms_only_bones"]:
         assert b in STYLE_MD.split("## 8b.")[1].split("## 9.")[0], b
 
@@ -64,8 +67,9 @@ def test_extra_clips_bake_and_export(mannequin, tmp_path):
             assert st["hand_spacing_m"] < 0.5 * st["arm_length_m"], (c["name"], rep)
         elif c.get("sides", ["l", "r"]) == ["l", "r"]:
             assert rep["hand_spacing_change_m"] < 0.01, (c["name"], rep)  # the left hand stays on the gun
-        if c["name"].startswith("aim"):
+        if c["name"].startswith(("aim", "crouch_aim")):   # level, also on the crouch's leaning chest
             assert rep["gun_max_pitch_deg"] < 6, (c["name"], rep)
+        assert rep.get("over") == c.get("over"), (c["name"], rep)
     assert not set(names) & set(r["stats"]["floor_lift_m"]) - {"crouch", "crouch_walk"}
 
     glb = tmp_path / "shooter.glb"
@@ -79,6 +83,17 @@ def test_extra_clips_bake_and_export(mannequin, tmp_path):
             assert e["stats"]["arms_only_channels_removed"][c["name"]] > 0
     assert len(chans["walk"]) > len(arm_bones)
     assert len(chans["crouch"]) > len(arm_bones)
+    # palette texture: NEAREST both ways, no mipmaps (STYLE.md §10)
+    b = glb.read_bytes()
+    g = json.loads(b[20:20 + struct.unpack("<I", b[12:16])[0]])
+    assert g.get("samplers") and all(s.get("minFilter") == 9728 for s in g["samplers"] if s.get("magFilter") == 9728)
+
+
+@needs_blender
+def test_over_clip_needs_its_base(mannequin, tmp_path):
+    with pytest.raises(Exception, match="baked over"):
+        run_job_checked("apply_animations", {"spec": {"extra_clips": ["crouch_aim_1h"]}, "out": str(tmp_path / "x.blend")},
+                        blend=mannequin)
 
 
 @needs_blender

@@ -1,0 +1,38 @@
+{
+ "part": "headwear-helmet-earcups-hero",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "cd2ed95ddfe1d51bc82ce573bb6b516f56817d7ab5f780a4b00b54fd0a884355",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 744,
+ "verts": 388,
+ "roles": [
+  "accent",
+  "dark",
+  "primary",
+  "secondary"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.198,
+   -0.204,
+   1.5492
+  ],
+  [
+   0.218,
+   0.205,
+   1.897
+  ]
+ ],
+ "covers": [
+  "ears"
+ ],
+ "warnings": [
+  "asymmetric: 58 of 388 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

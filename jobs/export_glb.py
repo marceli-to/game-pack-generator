@@ -72,7 +72,10 @@ def run(args):
                 if bone and prop in G.PATHS:
                     k.setdefault(bone, set()).add(G.PATHS[prop])
     stripped = G.keep_channels(out, keep) if keep else {}
+    # palette textures: no mipmaps (STYLE.md §10)
+    nearest = G.nearest_samplers(out) if S.load()["export"].get("texture_filter") == "NEAREST" else 0
     return {"outputs": [str(out)], "stats": {"bytes": out.stat().st_size, "fps": S.load()["animations"]["fps"],
                                              "actions": sorted(a.name for a in bpy.data.actions),
-                                             "arms_only_channels_removed": stripped},
+                                             "arms_only_channels_removed": stripped,
+                                             "samplers_min_nearest": nearest},
             "warnings": warnings}

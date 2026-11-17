@@ -61,6 +61,15 @@ def run(args):
     arm = SC.main_armature()
     deg = float(args.get("arms_down_deg", 0) or 0)
     if arm is not None:
+        # an animated character keeps its idle clip assigned: drop it (this render only, nothing is saved),
+        # else pose_arms() would lower the arms from the clip's pose instead of the T-pose
+        if arm.animation_data is not None:
+            arm.animation_data.action = None
+        for pb in arm.pose.bones:
+            pb.location = (0, 0, 0)
+            pb.rotation_mode = "QUATERNION"
+            pb.rotation_quaternion = (1, 0, 0, 0)
+            pb.scale = (1, 1, 1)
         arm.data.pose_position = "REST"
         bpy.context.view_layer.update()
         if deg:

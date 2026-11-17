@@ -1,0 +1,32 @@
+{
+ "part": "torso-vest-armored-hero",
+ "slot": "torso",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "d13f7929efde88ba66084d3d2f9c059bf5cd9816a3cb17f66b062b0cc9d559da",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 1968,
+ "verts": 1024,
+ "roles": [
+  "accent",
+  "dark",
+  "primary"
+ ],
+ "shells": 21,
+ "bbox": [
+  [
+   -0.4661,
+   -0.2598,
+   0.6701
+  ],
+  [
+   0.4661,
+   0.2205,
+   1.5427
+  ]
+ ],
+ "warnings": []
+}

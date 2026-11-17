@@ -1,0 +1,32 @@
+{
+ "part": "legs-trousers-kneepads-hero",
+ "slot": "legs",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "06810ef0e431cbf259baeb4bd212a777fa378b763497faaa076829051d4e6583",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 672,
+ "verts": 348,
+ "roles": [
+  "dark",
+  "primary",
+  "secondary"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.2819,
+   -0.17,
+   0.3
+  ],
+  [
+   0.2819,
+   0.13,
+   0.95
+  ]
+ ],
+ "warnings": []
+}

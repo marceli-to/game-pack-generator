@@ -4,12 +4,11 @@ Living status of the project. **Read this first in every session; update it befo
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
 _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** built through Marcel's viewer rounds
-(V chest, pads that follow the arms, face, smaller boots, 2H stance with shoulders forward). Surface: flat palette + **baked AO in vertex colours** (Marcel's pick, ~75 % of the sheet; form pass / image-to-3D
-only if it still bothers him in the game). Guard is in the game (tin-wolf `?art=tinfox`); fixes from its report committed (`7ba481f`) and
-sent (`GUARD-UPDATE-1.md`). **Automatic fitting loop** (`fit_to_reference`, STYLE.md §7b) built; guard fitted
-(IoU ~0.69 → ~0.79, Marcel: "not bad!"), committed `3ff649c`; the game still has the unfitted GLB. Hunyuan spike
-cleaned up (~25 GB). Next: send the fitted guard to the game, then rifle guard, officer (fit each one).
+there). Guard: built through Marcel's viewer rounds, flat palette + baked vertex AO, fitted to the sheet
+(`fit_to_reference`), in the game (tin-wolf `?art=tinfox`). **Update 2 sent** (`GUARD-UPDATE-2.md`: fitted guard,
+crouch-aim clips for the game's "gun points at the floor when crouching", plain NEAREST sampler). **Rifle guard v1**
+built with the new workflow (3 new parts + fit; IoU 0.86 / 0.84 / 0.86). **Next session: hand the rifle guard to the
+game, then start the officer** (Marcel, 2026-11-17).
 Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
@@ -30,48 +29,39 @@ Lowpoly Phase 4 items below still wait for Marcel._
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
-| `tinfox` | draft; flat shading, ~5 heads (hero-m) | guard (Marcel's viewer rounds, not formally approved) |
+| `tinfox` | draft; flat shading, ~5 heads (hero-m) | guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (not reviewed) |
 
 ## Next session: start here
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
-`~/Desktop/tinfox/GENERATOR.md`). Done: shooter clips, style `tinfox` + `hero-m`, the **guard** (5,654 tris,
-9 colours, 14 clips; see "Tinfox: guard" below). GLB `workspace/guard/export/character-guard.glb` (gitignored:
-rebuild with `.venv/bin/python workspace/lib4/run.py guard --anim --export`; the committed part scripts in
-`styles/tinfox/parts/` are the source). Views: `workspace/tinfox/guard/guard_v7.png`, `face_v6.png`, `aim2h_v8.png`.
-**Surface decided (Marcel, 2026-11-17): option B**, flat palette + AO baked into vertex colours, lit in the game
-(`shading.ao` in tinfox, STYLE.md §5; see "Tinfox: how close to the sheet?" below). The guard GLB now carries
-`COLOR_0`. Open from that test: the remaining gap to the sheet is **form** (a form pass or an image-to-3D spike,
-when Marcel wants it).
+`~/Desktop/tinfox/GENERATOR.md`). Done: shooter clips (+ crouch-aim clips), style `tinfox` + `hero-m`, the
+**guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard").
 
-**Automatic fitting loop: built (2026-11-17)**, see "Fit to the reference" below. Guard fitted. **Marcel: "not bad!"** (sheet `workspace/tinfox/guard/guard_fitted_vs_sheet.png`) → `fit` + `arms_down_deg` 69
-copied into `specs/guard/spec.json`, guard rebuilt. Not re-sent to the game yet (the Desktop GLB is unfitted).
-Next: (a) send the fitted guard to the game (new GLB + `GUARD-UPDATE-2.md` on the Desktop: fitted proportions,
-same rig/clips/palette); (b) candidates from the side-by-side: head + cap smaller than the sheet, arms hang lower
-(both in the `hero-m` template: affects the officer and rifle guard too). For new characters: build the parts,
-then `fit_to_reference` (set `compare.fit_exclude` first for regions that deviate on purpose). Lowpoly characters: report-only (it would undo hand-tuned
-choices like the rogue's snug hood) until Marcel says which regions to lock.
+1. **Hand the rifle guard to the game** (Marcel, 2026-11-17: next session). Rebuild
+   (`.venv/bin/python workspace/lib4/run.py rifle-guard --anim --export`; the GLB is gitignored), copy
+   `workspace/rifle-guard/export/character-rifle-guard.glb` to `~/Desktop/tinfox/characters/glb/rifle-guard.glb`
+   + a preview, and write `~/Desktop/tinfox/RIFLE-GUARD.md` for the game agent: same rig, bone names, 18 clips,
+   palette, vertex AO and grip as the guard (the 2H clips are the rifle's); what's new (helmet with earcups, vest,
+   knee pads; 7,058 tris); please check it with a rifle at mid distance and crouched. Comparison:
+   `workspace/tinfox/rifle-guard/rifle_guard_v1.png`. Possible later polish (not asked for): rounder, fuller shoulder pads, puffier vest plates,
+   vest front a little proud in the side view.
+2. **Wait for the game agent's check of `GUARD-UPDATE-2.md`** (crouch-aim clips in the game: it needs a small change
+   to pick `crouch_aim_*` / `crouch_shoot_*` while crouched; fitted guard at mid distance).
+3. **Then build the officer** (`characters/sheets/02-officer.png`, ~25–30 %: peaked cap, coat, tall boots, moustache;
+   coat hem vs knees in walk/run is the risk). Workflow as for the rifle guard (below). Still open from the guard
+   rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a `validate` rule "face/detail islands
+   must touch or enter their base shell".
+4. Then `hero-f` + worker, players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
+5. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
 
-**Then:**
-1. **Guard in the game: done** (tin-wolf art set `tinfox`, `?art=tinfox`; report `~/Desktop/tinfox/GUARD-REPORT.md`,
-   screenshots in `characters/report/`). Worked as delivered: units, facing, bone axes (gun along `handslot.r` +X,
-   +Y up), clips, vertex AO, palette, muzzle flash. Grip for the Kenney blasters: `position [0, -0.02, 0],
-   rotation [0, -π/2, 0], scale 0.65`. **Keep the palette sampler NEAREST/NEAREST:** the game uses it as the sign
-   "palette texture, never filter". Fixed from the report (`GUARD-UPDATE-1.md`, new GLB on the Desktop): 1H clips
-   key the right arm only (`sides`), `crouch` breathes (64 frames). **Wait for the game agent's check** (front
-   view walking with the pistol, crouching). Later: file size / shared clips (drop unused clips or one animation
-   file per body type).
-2. **Next build: rifle guard** (Marcel agreed; ~15–20 % of the guard's effort: guard body + helmet with earcups and
-   antenna, armour vest, knee pads; sheet `characters/sheets/03-rifle-guard.png`), then **officer** (~25–30 %:
-   peaked cap, coat, tall boots, moustache; coat hem vs knees in walk/run is the risk). Before them, two speed-ups
-   from the guard rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` (ears rooted in the head,
-   solid nose, thin brown mouth, pads high, boots smaller than the sheet, trousers ending inside the boot shaft)
-   and a `validate` rule "face/detail islands must touch or enter their base shell" (floating ears, nose gap).
-3. Then `hero-f` + worker (~50 %: new proportions, refit clothing), players (two suits, four heads; hair is the
-   slow part), weapons (prop mode, `grip`/`muzzle` points). Hand each character to the game agent the same way
-   (brief + GLB in `~/Desktop/tinfox`).
-4. Open on the guard: pose-test joint seams (thigh into the jacket hem in crouch/run, trousers into boots 4–5 cm,
-   sleeve inner end in 2H); none showed in the game at ≥ 1.8 m.
+**Workflow for a new Tinfox character** (as used for the rifle guard): copy the sheet to
+`specs/<name>/reference/turnaround.png`; spec from the guard's (parts, colours, `extra_clips`,
+`compare.fit_exclude: ["feet"]`); measure the sheet (`workspace/lib4/measure_sheet.py` for floor/columns) and set the
+scale from **two model heights** (floor + belt centre 0.962 m), not the figure top (headwear sits above the 1.80 m
+skull); `add_reference(top_y = floor_y − 1.80 / m_per_px)`; new parts in `workspace/tinfox/parts/`; `run.py <name>
+--build …`; `compare_reference`; fix parts where the fit would have to distort (e.g. too-tall helmet); then
+`fit_to_reference` and **copy `fit` + `compare.arms_down_deg` from `workspace/<name>/spec.json` into
+`specs/<name>/spec.json`** (`run.py` re-inits from `specs/` and drops it otherwise); then `--anim --export`.
 
 **Lowpoly (waiting for Marcel):**
 
@@ -753,6 +743,43 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   Left: orange stripes are zigzag blobs (the texture's own blotches), buckle and a belt patch read as skin, jagged
   glove cuffs, skin wedge at the back of the neck. Not tried yet: rig + pose test, three-view input.
 
+## Tinfox: crouch aim + guard update 2 (2026-11-17)
+
+- Game reply (`GUARD-UPDATE-1-REPLY.md`): the 1H left-arm fix and the breathing crouch work; new problem: aim clips
+  layered over `crouch` point the gun ~40° at the floor (the crouch leans the chest forward). Fix (their option 1):
+  **`over`** in an arms-only clip's config (core.json ↔ STYLE.md §8b): `bake_arms_only(arm, action, over)` solves
+  the arms on the base clip's first-frame torso (shoulders, parent poses) instead of the rest pose; hands keep their
+  world orientation. New clips `crouch_aim_1h`, `crouch_shoot_1h`, `crouch_aim_2h`, `crouch_shoot_2h` (same sources,
+  cuts, sides, stances; `over: crouch`); a spec listing one must list its `over` clip (checked). Library animations
+  rebuilt. Measured in the layered pose: standing clips over `crouch` −37…−45°, crouch clips −5…+3° (1H shot kicks
+  to +19° as standing), also over `crouch_walk`. Sheet `workspace/tinfox/clips/crouch/clips_sheet.png`.
+- Export: palette samplers get `minFilter` NEAREST (9728; Blender wrote NEAREST_MIPMAP_NEAREST), `glb.nearest_samplers`
+  (STYLE.md §10). Test checks it.
+- Guard rebuilt (fitted, 18 clips) and sent: `~/Desktop/tinfox/characters/glb/guard.glb` (sha `74a0fec5…`),
+  `GUARD-UPDATE-2.md`, `characters/glb/guard-crouch-aim.png`.
+- **Bug fixed:** `compare_reference` on an animated character lowered the arms from the idle clip's pose (rifle guard
+  IoU 0.86 → 0.77 after `--anim`); the job now clears the action and resets the pose first.
+
+## Tinfox: rifle guard (2026-11-17)
+
+- Sheet `specs/rifle-guard/reference/turnaround.png` (Marcel's set, same as the guard's). Scale 1.913 mm/px from
+  floor (y 1004) + belt centre (y 501 ↔ 0.962 m): `top_y` 63; the first try put the helmet top at 1.80 m and the
+  whole model came out too tall at the top.
+- Guard parts reused (head, hair, sleeves, mittens, boots, belt) + 3 new: `headwear-helmet-earcups-hero` (dome low
+  at the back, black visor strip, orange centre stripe, earcups, `P.covers = ["ears"]`, earpiece + antenna on the
+  left; 744 tris), `torso-vest-armored-hero` (guard jacket with the hidden middle dropped, vest 2.8 cm proud, rolled
+  collar rising at the back to the helmet, three pillow plates front and back via `P.shell`, orange tabs and
+  straps, guard pads × 1.1; 1,968), `legs-trousers-kneepads-hero` (guard trousers + octagonal pads, black rim, grey
+  face, weights half thigh / half shin; 672).
+- First fit squeezed the head to 0.79 at the top to match a too-tall helmet → dome lowered (top 1.84) and narrowed in
+  the part. The fit's remaining head narrowing (0.92 → 0.89) is real: the sheet's face is narrower than the guard
+  sheet's (cheeks ±0.104 vs ±0.126 m).
+- Fit: torso width 1.06–1.08, depth 1.17–1.25 (vest), sleeves 1.15, gloves 1.17–1.22, thighs 1.04 deeper, shins a
+  little narrower; arms_down 72°. Score 0.718 → 0.742; IoU 0.86 / 0.84 / 0.86 (unfitted 0.80 / 0.78 / 0.81).
+- 7,058 tris, 9 colours (as the guard), validate 0 hard; 18 clips, floor/contact ok; pose-test findings are the
+  guard's categories (73 vs the guard's 77; pads over the sleeve tops, thighs into the jacket hem in crouch, belt).
+  Export ok (validator, three.js load).
+
 ## Fit to the reference (2026-11-17, Marcel: "go ahead with the automatic fitting loop")
 
 - **`fit_to_reference(name, apply=True)`** (MCP tool; `server/tools/qa.py`, job `jobs/fit_reference.py`, numpy core
@@ -777,6 +804,10 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   end-to-end). 80 tests pass.
 
 ## Decisions (with reasons)
+
+- **Crouch aim as separate baked clips** (2026-11-17, game's preferred option): the aim layer keys arm rotations
+  relative to the chest, so one clip can't be level over both an upright and a leaning chest; an upright-chest
+  crouch (option 2) would have looked stiff.
 
 - **Fit by region scale curves, not by editing part scripts** (2026-11-17): works for every character and part
   combination, is stored in the spec (hash-covered, reversible), and can't break a part's topology. Deliberate
@@ -862,6 +893,8 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - **Repo location:** `/Users/marceli.to/Jamon.digital/Webroot/game-pack-generator` (moved from a scratch folder on 2026-11-15; venvs recreated). Old scratch files (animation comparison report, retarget tests) are in `workspace/_archive/` (local only).
 - **`ai` approach** runs `ai/gen.py` in `ai/.venv` (torch + diffusers + peft; `GPG_AI_PYTHON` overrides); models shared with the spike via the Hugging Face cache. On this M4 Max: model load ~4 s, generation ~27 s.
 - **AI spike** has its own venv (`spikes/ai-texture/.venv`, torch + diffusers); models (~13 GB) are cached in `~/.cache/huggingface`. 16 GB RAM is not enough to run it without swapping.
+- **Fit lives in the workspace spec:** `fit_to_reference` writes `workspace/<name>/spec.json`; `run.py` re-inits from
+  `specs/<name>/spec.json`, so copy `fit` + `compare.arms_down_deg` there or the next rebuild drops them.
 - **Tests and `GPG_STYLE`:** don't run pytest in a shell where `GPG_STYLE` is exported (e.g. after `export
   GPG_STYLE=tinfox` for the detail renders): the tests then default to that style and ~9 fail. Use a subshell.
 - **Detail renders for Tinfox:** `ARMS=72 GPG_STYLE=tinfox REG='{...}' workspace/knight-lowpoly/detail/body.sh guard [part ...]`.
@@ -870,7 +903,7 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (81, ~90 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (82, ~90 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -882,6 +915,9 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Crouch-aim clips (`over`), NEAREST sampler, guard update 2 sent; rifle guard v1 (3 new parts,
+  fitted, IoU ~0.85); `compare_reference` pose fix. 81 tests pass. Next session: rifle guard to the game, then the officer.
 
 - **2026-11-17** — ump: fit committed, Hunyuan files cleaned up; next: fitted guard to the game.
 

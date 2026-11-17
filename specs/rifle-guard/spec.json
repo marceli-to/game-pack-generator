@@ -1,0 +1,111 @@
+{
+  "name": "rifle-guard",
+  "style": "tinfox",
+  "archetype": "hero-m",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 8,
+    "primary": 29,
+    "secondary": 54,
+    "accent": 19,
+    "leather": 54,
+    "metal": 43,
+    "dark": 53,
+    "special": 45
+  },
+  "parts": {
+    "head": "head-hero-square",
+    "hair": "hair-short-hero",
+    "headwear": "headwear-helmet-earcups-hero",
+    "face": null,
+    "torso": "torso-vest-armored-hero",
+    "arms": "arms-sleeves-padded-hero",
+    "hands": "hands-mitten-hero",
+    "legs": "legs-trousers-kneepads-hero",
+    "feet": "feet-boots-big-hero",
+    "accessory_waist": "accessory_waist-belt-buckle-hero"
+  },
+  "reference": "specs/rifle-guard/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 72.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "extra_clips": [
+    "aim_1h",
+    "shoot_1h",
+    "aim_2h",
+    "shoot_2h",
+    "crouch",
+    "crouch_walk",
+    "crouch_aim_1h",
+    "crouch_shoot_1h",
+    "crouch_aim_2h",
+    "crouch_shoot_2h"
+  ],
+  "fit": {
+    "arms": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.15,
+        1.15,
+        1.127
+      ]
+    },
+    "hands": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.174,
+        1.174,
+        1.221
+      ]
+    },
+    "head": {
+      "u": [
+        0.923,
+        0.905,
+        0.887
+      ],
+      "v": [
+        1.0,
+        1.0,
+        0.98
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        0.98,
+        0.905
+      ],
+      "v": [
+        1.0,
+        1.041,
+        1.041
+      ]
+    },
+    "torso": {
+      "u": [
+        1.062,
+        1.062,
+        1.083
+      ],
+      "v": [
+        1.174,
+        1.221,
+        1.246
+      ]
+    }
+  }
+}
