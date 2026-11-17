@@ -73,7 +73,15 @@
   "shading": {
     "_comment": "STYLE.md §5: every face flat-shaded",
     "mode": "flat",
-    "crease_deg": 40
+    "crease_deg": 40,
+    "ao": {
+      "_comment": "STYLE.md §5: AO baked into vertex colours (COLOR_0) at assembly",
+      "distance": 0.3,
+      "power": 2.0,
+      "strength": 1.0,
+      "floor": 0.2,
+      "samples": 128
+    }
   },
   "palette": {
     "file": "styles/tinfox/palette.png",

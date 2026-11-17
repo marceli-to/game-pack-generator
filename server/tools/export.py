@@ -24,6 +24,7 @@ def glb_summary(glb: Path) -> dict:
                        "double_sided": m.get("doubleSided", False)} for m in j.get("materials", [])],
         "samplers": j.get("samplers", []),
         "texcoords": max((sum(k.startswith("TEXCOORD_") for k in p["attributes"]) for p in prims), default=0),
+        "vertex_colors": any("COLOR_0" in p["attributes"] for p in prims),
     }
 
 
@@ -50,6 +51,8 @@ def export(name: str) -> dict:
         if not summary["materials"] or not all(m["unlit"] for m in summary["materials"]):
             problems.append("painted style exports unlit, but the GLB material has no KHR_materials_unlit "
                             "(run paint_surface)")
+    if style["shading"].get("ao") and not summary["vertex_colors"]:
+        problems.append("the style bakes AO (shading.ao) but the GLB has no COLOR_0 (re-assemble)")
     if gv["errors"] > style["export"]["max_validator_errors"]:
         problems.append(f"glTF validator: {gv['errors']} errors")
     if not tl.get("ok"):

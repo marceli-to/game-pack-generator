@@ -77,7 +77,11 @@ Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to 
 
 - **Flat shading**: every face flat-shaded, every facet visible; the GLB carries face normals. `validate` warns
   on smooth faces.
-- Normals consistently outward; no flipped faces. No vertex colours.
+- Normals consistently outward; no flipped faces.
+- **Baked ambient occlusion** (root STYLE.md §5): distance 0.3 m, power 2.0, strength 1.0, floor 0.2, 128 samples.
+  Lit in the game (not unlit): the levels light the characters; the AO only darkens creases, under the cap peak,
+  the neck, between arm and body. Chosen by Marcel (2026-11-17) over a baked painted texture: palette recolours keep
+  working, no texture per character. Tested settings: 0.25 m / power 1 barely visible, 0.4 m / power 3 dirty.
 
 ## 7a. Proportion templates (values) → style.json
 

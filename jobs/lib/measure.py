@@ -103,7 +103,7 @@ def measure(spec=None):
         "non_manifold_edges": 0, "boundary_edges": 0, "wire_edges": 0,
         "flipped_faces": 0, "inverted_islands": 0,
         "zero_area_faces": 0, "duplicate_verts": 0, "ngons_over_max": 0,
-        "flat_faces": 0, "unmarked_creases": 0, "vertex_color_layers": 0,
+        "flat_faces": 0, "unmarked_creases": 0, "vertex_color_layers": 0, "vertex_color_names": [],
         "asymmetric_verts": 0, "symmetry_checked_verts": 0,
         "weights_over_max_bones": 0, "unweighted_verts": 0,
         "z_min": None, "body_top": None, "headwear_top": None, "total_top": None,
@@ -124,6 +124,7 @@ def measure(spec=None):
         m["faces"] += len(mesh.polygons)
         m["tris"] += sum(len(p.vertices) - 2 for p in mesh.polygons)
         m["vertex_color_layers"] += len(mesh.color_attributes)
+        m["vertex_color_names"] += [a.name for a in o.data.color_attributes]
         flat, unmarked = SH.check(o.data)
         m["flat_faces"] += flat
         m["unmarked_creases"] += unmarked
@@ -403,8 +404,12 @@ def violations(m, spec=None):
             W("flat_shading", f"{m['flat_faces']} faces are flat-shaded (smooth by angle required, STYLE.md §5)")
     if m["unmarked_creases"]:
         W("unmarked_creases", f"{m['unmarked_creases']} edges sharper than {style['shading']['crease_deg']}° are not marked sharp")
-    if m["vertex_color_layers"]:
-        W("vertex_colors", "mesh has vertex colours (everything goes through the palette)")
+    ao = style["shading"].get("ao")
+    if set(m["vertex_color_names"]) - ({SH.AO_ATTR} if ao else set()):
+        W("vertex_colors", f"mesh has vertex colours {sorted(m['vertex_color_names'])} (only the baked "
+          f"`{SH.AO_ATTR}` layer is allowed, and only with shading.ao, STYLE.md §5)")
+    if ao and SH.AO_ATTR not in m["vertex_color_names"]:
+        W("no_ao", f"the style bakes AO (shading.ao) but the mesh has no `{SH.AO_ATTR}` layer (re-assemble)")
     if m["symmetry_checked_verts"] and m["asymmetric_verts"]:
         pct = 100 * m["asymmetric_verts"] / m["symmetry_checked_verts"]
         if pct > 1:

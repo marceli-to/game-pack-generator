@@ -145,6 +145,7 @@ def run(args):
 
     SH.apply(char.data)
     used_idx, missing = PAL.apply_roles(char, spec.get("colors") or {})
+    ao = SH.bake_ao(char)   # styles with shading.ao: AO in vertex colours, before skinning (rest pose, §5)
     char.parent = arm
     mod = char.modifiers.new("Armature", "ARMATURE")
     mod.object = arm
@@ -153,5 +154,5 @@ def run(args):
     if missing:
         warnings.append(f"roles without a colour in spec.colors: {missing} (validate will fail)")
     return {"outputs": [args["out"]], "warnings": warnings,
-            "stats": {"tris": sum(per_part.values()), "part_tris": per_part, "palette_indices": used_idx, "skirt_verts": skirt, "joint_blend_verts": blended,
+            "stats": {"tris": sum(per_part.values()), "part_tris": per_part, "palette_indices": used_idx, "skirt_verts": skirt, "ao": ao, "joint_blend_verts": blended,
                       "missing_roles": missing}}

@@ -6,7 +6,8 @@ Living status of the project. **Read this first in every session; update it befo
 _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** built through Marcel's viewer rounds
 (V chest, pads that follow the arms, face, smaller boots, 2H stance with shoulders forward); committed + pushed
-`ee4f964`. **Next session: subdivision + paint test on the guard** (how close to the sheet can we get?).
+`ee4f964`. Surface: flat palette + **baked AO in vertex colours** (Marcel's pick, ~75 % of the sheet; form pass / image-to-3D
+only if it still bothers him in the game). Guard briefed for the game (`~/Desktop/tinfox/GUARD-IN-GAME.md`).
 Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
@@ -36,27 +37,18 @@ Lowpoly Phase 4 items below still wait for Marcel._
 9 colours, 14 clips; see "Tinfox: guard" below). GLB `workspace/guard/export/character-guard.glb` (gitignored:
 rebuild with `.venv/bin/python workspace/lib4/run.py guard --anim --export`; the committed part scripts in
 `styles/tinfox/parts/` are the source). Views: `workspace/tinfox/guard/guard_v7.png`, `face_v6.png`, `aim2h_v8.png`.
-**Next (Marcel, 2026-11-17: do these first):** two cheap tests to find out how much of the gap to the sheet is
-smoothness vs surface detail vs the code-built geometry itself. Background: honest estimate given to Marcel: the
-procedural route tops out around 75–80 % of the sheet (organic shapes like faces and hands are slow to author as
-code); 90 % would need a different base-mesh source (image-to-3D such as TRELLIS / Hunyuan3D-2, an artist, or a
-hybrid: procedural gear + sculpted/generated head and hands).
-- **A. Subdivision test:** guard parts subdivided once (Catmull-Clark; keep creases where the shape needs hard
-  edges), smooth by angle, decimated back to ≈ 8,000 tris; side by side with v7 (current flat look) against the
-  sheet (front / side / back / ¾). Note what reads better/worse (silhouette, facets, face, pads, boots) and whether
-  roles/colours survive the decimation (per-face `role` attribute) and the clips still skin cleanly.
-- **B. Paint test:** `paint_surface` on a guard copy with `auto`, then `ai` (subject e.g. "soldier guard in olive
-  jacket with orange shoulder pads"; style ref = crop of the guard sheet, `keep_roles` for the face if it gets
-  redrawn). The paint config lives in `styles/painted/` → either a test style `tinfox-painted` (copy of tinfox
-  with surface `painted` + paint/ai config) or the guard spec on `painted`; don't change `tinfox` itself. Compare
-  flat vs subdivided vs subdivided + paint against the sheet in one sheet.
-- Outcome for Marcel: one comparison sheet + a rough % per step, then decide: stay procedural (+ subdivision /
-  paint) or spike image-to-3D.
+**Surface decided (Marcel, 2026-11-17): option B**, flat palette + AO baked into vertex colours, lit in the game
+(`shading.ao` in tinfox, STYLE.md §5; see "Tinfox: how close to the sheet?" below). The guard GLB now carries
+`COLOR_0`. Open from that test: the remaining gap to the sheet is **form** (a form pass or an image-to-3D spike,
+when Marcel wants it).
 
 **Then:**
 1. Marcel's last look at the guard (2H aim after the shoulder fix; `walk` arm swing with the pads).
-2. **Guard in the game** (GENERATOR.md step 4: art-set profile, Kenney blasters for now, one level). Tell the game
-   the clip names (8 base + `aim_1h`, `shoot_1h`, `aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`), that `run` tilts
+2. **Guard in the game: briefed** (Marcel, 2026-11-17: the tin-wolf agent does it). Brief
+   `~/Desktop/tinfox/GUARD-IN-GAME.md`, GLB `~/Desktop/tinfox/characters/glb/guard.glb` (copy of the pipeline export).
+   Wait for its report (screenshots, grip values, GLB changes). Points the brief covers: (GENERATOR.md step 4: art-set profile, Kenney blasters for now, one level). Tell the game
+   the GLB has vertex colours (`COLOR_0` = baked AO; GLTFLoader turns `vertexColors` on; keep it if the game swaps or
+   clones materials, else the AO disappears), lit material (needs the level's lights), the clip names (8 base + `aim_1h`, `shoot_1h`, `aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`), that `run` tilts
    the aim 10–20° down, and that 2H clips move the `upperarm` heads (location keys) — the layering must keep them.
 3. Then officer and rifle guard (reuse the guard's parts; officer's coat hem vs shins, like the wizard's robe),
    `hero-f` + worker, players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
@@ -674,8 +666,53 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 - Close-up renderer (`workspace/knight-lowpoly/detail/render.py`) takes `ARMS=<deg>`; `body.sh`/`head.sh` take
   `GPG_STYLE` and `REG` (regions) from the environment.
 
+## Tinfox: how close to the sheet? (2026-11-17)
+
+Marcel: our characters differ a lot from the sheet (detail, "less smooth"); can we get to 90 %? Estimate given:
+procedural tops out ~75–80 %. Two tests on the guard (scripts + renders local in `workspace/tinfox/smooth/`;
+sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.png`):
+- **The sheet is flat-shaded low-poly itself** (facets on thighs, gloves, cap, boots). "Smoother" there means
+  **few, large, deliberate planes** with small angles between them + soft light; ours has many small facets
+  (20-point head rings band the face into stripes).
+- **A. Subdivision** (subsurf 1 → 22,688 tris, decimate to 8,000, smooth by angle 40°; roles survive, UVs fine):
+  reads as a soft vinyl toy, *further* from the sheet; thin pieces shrink (antenna → pill, nose → blob, stripes
+  thinner). Smooth by angle alone: similar, softer. Dropped.
+- **B. Paint** (test style `tinfox-painted` = tinfox + painted surface, 2048² `auto`): the knight-tuned auto
+  paint adds camo blotches, a dirty face and a glowing mouth (worse); a soft config (light + AO + cast shadow,
+  no brush/rust) adds the shadow under the peak and a little depth but also seam lines along the limbs. Close to
+  flat. `ai` not run: the sheet carries no painted detail to transfer, and it can't change the silhouette.
+  The temp style/spec are parked in `workspace/tinfox/smooth/temp/` (copy back to `styles/` and `specs/` to rerun;
+  they break nothing but don't belong in the repo).
+- **Marcel likes the soft paint best** (2026-11-17). Before it becomes the tinfox surface: fix the seam lines
+  along the limbs, decide unlit (baked light) vs lit, and solve player colours (a texture can't be recoloured by
+  moving palette UVs).
+- **Lit vs unlit in three.js** (recommended to Marcel: lit, the shooter's levels light the characters). Viewer
+  page `workspace/tinfox/smooth/compare.html` (serve the repo root; `?light=room|game|dusk|dark&cam=front|q|headq`),
+  shots in `workspace/tinfox/smooth/vc/`. Four guards side by side: A flat; B flat + AO baked into vertex colours
+  (`bake_ao.py`, Cycles AO → corner `COLOR_0` × palette texture: palette swaps keep working; GLB valid) → **barely
+  visible** under real light, vertex density too coarse; C soft paint (unlit) → nicest in neutral light but
+  **glows in dusk/dark** scenes; D texture with only AO + edge highlights, lit (`paint.py litsoft`, temp style
+  with `unlit: false`) → keeps C's soft edges and reacts to the light, but the edge highlight also hits the shallow
+  ring edges (pinstripes along arms/legs, cap grid) and it's darker than C. If D: highlight only edges sharper than
+  ~35°, lift the base a little; costs a texture per character and a recolour scheme for player colours.
+  Test copies (gitignored): `workspace/guard-ao/`, `guard-soft/`, `guard-litsoft/`.
+- **Built (Marcel picked B):** `shading.ao` (tinfox: 0.3 m, power 2, strength 1, floor 0.2, 128 samples; tuned
+  in three.js: 0.25 m / power 1 barely visible, 0.4 m / power 3 dirty). `SH.bake_ao` at the end of `assemble`
+  (rest pose, Cycles AO → corner attribute `AO` → remap → multiply node in the character's palette material; parts
+  untouched), export `export_vertex_color: MATERIAL` (→ `COLOR_0` only where a material uses it) + fails without
+  `COLOR_0` on an AO style, `validate` soft `vertex_colors` / `no_ao`. Test `tests/test_ao.py` (guard end-to-end,
+  ~5 s). Sheets `workspace/tinfox/smooth/vc/ao_*.png` (strengths), `final_*.png` (pipeline guard).
+- **Rough % (by eye):** v7 flat ~65 %, soft paint ~65–70 %, subdivided ~55–60 %, knight auto paint ~50 %.
+- **What is left is form:** cap (sheet: rounder, fuller crown bulging forward over the peak), head (wider jaw,
+  bigger round ears, fewer face planes), bulk (bigger pads sitting higher, thicker sleeves with elbow folds,
+  wide cuffs, bulkier thighs with knee planes), gloves with fingers. Soft light can be the game's job (lighting /
+  AO in three.js) rather than baked.
+
 ## Decisions (with reasons)
 
+- **Tinfox surface: palette + AO in vertex colours, lit** (Marcel, 2026-11-17): the shooter's levels must light
+  the characters (an unlit baked look glowed in dusk/dark scenes); vertex AO keeps palette recolours (player colours)
+  and needs no texture per character. Subdivision and painted textures were tested and dropped (see the test above).
 - **Tinfox budget 3,000–7,000, hard 8,000** (Marcel, 2026-11-17; first 3,000–4,500 / 5,000); **mitten + thumb hands** (Marcel: fingers tried, not worth the tris); **sheets committed** (Marcel).
 
 - **Arms-only clips are baked, not just filtered** (2026-11-17): the KayKit aim clips get their aim from the whole
@@ -759,7 +796,7 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (71, ~60 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (78, ~70 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -771,6 +808,16 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Guard handed to the tin-wolf agent (brief + GLB in `~/Desktop/tinfox`). Marcel: ~75 % of the
+  sheet is fine for now; see it in the game first.
+- **2026-11-17** — Tinfox: AO baked into vertex colours (`shading.ao`, Marcel's pick B), guard rebuilt (COLOR_0,
+  lit, validator 0/0). 77 tests pass.
+- **2026-11-17** — Lit/unlit test in three.js (A flat, B vertex AO, C soft unlit, D AO + edges lit): vertex AO too
+  weak, unlit glows in dark scenes, D is the lit candidate. Awaiting Marcel's look at `compare.html`.
+
+- **2026-11-17** — Smoothness/paint test on the guard: the sheet is faceted too; subdivision and paint don't close
+  the gap (form does). Awaiting Marcel: form pass, image-to-3D spike, or move on.
 
 - **2026-11-17** — Marcel asked how close to the sheet we can get (90 %?): estimate 75–80 % procedurally; next
   session runs the subdivision test and the paint test on the guard (start-here list).

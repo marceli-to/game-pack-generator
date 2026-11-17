@@ -50,7 +50,14 @@ How a role becomes a visible surface is the style's **surface mode** (`styles/<n
 
 ## 5. Shading & normals → per style
 
-Defined by each style in `styles/<name>/STYLE.md` §5 (shading rule; normals always consistently outward, no vertex colours).
+Defined by each style in `styles/<name>/STYLE.md` §5 (shading rule; normals always consistently outward).
+
+**Vertex colours** only for baked ambient occlusion, opt-in per style (`shading.ao`): at the end of assembly, Cycles
+bakes AO in the rest pose into the corner colour attribute `AO` (grey), remapped as `max(floor, 1 − strength ×
+(1 − ao^power))`, and the palette material multiplies the texture with it. glTF writes it as `COLOR_0`, which
+three.js multiplies with the base colour, so the palette (and palette recolours) stay unchanged and the game's
+lights still light the character; only creases, the shadow under a cap peak, the neck etc. get darker. Styles
+without `shading.ao` have no vertex colours.
 
 ## 6. Topology rules → core.json (validated)
 
@@ -207,6 +214,8 @@ Target is **three.js only**; the only format is **GLB**.
 - Material and texture sampler depend on the surface mode (styles/<name>/STYLE.md §4):
   - `palette`: nearest filter (the viewer also turns mipmaps off for NEAREST textures), material exported as `MeshStandardMaterial` (roughness 1, metallic 0)
   - `painted`: linear filter; unlit (`KHR_materials_unlit` → `MeshBasicMaterial` in three.js) when the style sets `paint.unlit`, else `MeshStandardMaterial`; `export` fails if an unlit style's GLB has no `KHR_materials_unlit`. Blender writes the extension for a texture → **Background** shader → output (not for an Emission shader).
+- Vertex colours: `COLOR_0` only when the style bakes AO (`shading.ao`, §5); `export` fails if such a style's GLB
+  has no `COLOR_0`.
 - FBX/OBJ: not planned; only add if needed later
 
 - For export the mesh is unparented from the armature (skinning stays via the armature modifier/skin), because glTF wants skinned meshes at the scene root (validator: `NODE_SKINNED_MESH_NON_ROOT`).
@@ -233,6 +242,7 @@ Defined by each style in `styles/<name>/STYLE.md` §11 (engine, lighting, views,
 - Tris above target
 - More than 8 distinct palette indices used on faces (`painted`: base colours of the roles used)
 - Asymmetry in base parts
+- `vertex_colors`: colour attributes other than the baked `AO` layer, or `AO` on a style without `shading.ao`; `no_ao`: a style with `shading.ao` but no `AO` layer (re-assemble)
 - Fewer than 2 edge loops at joints
 - Vertices with weights from more than `skinning.max_bones_per_vertex` = 3 bones (rigid parts use 1, joint blends 2, skirts up to 3; glTF allows 4)
 - `covered_visible`: a part declares it hides a feature of another part (`P.covers`, §9a) but a viewer can still see `covers_check.min_verts` = 3 or more of its vertices in the rest pose (same view directions as the pose test, cone `covers_check.cone_deg` = 4°). Features (`part_covers`): `ears` = the head's islands out at the sides (centre beyond 70 % of the skull's half-width). Catches an ear coming through a helmet's guard (the knight in Heerschar).

@@ -47,3 +47,78 @@ def check(mesh):
             unmarked += 1
     bm.free()
     return flat, unmarked
+
+
+AO_ATTR = "AO"
+
+
+def ao_config():
+    """`shading.ao` of the style (STYLE.md §5), or None."""
+    return S.load()["shading"].get("ao")
+
+
+def bake_ao(obj):
+    """Bake ambient occlusion (rest pose, Cycles) into the corner colour attribute `AO` and multiply it into
+    the object's palette material (STYLE.md §5). No-op without `shading.ao`. Returns stats or None."""
+    import bpy
+    import numpy as np
+    cfg = ao_config()
+    if not cfg:
+        return None
+    me = obj.data
+    for a in list(me.color_attributes):
+        me.color_attributes.remove(a)
+    ca = me.color_attributes.new(AO_ATTR, "FLOAT_COLOR", "CORNER")
+    me.color_attributes.active_color = ca
+    me.attributes.active_color = ca
+
+    sc = bpy.context.scene
+    engine = sc.render.engine
+    sc.render.engine = "CYCLES"
+    sc.cycles.device = "CPU"
+    sc.cycles.samples = cfg["samples"]
+    if sc.world is None:
+        sc.world = bpy.data.worlds.new("World")
+    sc.world.light_settings.distance = cfg["distance"]
+    sc.render.bake.target = "VERTEX_COLORS"
+    vl = bpy.context.view_layer
+    for o in vl.objects:
+        o.select_set(o is obj)
+    vl.objects.active = obj
+    bpy.ops.object.bake(type="AO", target="VERTEX_COLORS")
+    sc.render.engine = engine
+
+    c = np.zeros(len(me.loops) * 4, dtype=np.float32)
+    ca.data.foreach_get("color", c)
+    c = c.reshape(-1, 4)
+    ao = np.clip(c[:, 0], 0.0, 1.0)
+    v = np.maximum(cfg["floor"], 1.0 - cfg["strength"] * (1.0 - ao ** cfg["power"]))
+    c[:, 0] = c[:, 1] = c[:, 2] = v
+    c[:, 3] = 1.0
+    ca.data.foreach_set("color", c.ravel())
+
+    for mat in me.materials:
+        if mat is None or not mat.use_nodes:
+            continue
+        nt = mat.node_tree
+        if nt.nodes.get(AO_ATTR) is not None:
+            continue
+        tex = next((n for n in nt.nodes if n.type == "TEX_IMAGE"), None)
+        bsdf = next((n for n in nt.nodes if n.type == "BSDF_PRINCIPLED"), None)
+        if tex is None or bsdf is None:
+            continue
+        va = nt.nodes.new("ShaderNodeVertexColor")
+        va.name = AO_ATTR
+        va.layer_name = AO_ATTR
+        va.location = (-350, -100)
+        mix = nt.nodes.new("ShaderNodeMix")
+        mix.data_type = "RGBA"
+        mix.blend_type = "MULTIPLY"
+        mix.inputs["Factor"].default_value = 1.0
+        mix.location = (-120, 100)
+        nt.links.new(tex.outputs["Color"], mix.inputs["A"])
+        nt.links.new(va.outputs["Color"], mix.inputs["B"])
+        nt.links.new(mix.outputs["Result"], bsdf.inputs["Base Color"])
+    p = np.percentile(v, [5, 50, 95])
+    return {"corners": int(len(v)), "p5": round(float(p[0]), 3), "p50": round(float(p[1]), 3),
+            "p95": round(float(p[2]), 3)}

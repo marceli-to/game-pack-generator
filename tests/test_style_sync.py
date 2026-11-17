@@ -70,6 +70,10 @@ def test_shading_matches(name):
         assert "**Flat shading**" in STYLE_MD
     else:
         assert f"**Smooth by angle, {sh['crease_deg']}°**" in STYLE_MD
+    if sh.get("ao"):
+        a = sh["ao"]
+        assert (f"**Baked ambient occlusion** (root STYLE.md §5): distance {a['distance']} m, power {a['power']}, "
+                f"strength {a['strength']}, floor {a['floor']}, {a['samples']} samples") in STYLE_MD
 
 
 def test_slots_match():

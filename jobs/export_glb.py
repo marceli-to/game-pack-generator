@@ -27,7 +27,7 @@ WANTED = {
     "export_skins": True,
     "export_def_bones": False,      # keep the non-deforming slot bones for attachments
     "export_extras": False,
-    "export_vertex_color": "NONE",
+    "export_vertex_color": "MATERIAL",   # COLOR_0 only where the material uses it (baked AO, STYLE.md §5)
     "use_selection": False,
 }
 
