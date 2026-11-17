@@ -3,10 +3,10 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-17 — New project on the generator: **Tinfox** (Marcel's FPS, sheets in
-`~/Desktop/tinfox`, handoff `GENERATOR.md` there). First piece done: the shooter clips (`aim_1h`, `shoot_1h`,
-`aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`, STYLE.md §8b), arms-only clips baked for an upright torso and exported
-with arm channels only. Lowpoly Phase 4 items below still wait for Marcel._
+_Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** built through Marcel's viewer rounds
+(V chest, pads that follow the arms, face, smaller boots, 2H stance with shoulders forward); committed + pushed
+`ee4f964`. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -26,16 +26,27 @@ with arm channels only. Lowpoly Phase 4 items below still wait for Marcel._
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
+| `tinfox` | draft; flat shading, ~5 heads (hero-m) | guard (Marcel's viewer rounds, not formally approved) |
 
 ## Next session: start here
 
-**Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; plan and order of work
-in `~/Desktop/tinfox/GENERATOR.md`): clips done; style `tinfox` + `hero-m` template done (see "Tinfox: style"
-below). **Guard v2** (see "Tinfox: guard" below; v2 after Marcel: chest, hips, shoulders, sole). **Next:**
-Marcel's look (`workspace/tinfox/guard/guard_v5.png`, GLB `workspace/guard/export/character-guard.glb`), then the guard in the
-game (art-set profile, Kenney blasters for now, one level; the GLB has the 8 base clips + the 6 shooter clips). Clips sheet `workspace/tinfox/clips/baked_layered.png`: Marcel "looks good" (2026-11-17). Name: **Tinfox**
-(Marcel, 2026-11-17; the docs said "Tin Wolf", renamed). Open: tell the game which
-clip names exist (and that `run` tilts the aim 10–20° down: the game's aim pitch corrects it).
+**Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
+`~/Desktop/tinfox/GENERATOR.md`). Done: shooter clips, style `tinfox` + `hero-m`, the **guard** (5,654 tris,
+9 colours, 14 clips; see "Tinfox: guard" below). GLB `workspace/guard/export/character-guard.glb` (gitignored:
+rebuild with `.venv/bin/python workspace/lib4/run.py guard --anim --export`; the committed part scripts in
+`styles/tinfox/parts/` are the source). Views: `workspace/tinfox/guard/guard_v7.png`, `face_v6.png`, `aim2h_v8.png`.
+**Next:**
+1. Marcel's last look at the guard (2H aim after the shoulder fix; `walk` arm swing with the pads).
+2. **Guard in the game** (GENERATOR.md step 4: art-set profile, Kenney blasters for now, one level). Tell the game
+   the clip names (8 base + `aim_1h`, `shoot_1h`, `aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`), that `run` tilts
+   the aim 10–20° down, and that 2H clips move the `upperarm` heads (location keys) — the layering must keep them.
+3. Then officer and rifle guard (reuse the guard's parts; officer's coat hem vs shins, like the wizard's robe),
+   `hero-f` + worker, players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
+4. Open on the guard: the pose test still lists joint seams (thigh into the jacket hem in crouch/run, trousers into
+   boots 4–5 cm, sleeve inner end in 2H); a `validate` rule "face/detail islands must touch or enter their base
+   shell" would have caught the floating ears and the nose gap.
+
+**Lowpoly (waiting for Marcel):**
 
 0. **Marcel's look at the rogue and villager after their detail pass** (viewer / Heerschar; GLBs in
    `workspace/<name>/export/`). Comparison sheets: `workspace/knight-lowpoly/detail/detail_<name>.png` (rows head /
@@ -722,6 +733,9 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 - **Repo location:** `/Users/marceli.to/Jamon.digital/Webroot/game-pack-generator` (moved from a scratch folder on 2026-11-15; venvs recreated). Old scratch files (animation comparison report, retarget tests) are in `workspace/_archive/` (local only).
 - **`ai` approach** runs `ai/gen.py` in `ai/.venv` (torch + diffusers + peft; `GPG_AI_PYTHON` overrides); models shared with the spike via the Hugging Face cache. On this M4 Max: model load ~4 s, generation ~27 s.
 - **AI spike** has its own venv (`spikes/ai-texture/.venv`, torch + diffusers); models (~13 GB) are cached in `~/.cache/huggingface`. 16 GB RAM is not enough to run it without swapping.
+- **Tests and `GPG_STYLE`:** don't run pytest in a shell where `GPG_STYLE` is exported (e.g. after `export
+  GPG_STYLE=tinfox` for the detail renders): the tests then default to that style and ~9 fail. Use a subshell.
+- **Detail renders for Tinfox:** `ARMS=72 GPG_STYLE=tinfox REG='{...}' workspace/knight-lowpoly/detail/body.sh guard [part ...]`.
 - **KayKit source** is not in the repo (only the built `.blend`s). A local copy is in `workspace/_sources/KayKit_Character_Animations_1.1` (gitignored); else download "Free 1.1" from https://kaylousberg.itch.io/kaykit-character-animations to rebuild the library. Animations only: `run_job_checked("build_animations", {"source_dir": ...})` (the full `build_library` also regenerates templates and palettes).
 
 ## Commands
@@ -739,6 +753,8 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — ump: PROGRESS start-here rewritten for Tinfox (guard done, next: guard in the game).
 
 - **2026-11-17** — 2H stance: shoulders forward, arms in front of the chest. Tinfox style + guard committed + pushed.
 
