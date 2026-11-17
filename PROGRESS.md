@@ -452,6 +452,8 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   60–120 deg + 6 mm; ray check from every ear vertex (scratch `ear.py`) now escapes only at the face's cheek corner.
   Gold tab behind the slit removed (read as a band hanging between the legs). Knight 3,964 tris.
   Gotcha: running `jobs/lib/render` directly needs `GPG_STYLE=lowpoly`, else it uses `clean`'s light (dark faces).
+  Gotcha: `workspace/lib4/run.py` does not refresh `workspace/<name>/renders/preview/` (those stay from the last
+  `render_preview`); for current looks use the detail scripts or `render_preview`.
 
 - **Rogue + villager detail pass (2026-11-17)**, rules written into lowpoly STYLE.md §1a ("finished look").
   Rogue: `torso-tunic-chibi` v2 (leather mantle as a closed 5-ring loft: front/back hang onto the chest below the
@@ -553,7 +555,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 - **2026-11-17** — Rogue + villager detail pass (tunic mantle, hood behind the ears, cuffs, daggers, low boots;
   hair fringe, collar, apron, belt; two palette cells from the sheets); "finished look" checklist in lowpoly
-  STYLE.md §1a. Paladin re-checked; dwarf arm offset tried and dropped. 64 tests pass. Awaiting Marcel's look.
+  STYLE.md §1a. Paladin re-checked; dwarf arm offset tried and dropped. 64 tests pass. Committed + pushed
+  `cea44af`. Awaiting Marcel's look.
 
 - **2026-11-16** — Heerschar test: wizard finished, knight WIP → knight detail pass (7 parts, 3,964 tris), helmet
   and rogue hood close to the head, right-ear fix, slit tab removed. Marcel: "all good now". Lowpoly budget → 4,000.
