@@ -25,6 +25,12 @@ def test_extra_clips_documented():
             assert f"range {c['range'][0]}–{c['range'][1]}" in row.group(2), c["name"]
         if "hold" in c:
             assert f"hold frame {c['hold']} for {c['frames']} frames" in row.group(2), c["name"]
+        if c.get("sides"):
+            assert c["sides"] == ["r"] and c["name"].endswith("_1h"), c["name"]
+        if c.get("breathe"):
+            md = STYLE_MD.split("## 8b.")[1]
+            assert f"`{c['name']}`: " + ", ".join(f"{b} {d}".replace("-", "−") for b, d in c["breathe"].items()) in md, c["name"]
+            assert "one breath per loop" in row.group(2), c["name"]
     for b in load_style()["animations"]["arms_only_bones"]:
         assert b in STYLE_MD.split("## 8b.")[1].split("## 9.")[0], b
 
@@ -56,7 +62,7 @@ def test_extra_clips_bake_and_export(mannequin, tmp_path):
             st = rep["stance"]
             assert st["hands_forward_m"] > 0.4 * st["arm_length_m"], (c["name"], rep)
             assert st["hand_spacing_m"] < 0.5 * st["arm_length_m"], (c["name"], rep)
-        else:
+        elif c.get("sides", ["l", "r"]) == ["l", "r"]:
             assert rep["hand_spacing_change_m"] < 0.01, (c["name"], rep)  # the left hand stays on the gun
         if c["name"].startswith("aim"):
             assert rep["gun_max_pitch_deg"] < 6, (c["name"], rep)
@@ -67,8 +73,9 @@ def test_extra_clips_bake_and_export(mannequin, tmp_path):
     chans = _glb_channels(glb)
     arm_bones = {f"{b}.{s}" for b in load_style()["animations"]["arms_only_bones"] for s in "lr"}
     for c in EXTRA:
-        if c["arms_only"]:
-            assert chans[c["name"]] == arm_bones, c["name"]
+        if c["arms_only"]:   # 1H: right arm only, the left arm comes from the base clip
+            want = {f"{b}.{s}" for b in load_style()["animations"]["arms_only_bones"] for s in c.get("sides", "lr")}
+            assert chans[c["name"]] == want, c["name"]
             assert e["stats"]["arms_only_channels_removed"][c["name"]] > 0
     assert len(chans["walk"]) > len(arm_bones)
     assert len(chans["crouch"]) > len(arm_bones)

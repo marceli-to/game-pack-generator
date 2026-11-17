@@ -334,6 +334,8 @@ def bake_arms_only(arm, action):
     # shoulder (fractions of the arm's length), the left hand keeps its place on the gun relative to the right,
     # the clip's sway and recoil ride on top, the elbows bend down
     stance = clip_config(action.name).get("stance")
+    # sides (STYLE.md §8b): the arms the clip keys; 1H clips key the right arm only, the left comes from the base clip
+    sides = clip_config(action.name).get("sides", ["l", "r"])
     if stance:
         cr = chains["r"]
         L = ((rest[cr[0]].inverted() @ rest[cr[1]]).translation.length
@@ -378,7 +380,7 @@ def bake_arms_only(arm, action):
         # together towards that shoulder, so the hands keep their grip on the gun
         for _ in range(0 if stance else 4):
             worst = None
-            for side, chain in chains.items():
+            for side, chain in ((k, v) for k, v in chains.items() if k in sides):
                 up, lo, wr = chain[0], chain[1], chain[2]
                 reach = ((rest[up].inverted() @ rest[lo]).translation.length
                          + (rest[lo].inverted() @ rest[wr]).translation.length) * 0.995
@@ -455,12 +457,14 @@ def bake_arms_only(arm, action):
         spacing_src = (p[chains["l"][-1]].translation - p[chains["r"][-1]].translation).length
         aim["yaw"] = max(aim["yaw"], abs(yaw))
         aim["pitch"] = max(aim["pitch"], abs(pitch))
-        aim["spacing"] = max(aim["spacing"], abs(spacing - spacing_src))
+        if len(sides) == 2:   # one-sided clips: the other hand is not on the gun
+            aim["spacing"] = max(aim["spacing"], abs(spacing - spacing_src))
         if stance:   # how far in front of the shoulders the hands are, and how far apart (the gun grip)
             fwd = a_rest.y - (final["l"].translation.y + final["r"].translation.y) / 2
             aim["forward"] = min(aim["forward"], fwd)
             aim["stance_spacing"] = max(aim["stance_spacing"], spacing)
-    # replace every curve by the baked arm rotations
+    # replace every curve by the baked arm rotations (only the clip's sides)
+    keys = {bn: ks for bn, ks in keys.items() if any(bn in chains[sd] for sd in sides)}
     SC.remove_fcurves(action, lambda fc: True)
     bag = action.layers[0].strips[0].channelbag(action.slots[0])
     for bn, ks in keys.items():
@@ -478,8 +482,8 @@ def bake_arms_only(arm, action):
     for pb in arm.pose.bones:   # clear what the source frames left on the pose
         pb.location = (0, 0, 0)
         pb.rotation_quaternion = (1, 0, 0, 0)
-    return {"reach_error_m": {s: round(e, 4) for s, e in err.items()}, "hands_moved_in_m": round(shift, 4),
+    return {"sides": sides, "reach_error_m": {s: round(e, 4) for s, e in err.items() if s in sides}, "hands_moved_in_m": round(shift, 4),
             "gun_max_yaw_deg": round(aim["yaw"], 1), "gun_max_pitch_deg": round(aim["pitch"], 1),
-            "hand_spacing_change_m": round(aim["spacing"], 4), "frames": [f0, f1],
+            **({"hand_spacing_change_m": round(aim["spacing"], 4)} if len(sides) == 2 else {}), "frames": [f0, f1],
             **({"stance": {"hands_forward_m": round(aim["forward"], 4), "hand_spacing_m": round(aim["stance_spacing"], 4),
                            "arm_length_m": round(L, 4)}} if stance else {})}

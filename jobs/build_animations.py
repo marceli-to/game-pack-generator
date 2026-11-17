@@ -4,7 +4,8 @@ args: { source_dir: <KayKit_Character_Animations_1.1>, out: "library/animations.
 Clips keep their source length (imported at the style fps). Scale keys and root-bone
 location keys (root motion) are stripped. Actions are renamed to the STYLE.md §8 names.
 Extra clips (§8b) are cut to `range` (source frames, shifted to start at 0) or hold one source frame
-(`hold`) for `frames`; their arms-only bake happens per character (apply_animations).
+(`hold`) for `frames` (+ `breathe`: one breath per loop); their arms-only bake happens per character
+(apply_animations).
 """
 from pathlib import Path
 
@@ -34,6 +35,31 @@ def resample(action, frames, length=None):
             k.co = (f, v)
             k.interpolation = "LINEAR"
         fc.update()
+
+
+def breathe(action, bones, frames, step=4):
+    """One breath per loop on a held clip (STYLE.md §8b): each bone in `bones` ({bone: degrees}) turns about its
+    local X axis by degrees × sin(2π f / frames), keyed every `step` frames (loops seamlessly)."""
+    import math
+    from mathutils import Quaternion, Vector
+    for bone, deg in bones.items():
+        path = f'pose.bones["{bone}"].rotation_quaternion'
+        fcs = {fc.array_index: fc for fc in SC.action_fcurves(action) if fc.data_path == path}
+        if len(fcs) != 4:
+            raise RuntimeError(f"{action.name}: no rotation curves on {bone} to breathe")
+        q0 = Quaternion([fcs[i].evaluate(0) for i in range(4)])
+        keys = []
+        for f in range(0, frames + 1, step):
+            q = q0 @ Quaternion(Vector((1, 0, 0)), math.radians(deg) * math.sin(2 * math.pi * f / frames))
+            keys.append((f, q))
+        for i, fc in fcs.items():
+            fc.keyframe_points.clear()
+            fc.keyframe_points.add(len(keys))
+            for k, (f, q) in zip(fc.keyframe_points, keys):
+                k.co = (f, q[i])
+                k.interpolation = "BEZIER"
+                k.handle_left_type = k.handle_right_type = "AUTO_CLAMPED"
+            fc.update()
 
 
 def run(args):
@@ -75,6 +101,8 @@ def run(args):
             warnings.append(f"{name}: stripped {len(moving)} moving root-location curves (root motion)")
         if "hold" in c:
             resample(act, [c["hold"]], length=c["frames"])
+            if c.get("breathe"):
+                breathe(act, c["breathe"], c["frames"])
         elif "range" in c:
             a, b = c["range"]
             resample(act, list(range(a, b + 1)))

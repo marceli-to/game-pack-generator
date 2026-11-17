@@ -7,7 +7,7 @@ _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tin
 there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** built through Marcel's viewer rounds
 (V chest, pads that follow the arms, face, smaller boots, 2H stance with shoulders forward); committed + pushed
 `ee4f964`. Surface: flat palette + **baked AO in vertex colours** (Marcel's pick, ~75 % of the sheet; form pass / image-to-3D
-only if it still bothers him in the game). Guard briefed for the game (`~/Desktop/tinfox/GUARD-IN-GAME.md`).
+only if it still bothers him in the game). Guard is in the game (tin-wolf `?art=tinfox`); fixes from its report sent (`GUARD-UPDATE-1.md`). Next: rifle guard, officer.
 Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
@@ -44,12 +44,12 @@ when Marcel wants it).
 
 **Then:**
 1. Marcel's last look at the guard (2H aim after the shoulder fix; `walk` arm swing with the pads).
-2. **Guard in the game: briefed** (Marcel, 2026-11-17: the tin-wolf agent does it). Brief
-   `~/Desktop/tinfox/GUARD-IN-GAME.md`, GLB `~/Desktop/tinfox/characters/glb/guard.glb` (copy of the pipeline export).
-   Wait for its report (screenshots, grip values, GLB changes). Points the brief covers: (GENERATOR.md step 4: art-set profile, Kenney blasters for now, one level). Tell the game
-   the GLB has vertex colours (`COLOR_0` = baked AO; GLTFLoader turns `vertexColors` on; keep it if the game swaps or
-   clones materials, else the AO disappears), lit material (needs the level's lights), the clip names (8 base + `aim_1h`, `shoot_1h`, `aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`), that `run` tilts
-   the aim 10–20° down, and that 2H clips move the `upperarm` heads (location keys) — the layering must keep them.
+2. **Guard in the game: done** (tin-wolf art set `tinfox`, `?art=tinfox`; report `~/Desktop/tinfox/GUARD-REPORT.md`,
+   screenshots in `characters/report/`). Worked as delivered: units, facing, bone axes (gun along `handslot.r` +X,
+   +Y up), clips, vertex AO, palette (the game now keeps NEAREST samplers unfiltered), muzzle flash. Grip for the
+   Kenney blasters: `position [0, -0.02, 0], rotation [0, -π/2, 0], scale 0.65`. Fixed from the report
+   (update `GUARD-UPDATE-1.md`, new GLB): 1H clips key the right arm only (`sides`, the left arm was a scarecrow),
+   `crouch` breathes (64 frames). Waiting for the game agent's check. Later: file size / shared clips.
 3. Then officer and rifle guard (reuse the guard's parts; officer's coat hem vs shins, like the wizard's robe),
    `hero-f` + worker, players (two suits, four heads), weapons (prop mode, `grip`/`muzzle` points).
 4. Open on the guard: the pose test still lists joint seams (thigh into the jacket hem in crouch/run, trousers into
@@ -717,6 +717,8 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 
 - **Arms-only clips are baked, not just filtered** (2026-11-17): the KayKit aim clips get their aim from the whole
   body's stance; arm rotations alone point the gun sideways on a forward-facing body.
+- **1H clips key the right arm only** (2026-11-17, Tinfox report): the source clip's left arm stood out
+  sideways on the upright torso; the base clip's left arm (hanging, swinging) reads better.
 - **Arms-only clips export only arm channels** (2026-11-17): the game layers them over walk/run; sampled rest keys on
   the other bones would freeze the legs.
 
@@ -809,6 +811,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-17** — Tinfox report: guard works in the game. 1H clips right arm only (`sides`), breathing crouch
+  (`breathe`, 64 frames; library animations rebuilt). 77 tests pass. Update sent to the game agent.
 - **2026-11-17** — Guard handed to the tin-wolf agent (brief + GLB in `~/Desktop/tinfox`). Marcel: ~75 % of the
   sheet is fine for now; see it in the game first.
 - **2026-11-17** — Tinfox: AO baked into vertex colours (`shading.ao`, Marcel's pick B), guard rebuilt (COLOR_0,

@@ -95,7 +95,7 @@
       { "name": "die", "source": "Death_A", "file": "Rig_Medium_General.glb", "loop": false, "frames": 24 },
       { "name": "interact", "source": "Interact", "file": "Rig_Medium_General.glb", "loop": false, "frames": 39 }
     ],
-    "_comment_extra": "STYLE.md §8b: opt-in per character (spec.extra_clips); range = source frames kept, hold = one source frame held for `frames`",
+    "_comment_extra": "STYLE.md §8b: opt-in per character (spec.extra_clips); range = source frames kept, hold = one source frame held for `frames`; sides = arms keyed (1H: right only); breathe = one breath per loop (deg about local X)",
     "extra_clips": [
       {
         "name": "aim_1h",
@@ -104,6 +104,7 @@
         "loop": true,
         "range": [12, 32],
         "arms_only": true,
+        "sides": ["r"],
         "frames": 20
       },
       {
@@ -113,6 +114,7 @@
         "loop": false,
         "range": [0, 12],
         "arms_only": true,
+        "sides": ["r"],
         "frames": 12
       },
       {
@@ -142,7 +144,8 @@
         "loop": true,
         "hold": 8,
         "arms_only": false,
-        "frames": 32
+        "breathe": {"spine": 1.0, "chest": 1.5, "head": -1.5},
+        "frames": 64
       },
       {
         "name": "crouch_walk",
