@@ -57,6 +57,7 @@ def run(args):
     if arm is None or char is None:
         raise RuntimeError("no assembled character")
     names = [c["name"] for c in style["animations"]["clips"]]
+    names += [c["name"] for c in style["animations"].get("extra_clips", []) if c["name"] in bpy.data.actions]
     wanted = args.get("clips") or names
     acts = [bpy.data.actions[n] for n in wanted if n in bpy.data.actions]
     missing = [n for n in wanted if n not in bpy.data.actions]

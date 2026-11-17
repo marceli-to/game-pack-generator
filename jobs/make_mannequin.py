@@ -123,7 +123,7 @@ def run(args):
 
     clips = []
     if args.get("animations", True):
-        acts = R.append_actions()
+        acts = R.append_actions([c["name"] for c in style["animations"]["clips"]])
         for a in acts:
             R.scale_clip_locations(a, tpl["offset_factors"])
         R.bind_actions(arm, acts)

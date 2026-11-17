@@ -155,6 +155,23 @@ The mapping can be changed per pack (e.g. `attack` → `Ranged_Magic_Shoot` for 
 - **Sheet:** one row per clip, `columns` = 4 evenly spaced frames from the front, then the same frames from the side, tiles `tile_size` = 256 px, framed per clip (box over its frames × `frame_scale` = 1.1, floor `floor_margin` = 6 % above the bottom edge).
 - Findings are not blocking; Marcel judges them with the sheet (§14). Edge loops at joints are not checked: parts are rigid per bone, only skirts and joint blends blend (§9a); a part that crosses a joint needs a ring at the joint for its blend to bend cleanly.
 
+## 8b. Extra clips → core.json (`animations.extra_clips`)
+
+Clips only some games need (first: Tinfox, a shooter). A character gets them when its spec lists them: `spec.extra_clips` = `["aim_1h", ...]`. Same source pack and rules as §8; `range` = source frames kept (shifted to start at 0), `hold` = one source frame held for the clip's length.
+
+| Name | Source clip (KayKit `Rig_Medium`) | Loop | Cut | Arms only |
+|---|---|---|---|---|
+| `aim_1h` | `Ranged_1H_Aiming` (CombatRanged) | yes | range 12–32 (arm raised, held) | yes |
+| `shoot_1h` | `Ranged_1H_Shooting` (CombatRanged) | no | range 0–12 (one shot, starts and ends in the aim pose) | yes |
+| `aim_2h` | `Ranged_2H_Aiming` (CombatRanged) | yes | range 8–48 (held, slight sway) | yes |
+| `shoot_2h` | `Ranged_2H_Shooting` (CombatRanged) | no | range 0–8 (one recoil) | yes |
+| `crouch` | `Crouching` (MovementAdvanced) | yes | hold frame 8 for 32 frames (the pack has no crouch idle) | no |
+| `crouch_walk` | `Crouching` (MovementAdvanced) | yes | whole clip | no |
+
+- **Arms-only clips** are layered by the game over walk/run/idle on the arm bones (`arms_only_bones`: upperarm, lowerarm, wrist, hand, handslot, both sides). The source clips turn the whole body into a stance (2H: root 25°, chest 46°), so their raw arm rotations point the gun sideways on a forward-facing body. `apply_animations` bakes them per character: per frame, the hands keep the clip's orientation (the gun points where the clip points it, along the handslot's local +X) and their position relative to the midpoint of the shoulders; the torso stays at rest; upper and lower arm are solved by a two-bone IK to the wrist, bending towards the clip's elbow. Where a wrist is out of reach on the upright torso, both hands move together towards that shoulder (the grip on the gun stays). Wrist, hand and slot keep the clip's offset from their parent (the slot's recoil). The result keys only those bones; no floor clamp.
+- In the GLB an arms-only clip has channels for those bones only (the exporter samples every bone; `export` removes the rest), so the game can layer it without pinning the legs.
+- Leaning base clips tilt the aim with the chest (`run` leans 10–20° forward); the game's aim pitch corrects that.
+
 ## 9. Naming conventions
 
 - Characters: `character-<name>` (kebab-case), e.g. `character-knight`

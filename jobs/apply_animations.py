@@ -1,7 +1,7 @@
 """Add the library clips to an assembled character (STYLE.md §7a, §8, §9a).
 
 args: { spec: {...}, out: <character.blend> }
-Appends the §8 clips from library/animations.blend (replacing earlier copies), scales their location keys
+Appends the §8 clips (+ the §8b extra clips in spec.extra_clips, arms-only ones baked) from library/animations.blend (replacing earlier copies), scales their location keys
 by the template's offset factors, binds them to the armature and bakes upright grips (spec.grip).
 """
 import bpy
@@ -20,7 +20,9 @@ def run(args):
     acts = A.add_clips(arm, spec)
     char = bpy.data.objects[style["skeleton"]["mesh_object"]]
     body = A.body_vertices(char)
-    lifts = {a.name: round(A.floor_clamp(arm, char, a, body), 4) for a in acts} if body else {}
+    # arms-only clips (§8b) leave the hips to the clip they are layered over
+    lifts = {a.name: round(A.floor_clamp(arm, char, a, body), 4) for a in acts
+             if not A.is_arms_only(a.name)} if body else {}
     upright = A.upright_slots(spec)
     leans = {}
     for slot, bone in upright.items():
@@ -38,5 +40,7 @@ def run(args):
     arm.data.pose_position = "POSE"
     bpy.context.scene.frame_set(0)
     SC.save(args["out"])
-    clips = {a.name: {"frames": int(round(a.frame_range[1] - a.frame_range[0]))} for a in acts}
+    clips = {a.name: {"frames": int(round(a.frame_range[1] - a.frame_range[0])),
+                      **({"arms_only": a["arms_only_report"].to_dict()} if "arms_only_report" in a else {})}
+             for a in acts}
     return {"outputs": [args["out"]], "stats": {"clips": clips, "upright": upright, "floor_lift_m": lifts, "upright_lean_deg": leans}}

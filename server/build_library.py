@@ -40,7 +40,7 @@ def build(source: Path) -> dict:
     report["animations"] = {k: v["frames"] for k, v in anim["clips"].items()}
 
     core = json.loads(CORE_JSON.read_text())
-    for clip in core["animations"]["clips"]:
+    for clip in core["animations"]["clips"] + core["animations"].get("extra_clips", []):
         clip["frames"] = anim["clips"][clip["name"]]["frames"]
     CORE_JSON.write_text(dump_style(core))
 

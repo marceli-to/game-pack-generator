@@ -10,8 +10,24 @@ from . import scene as SC
 from . import style as S
 
 
-def clip_names():
-    return [c["name"] for c in S.load()["animations"]["clips"]]
+def clip_names(spec=None):
+    """The §8 clips, plus the §8b extra clips the spec opts into (spec.extra_clips)."""
+    anim = S.load()["animations"]
+    extra = {c["name"] for c in anim.get("extra_clips", [])}
+    wanted = (spec or {}).get("extra_clips", [])
+    unknown = [n for n in wanted if n not in extra]
+    if unknown:
+        raise ValueError(f"unknown extra clips {unknown}; have {sorted(extra)}")
+    return [c["name"] for c in anim["clips"]] + [n for n in wanted]
+
+
+def clip_config(name):
+    anim = S.load()["animations"]
+    return next(c for c in anim["clips"] + anim.get("extra_clips", []) if c["name"] == name)
+
+
+def is_arms_only(name):
+    return bool(clip_config(name).get("arms_only"))
 
 
 def template_of(spec):
@@ -83,8 +99,9 @@ def upright_slots(spec):
 def add_clips(arm, spec):
     """Append the §8 clips (replacing earlier copies), scale their location keys to the character's
     proportions (§7a) and bind them to `arm`. Returns the actions."""
-    names = clip_names()
-    for a in [a for a in bpy.data.actions if a.name in names or a.name.split(".")[0] in names]:
+    names = clip_names(spec)
+    every = clip_names({"extra_clips": [c["name"] for c in S.load()["animations"].get("extra_clips", [])]})
+    for a in [a for a in bpy.data.actions if a.name in every or a.name.split(".")[0] in every]:
         bpy.data.actions.remove(a)
     acts = R.append_actions(names)
     off = template_of(spec)["offset_factors"]
@@ -95,6 +112,9 @@ def add_clips(arm, spec):
         damp_rotations(a, damp)
         offset_rotations(a, offs.get(a.name, {}))
     R.bind_actions(arm, acts)
+    for a in acts:
+        if is_arms_only(a.name):
+            a["arms_only_report"] = bake_arms_only(arm, a)
     return sorted(acts, key=lambda a: names.index(a.name))
 
 
@@ -268,3 +288,142 @@ def floor_clamp(arm, char, action, body_verts):
         pb.location = loc
         pb.keyframe_insert("location", frame=f)
     return max(s[2] for s in samples)
+
+
+# --- arms-only clips (STYLE.md §8b) ------------------------------------------------------------------
+
+def arm_chain(side):
+    return [f"{b}.{side}" for b in S.load()["animations"]["arms_only_bones"]]
+
+
+def _arm_space_pose(arm, action, frame):
+    SC.assign_action(arm, action)
+    bpy.context.scene.frame_set(frame)
+    bpy.context.view_layer.update()
+    return {pb.name: pb.matrix.copy() for pb in arm.pose.bones}
+
+
+def _swing(rot, v_local, target_dir):
+    """`rot` turned by the smallest rotation that points its local vector `v_local` along `target_dir`."""
+    cur = (rot @ v_local).normalized()
+    return cur.rotation_difference(target_dir.normalized()).to_matrix() @ rot
+
+
+def bake_arms_only(arm, action):
+    """Rewrite `action` to arm-bone rotations only, for an upright, forward-facing torso (STYLE.md §8b).
+
+    Per frame of the source clip: the hands keep their armature-space orientation (the gun points where the
+    clip points it) and their position relative to the midpoint of the shoulders; the torso, legs and hips
+    stay at rest. Upper and lower arm are solved with a two-bone IK to reach the wrist, bending towards the
+    clip's elbow. Where a wrist is out of reach, both hands move together towards that shoulder (the grip on
+    the gun stays). Every other curve is removed. Returns the remaining reach error per side, how far the
+    hands were moved in, and the frame range."""
+    bones = arm.data.bones
+    rest = {b.name: b.matrix_local.copy() for b in bones}
+    chains = {s: arm_chain(s) for s in ("l", "r")}
+    f0, f1 = (int(round(x)) for x in action.frame_range)
+    frames = list(range(f0, f1 + 1))
+    src = {f: _arm_space_pose(arm, action, f) for f in frames}
+
+    def anchor(pose):
+        return (pose["upperarm.l"].translation + pose["upperarm.r"].translation) / 2
+
+    a_rest = anchor(rest)
+    keys = {b: [] for s in chains for b in chains[s]}
+    err = {"l": 0.0, "r": 0.0}
+    shift = 0.0
+    aim = {"yaw": 0.0, "pitch": 0.0, "spacing": 0.0}
+    for f in frames:
+        final = {}
+        p = src[f]
+        off = a_rest - anchor(p)
+        # out of reach on the upright torso (the turned stance brings a shoulder forward): move both hands
+        # together towards that shoulder, so the hands keep their grip on the gun
+        for _ in range(4):
+            worst = None
+            for side, chain in chains.items():
+                up, lo, wr = chain[0], chain[1], chain[2]
+                reach = ((rest[up].inverted() @ rest[lo]).translation.length
+                         + (rest[lo].inverted() @ rest[wr]).translation.length) * 0.995
+                v = rest[up].translation - (p[wr].translation + off)
+                excess = v.length - reach
+                if excess > 1e-4 and (worst is None or excess > worst[0]):
+                    worst = (excess, v.normalized())
+            if worst is None:
+                break
+            off += worst[1] * worst[0]
+        shift = max(shift, (off - (a_rest - anchor(p))).length)
+        for side, chain in chains.items():
+            up, lo, wr = chain[0], chain[1], chain[2]
+            # rest offsets of each child's head in its parent's space (bone may not be connected)
+            v_u = (rest[up].inverted() @ rest[lo]).translation
+            v_l = (rest[lo].inverted() @ rest[wr]).translation
+            a, b = v_u.length, v_l.length
+            par = bones[up].parent.name
+            parent_pose = rest[par]                      # the torso stays at rest
+            S_ = (parent_pose @ (rest[par].inverted() @ rest[up])).translation
+            W = p[wr].translation + off
+            P = p[lo].translation + off
+            d_vec = W - S_
+            d = max(min(d_vec.length, a + b - 1e-4), abs(a - b) + 1e-4)
+            n = d_vec.normalized()
+            m = (P - S_) - n * n.dot(P - S_)
+            m = m.normalized() if m.length > 1e-6 else n.orthogonal().normalized()
+            cos_a = (a * a + d * d - b * b) / (2 * a * d)
+            sin_a = math.sqrt(max(0.0, 1 - cos_a * cos_a))
+            E = S_ + n * a * cos_a + m * a * sin_a
+            W2 = S_ + n * d
+            err[side] = max(err[side], (W2 - W).length)
+            r_up = _swing(p[up].to_3x3().normalized(), v_u, E - S_)
+            r_lo = _swing(p[lo].to_3x3().normalized(), v_l, W2 - E)
+            target_rot = {up: r_up, lo: r_lo}
+            for bn in chain[2:]:
+                target_rot[bn] = p[bn].to_3x3().normalized()
+            # walk down the chain: pose = parent_pose @ rest_local @ basis (basis: rotation only)
+            pp = parent_pose
+            for i, bn in enumerate(chain):
+                pb = bones[bn].parent.name
+                rest_local = rest[pb].inverted() @ rest[bn]
+                base = pp @ rest_local
+                if i < 2:   # upper/lower arm: rotation only, heads stay on the rest torso
+                    target = Matrix.Translation(base.translation) @ target_rot[bn].to_4x4()
+                else:       # wrist, hand, slot: the clip's offset from the parent (recoil moves the slot)
+                    t = (pp @ (p[pb].inverted() @ p[bn])).translation
+                    target = Matrix.Translation(t) @ target_rot[bn].to_4x4()
+                basis = base.inverted() @ target
+                loc, q, _ = basis.decompose()
+                if keys[bn] and keys[bn][-1][1].dot(q) < 0:
+                    q.negate()
+                keys[bn].append((f, q, loc))
+                pp = base @ basis
+            final[side] = pp
+        # report: where the gun points (handslot.r local +X) and whether the hands keep their spacing
+        g = final["r"].to_3x3().normalized() @ Vector((1, 0, 0))
+        yaw = math.degrees(math.atan2(g.x, -g.y))
+        pitch = math.degrees(math.asin(max(-1.0, min(1.0, g.z))))
+        spacing = (final["l"].translation - final["r"].translation).length
+        spacing_src = (p[chains["l"][-1]].translation - p[chains["r"][-1]].translation).length
+        aim["yaw"] = max(aim["yaw"], abs(yaw))
+        aim["pitch"] = max(aim["pitch"], abs(pitch))
+        aim["spacing"] = max(aim["spacing"], abs(spacing - spacing_src))
+    # replace every curve by the baked arm rotations
+    SC.remove_fcurves(action, lambda fc: True)
+    bag = action.layers[0].strips[0].channelbag(action.slots[0])
+    for bn, ks in keys.items():
+        arm.pose.bones[bn].rotation_mode = "QUATERNION"
+        curves = [("rotation_quaternion", i, [q[i] for _, q, _ in ks]) for i in range(4)]
+        if max(l.length for _, _, l in ks) > 1e-4:
+            curves += [("location", i, [l[i] for _, _, l in ks]) for i in range(3)]
+        for prop, i, vals in curves:
+            fc = bag.fcurves.new(f'pose.bones["{bn}"].{prop}', index=i)
+            fc.keyframe_points.add(len(ks))
+            for k, (f, *_), v in zip(fc.keyframe_points, ks, vals):
+                k.co = (f, v)
+                k.interpolation = "LINEAR"
+            fc.update()
+    for pb in arm.pose.bones:   # clear what the source frames left on the pose
+        pb.location = (0, 0, 0)
+        pb.rotation_quaternion = (1, 0, 0, 0)
+    return {"reach_error_m": {s: round(e, 4) for s, e in err.items()}, "hands_moved_in_m": round(shift, 4),
+            "gun_max_yaw_deg": round(aim["yaw"], 1), "gun_max_pitch_deg": round(aim["pitch"], 1),
+            "hand_spacing_change_m": round(aim["spacing"], 4), "frames": [f0, f1]}

@@ -22,6 +22,10 @@ def init_character(name: str, spec: dict | None = None, overwrite: bool = False)
     if spec["archetype"] not in style["archetypes"]:
         raise C.CharacterError(f"unknown archetype {spec['archetype']!r} in style {spec['style']!r}: "
                                f"{sorted(style['archetypes'])}")
+    extra = {c["name"] for c in style["animations"].get("extra_clips", [])}
+    unknown = [c for c in spec.get("extra_clips", []) if c not in extra]
+    if unknown:   # STYLE.md §8b
+        raise C.CharacterError(f"unknown extra clips {unknown}: {sorted(extra)}")
     C.save_spec(name, spec)
     r = run_job("init_character", {"out": str(blend)}, style=spec["style"])
     r["outputs"] = [str(blend), str(C.spec_path(name))]

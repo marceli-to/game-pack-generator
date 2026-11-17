@@ -3,9 +3,10 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-17 — Rogue + villager detail pass done (awaiting Marcel's look). Then three QA items:
-`pose_test` now tells visible overlaps from hidden ones, `validate` checks ears a part declares it covers
-(`P.covers`), and the dwarf's axe no longer swings through his face in `interact` (per-clip `clip_offsets`)._
+_Last updated: 2026-11-17 — New project on the generator: **Tinfox** (Marcel's FPS, sheets in
+`~/Desktop/tinfox`, handoff `GENERATOR.md` there). First piece done: the shooter clips (`aim_1h`, `shoot_1h`,
+`aim_2h`, `shoot_2h`, `crouch`, `crouch_walk`, STYLE.md §8b), arms-only clips baked for an upright torso and exported
+with arm channels only. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -27,6 +28,13 @@ _Last updated: 2026-11-17 — Rogue + villager detail pass done (awaiting Marcel
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
 
 ## Next session: start here
+
+**Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; plan and order of work
+in `~/Desktop/tinfox/GENERATOR.md`): clips done (see "Tinfox: shooter clips" below). Next per GENERATOR.md:
+style `tinfox` (lowpoly look, not chibi; ~5 heads) with a `hero-m` template from `characters/sheets/01-guard.png`,
+then the guard (parts, fit, rig, `extra_clips`, export) and the guard in the game. Clips sheet `workspace/tinfox/clips/baked_layered.png`: Marcel "looks good" (2026-11-17). Name: **Tinfox**
+(Marcel, 2026-11-17; the docs said "Tin Wolf", renamed). Open: tell the game which
+clip names exist (and that `run` tilts the aim 10–20° down: the game's aim pitch corrects it).
 
 0. **Marcel's look at the rogue and villager after their detail pass** (viewer / Heerschar; GLBs in
    `workspace/<name>/export/`). Comparison sheets: `workspace/knight-lowpoly/detail/detail_<name>.png` (rows head /
@@ -495,7 +503,36 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   (6.1 cm into the head → none). Local z −40° swung the blade across his nose. 67 tests (new `tests/test_overlap.py`:
   synthetic head/ears/helmet in Blender, doc sync).
 
+## Tinfox: shooter clips (2026-11-17)
+
+- KayKit's free pack already has them (`Rig_Medium_CombatRanged`, `Rig_Medium_MovementAdvanced`); the pack is now
+  kept locally in `workspace/_sources/KayKit_Character_Animations_1.1` (gitignored). `library/animations.blend`
+  rebuilt with only the `build_animations` job (the base clips came out with the same lengths).
+- **`animations.extra_clips`** in core.json ↔ STYLE.md §8b, opt-in per spec (`spec.extra_clips`, checked by
+  `init_character` and `apply_animations`). `range` cuts source frames, `hold` holds one frame (no crouch idle in
+  the pack: `crouch` = frame 8 of `Crouching`, a staggered crouch). Measured first (gun direction per frame): the
+  1H/2H `Shooting` clips are 12/8-frame shots that start and end in the held aim pose → `shoot_*` = one shot.
+- **Arms-only bake** (`anim.bake_arms_only`, per character in `apply_animations`): the source clips turn the whole
+  body (2H: root 25°, chest 46°), so their raw arm rotations layered over walk point the gun sideways (sheet
+  `workspace/tinfox/clips/raw_clips.png`, last two rows). Bake: hands keep the clip's orientation and their offset
+  from the shoulder midpoint, torso at rest, two-bone IK to the wrist with the clip's elbow as pole; out of reach →
+  both hands move in together (2H: 3.6–3.9 cm). Gun axis = handslot local +X. Human mannequin: gun yaw ≤ 1.3°
+  (shoot_1h 3.9°), aim pitch ≤ 3.2°, hand spacing kept (2H left hand stays on the gun). Report in the
+  `apply_animations` stats (`clips.<name>.arms_only`). Sheet with the clips layered over idle/walk/run:
+  `workspace/tinfox/clips/baked_layered.png` (scripts next to it).
+- **Export:** the glTF exporter samples every bone for every action (force sampling), which would pin legs and
+  torso at rest when the game layers an arms-only clip → `export_glb` drops the other channels and repacks the GLB
+  (`jobs/lib/glb.py`); validator 0/0/0, three.js loads all 14 clips.
+- Gotcha (measuring scripts): bones an action doesn't key keep the previous action's pose in Blender; reset the
+  pose before evaluating an arms-only clip on its own (cost me a false 10 cm "grip error").
+- 71 tests (new `tests/test_extra_clips.py`).
+
 ## Decisions (with reasons)
+
+- **Arms-only clips are baked, not just filtered** (2026-11-17): the KayKit aim clips get their aim from the whole
+  body's stance; arm rotations alone point the gun sideways on a forward-facing body.
+- **Arms-only clips export only arm channels** (2026-11-17): the game layers them over walk/run; sampled rest keys on
+  the other bones would freeze the legs.
 
 - **Covered features are declared, not inferred** (2026-11-17): whether ears should show depends on the part (the
   knight's guard hides them, the rogue's hood and the villager's hair show them); a geometric rule flagged
@@ -565,12 +602,12 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
 - **Repo location:** `/Users/marceli.to/Jamon.digital/Webroot/game-pack-generator` (moved from a scratch folder on 2026-11-15; venvs recreated). Old scratch files (animation comparison report, retarget tests) are in `workspace/_archive/` (local only).
 - **`ai` approach** runs `ai/gen.py` in `ai/.venv` (torch + diffusers + peft; `GPG_AI_PYTHON` overrides); models shared with the spike via the Hugging Face cache. On this M4 Max: model load ~4 s, generation ~27 s.
 - **AI spike** has its own venv (`spikes/ai-texture/.venv`, torch + diffusers); models (~13 GB) are cached in `~/.cache/huggingface`. 16 GB RAM is not enough to run it without swapping.
-- **KayKit source** is not in the repo (only the built `.blend`s). Download "Free 1.1" from https://kaylousberg.itch.io/kaykit-character-animations to rebuild the library.
+- **KayKit source** is not in the repo (only the built `.blend`s). A local copy is in `workspace/_sources/KayKit_Character_Animations_1.1` (gitignored); else download "Free 1.1" from https://kaylousberg.itch.io/kaykit-character-animations to rebuild the library. Animations only: `run_job_checked("build_animations", {"source_dir": ...})` (the full `build_library` also regenerates templates and palettes).
 
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (64, ~60 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (71, ~60 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -582,6 +619,11 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Tinfox shooter clips OK'd by Marcel (baked_layered sheet). Next: style `tinfox` + guard.
+
+- **2026-11-17** — Tinfox started: shooter clips (aim/shoot 1H/2H arms-only baked, crouch, crouch walk), opt-in
+  `spec.extra_clips`, arms-only channels in the GLB. 71 tests pass. Next: style `tinfox` + guard.
 
 - **2026-11-17** — Cast sheet of all 8 lowpoly characters for the Heerschar agent (`workspace/_catalog/lowpoly/cast.png`).
 

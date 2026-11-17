@@ -6,6 +6,7 @@ from pathlib import Path
 
 import bpy
 
+from lib import glb as G
 from lib import scene as SC
 from lib import style as S
 
@@ -59,6 +60,19 @@ def run(args):
         else:
             warnings.append(f"exporter has no option {k}")
     bpy.ops.export_scene.gltf(filepath=str(out), **kwargs)
+    # arms-only clips (STYLE.md §8b) must not carry the other bones: the exporter samples every bone
+    # (force sampling), which would pin the legs and torso at rest when the game layers the clip
+    extra = {c["name"] for c in S.load()["animations"].get("extra_clips", []) if c.get("arms_only")}
+    keep = {}
+    for a in bpy.data.actions:
+        if a.name in extra:
+            k = keep.setdefault(a.name, {})
+            for fc in SC.action_fcurves(a):
+                bone, prop = SC.bone_of(fc.data_path), fc.data_path.rsplit(".", 1)[-1]
+                if bone and prop in G.PATHS:
+                    k.setdefault(bone, set()).add(G.PATHS[prop])
+    stripped = G.keep_channels(out, keep) if keep else {}
     return {"outputs": [str(out)], "stats": {"bytes": out.stat().st_size, "fps": S.load()["animations"]["fps"],
-                                             "actions": sorted(a.name for a in bpy.data.actions)},
+                                             "actions": sorted(a.name for a in bpy.data.actions),
+                                             "arms_only_channels_removed": stripped},
             "warnings": warnings}

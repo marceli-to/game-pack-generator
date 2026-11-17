@@ -90,7 +90,64 @@
       { "name": "hit", "source": "Hit_A", "file": "Rig_Medium_General.glb", "loop": false, "frames": 20 },
       { "name": "die", "source": "Death_A", "file": "Rig_Medium_General.glb", "loop": false, "frames": 24 },
       { "name": "interact", "source": "Interact", "file": "Rig_Medium_General.glb", "loop": false, "frames": 39 }
-    ]
+    ],
+    "_comment_extra": "STYLE.md §8b: opt-in per character (spec.extra_clips); range = source frames kept, hold = one source frame held for `frames`",
+    "extra_clips": [
+      {
+        "name": "aim_1h",
+        "source": "Ranged_1H_Aiming",
+        "file": "Rig_Medium_CombatRanged.glb",
+        "loop": true,
+        "range": [12, 32],
+        "arms_only": true,
+        "frames": 20
+      },
+      {
+        "name": "shoot_1h",
+        "source": "Ranged_1H_Shooting",
+        "file": "Rig_Medium_CombatRanged.glb",
+        "loop": false,
+        "range": [0, 12],
+        "arms_only": true,
+        "frames": 12
+      },
+      {
+        "name": "aim_2h",
+        "source": "Ranged_2H_Aiming",
+        "file": "Rig_Medium_CombatRanged.glb",
+        "loop": true,
+        "range": [8, 48],
+        "arms_only": true,
+        "frames": 40
+      },
+      {
+        "name": "shoot_2h",
+        "source": "Ranged_2H_Shooting",
+        "file": "Rig_Medium_CombatRanged.glb",
+        "loop": false,
+        "range": [0, 8],
+        "arms_only": true,
+        "frames": 8
+      },
+      {
+        "name": "crouch",
+        "source": "Crouching",
+        "file": "Rig_Medium_MovementAdvanced.glb",
+        "loop": true,
+        "hold": 8,
+        "arms_only": false,
+        "frames": 32
+      },
+      {
+        "name": "crouch_walk",
+        "source": "Crouching",
+        "file": "Rig_Medium_MovementAdvanced.glb",
+        "loop": true,
+        "arms_only": false,
+        "frames": 32
+      }
+    ],
+    "arms_only_bones": ["upperarm", "lowerarm", "wrist", "hand", "handslot"]
   },
   "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0 },
   "skinning": {
