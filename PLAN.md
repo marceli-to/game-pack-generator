@@ -86,6 +86,7 @@ game-pack-generator/
 | `build_part(part, script, archetype?)` | creates library part `<slot>-<variant>` with an agent-written bpy snippet (builder API `P`) against the proportion template; must set the per-face `role` attribute (validated, STYLE.md §9a) |
 | `list_parts(slot?)` | parts per slot with tris and roles |
 | `render_parts_catalog(slot?)` | preview sheet of all parts per slot, so agents can choose visually |
+| `build_prop(prop, script, type)` / `list_props()` | props (STYLE.md §9b: `weapon`, `thrown`, `pickup`): built with the same builder `P`, no template, named points via `P.anchor` (`grip`, `muzzle`); a prop spec (`kind: "prop"`) then goes through `init_character` → `assemble_from_parts` → `validate` → `compare_reference` (sheet views from `spec.reference`) → `export` (`prop-<name>.glb`, anchor nodes) |
 
 *Later (Phase 6):* `image_to_3d` + `cleanup_mesh` for the image route.
 

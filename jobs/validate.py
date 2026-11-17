@@ -9,5 +9,5 @@ from lib import measure as M
 def run(args):
     spec = args.get("spec")
     m = M.measure(spec)
-    v = M.violations(m, spec)
+    v = M.prop_violations(m, spec) if (spec or {}).get("kind") == "prop" else M.violations(m, spec)
     return {"valid": not v["hard"], **v, "stats": m}

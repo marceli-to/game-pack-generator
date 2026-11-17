@@ -58,3 +58,16 @@ def spec_hash(spec: dict) -> str:
     """STYLE.md §14: SHA-256 of the spec JSON without the approval block, keys sorted."""
     body = {k: v for k, v in spec.items() if k != "approval"}
     return "sha256:" + hashlib.sha256(json.dumps(body, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+
+
+def is_prop(spec: dict | None) -> bool:
+    """STYLE.md §9b: specs with kind "prop" are props (weapons, thrown items, pickups), else characters."""
+    return (spec or {}).get("kind") == "prop"
+
+
+def require_character(name: str) -> dict:
+    """The spec of `name`; raises for props (tools that need a rig: animation, pose test, fitting)."""
+    spec = load_spec(name) or {}
+    if is_prop(spec):
+        raise CharacterError(f"{name!r} is a prop (STYLE.md §9b): no rig, no animation")
+    return spec

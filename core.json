@@ -186,6 +186,17 @@
     "cone_deg": 4,
     "min_verts": 3
   },
+  "props": {
+    "_comment": "STYLE.md §9b: items outside a character (weapons, thrown items, pickups); built like parts, no rig",
+    "dir": "props",
+    "types": {
+      "weapon": { "anchors": ["grip", "muzzle"], "origin": "grip", "budget": "weapon" },
+      "thrown": { "anchors": ["grip"], "origin": "grip", "budget": "weapon" },
+      "pickup": { "anchors": [], "origin": "floor", "budget": "prop" }
+    },
+    "origin_tolerance": 0.001,
+    "views": ["item_side", "item_top", "item_front", "item_three_quarter"]
+  },
   "foot_contact_tolerance": 0.02,
   "fit": {
     "_comment": "automatic fit to the reference sheet (STYLE.md §7b): width/depth scale curves per body region, scored against the sheet's outline and colour classes",

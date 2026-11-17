@@ -28,12 +28,21 @@ def glb_summary(glb: Path) -> dict:
     }
 
 
+def glb_nodes(glb: Path) -> dict:
+    """Root-level nodes of the GLB: name -> translation (props: the mesh and the anchor empties)."""
+    data = glb.read_bytes()
+    n = struct.unpack("<I", data[12:16])[0]
+    j = json.loads(data[20:20 + n])
+    return {nd.get("name"): nd.get("translation", [0, 0, 0]) for nd in j.get("nodes", [])}
+
+
 def export(name: str) -> dict:
     blend = C.require(name)
     st = C.style_of(name)
     out_dir = character_dir(name) / "export"
-    glb = out_dir / f"character-{name}.glb"
-    shot = out_dir / f"character-{name}-testload.png"
+    kind = "prop" if C.is_prop(C.load_spec(name)) else "character"   # STYLE.md §9: prop-<name>.glb
+    glb = out_dir / f"{kind}-{name}.glb"
+    shot = out_dir / f"{kind}-{name}-testload.png"
 
     check = run_job("validate", {"spec": C.load_spec(name)}, blend=blend, style=st)
     r = run_job("export_glb", {"out": str(glb)}, blend=blend, style=st)
@@ -42,7 +51,7 @@ def export(name: str) -> dict:
     gv = node.gltf_validate(glb)
     actions = r["stats"].get("actions", [])
     anim = "idle" if "idle" in actions else "-"
-    tl = node.test_load(glb, shot, anim)
+    tl = node.test_load(glb, shot, anim, "cam=fit" if kind == "prop" else "")
 
     style = load_style(st)
     summary = glb_summary(glb)
@@ -57,8 +66,14 @@ def export(name: str) -> dict:
         problems.append(f"glTF validator: {gv['errors']} errors")
     if not tl.get("ok"):
         problems.append("three.js test load failed")
-    if anim == "-":
+    if anim == "-" and kind == "character":
         r["warnings"].append("no 'idle' animation: test load only checked that the model loads")
+    if kind == "prop":
+        need = load_style(st)["props"]["types"][C.load_spec(name)["type"]]["anchors"]
+        summary["nodes"] = glb_nodes(glb)
+        lost = [a for a in need if a not in summary["nodes"]]
+        if lost:
+            problems.append(f"anchor nodes missing in the GLB: {lost}")
     report = {
         "glb": str(glb),
         "valid_style": check.get("valid"),

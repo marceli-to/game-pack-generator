@@ -48,13 +48,14 @@ still modelled at natural heights.
 | Head incl. hair/headwear | ≤ 2,000 | 2,600 |
 | Hand-held accessory (weapon, tool) | ≤ 400 | 700 |
 | Back accessory (cape, backpack) | ≤ 300 | 500 |
-| Prop (later) | ≤ 1,500 | 2,500 |
+| Weapon (held, seen in first person) | ≤ 2,500 | 4,000 |
+| Prop (pickup, crate) | ≤ 1,500 | 2,500 |
 
 Marcel, 2026-11-17: first 3,000–4,500 / hard 5,000 (up to 4 players plus guards on screen), then raised to
 hard 8,000 to try more detail: ~20 characters × 8,000 tris is ~160,000 triangles per frame, small for any current
 GPU (one mesh and one material per character either way, so no extra draw calls). The facets are the look: spend
-tris on silhouette and details, not on rounding everything. Weapons get their own budget
-with the prop mode (seen up close in first person).
+tris on silhouette and details, not on rounding everything. Weapons (props, root STYLE.md §9b) get their own,
+larger budget: the player's gun is always on screen in first person, close up (2026-11-17).
 
 **Hands:** a mitten with a separate thumb first (Marcel, 2026-11-17); fingers only if the guard reads wrong in game.
 
@@ -69,7 +70,7 @@ Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to 
 - **palette.png:** 256 × 256 px, 8 × 8 grid → 64 cells of 32 × 32 px each, closest filtering, UVs collapsed to
   cell centres. Layout and colours of `lowpoly`, with cells taken from the Tinfox sheets (lit flat areas):
   1 skin `#F7AE7A`, 8 hair `#4A2C1B`, 19 orange `#FE7603`, 29 olive `#666B32` (guard uniform), 43 brass `#B8883A`,
-  53 dark grey `#383838` (belt), 54 black `#2B2B2B` (gloves, boots), 55 near-black `#1A1A1A` (cap peak); the four
+  52 gun grey `#565656` (weapon bodies, from the pistol sheet), 53 dark grey `#383838` (belt), 54 black `#2B2B2B` (gloves, boots), 55 near-black `#1A1A1A` (cap peak); the four
   player slot colours 33 blue `#2F5F8F`, 17 red `#8F3A2F`, 28 green `#3F7F3F`, 25 yellow `#8F7F2F`.
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
@@ -82,6 +83,10 @@ Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to 
   Lit in the game (not unlit): the levels light the characters; the AO only darkens creases, under the cap peak,
   the neck, between arm and body. Chosen by Marcel (2026-11-17) over a baked painted texture: palette recolours keep
   working, no texture per character. Tested settings: 0.25 m / power 1 barely visible, 0.4 m / power 3 dirty.
+  Props bake over **0.015 m** (`prop_distance`). On the pistol the median corner AO was 0.66 at the body distance
+  0.3 m, 0.83 at 0.03 m (flat panels next to other pieces got dark gradients) and 0.95 at 0.015 m (only contact
+  corners darken; the sheets show no AO). Vertex AO is sampled at vertices: a tube whose rings all sit inside other
+  pieces bakes dark all over (the first barrel), so give such pieces a ring in the open.
 
 ## 7a. Proportion templates (values) → style.json
 
@@ -98,6 +103,22 @@ Templates live in `styles/tinfox/proportions/<archetype>.json` (+ `_preview.png`
   1.5–1.8 m/s and run 3.8–4.0 m/s). KayKit's clips on these legs (1.95× KayKit's) came out at 1.5 m/s for `walk`, but
   the stance foot slid at 2.5 m/s after heel strike and 1.1 m/s before toe-off (moonwalking, Marcel), and at
   6.4 m/s with 2.6 m steps for `run` (a sprint, played at 0.76× in the game: big, slow steps).
+
+## 9b. Props: weapons
+
+Weapon sheets: `~/Desktop/tinfox/weapons/sheets/` (01 pistol … 06 ammo; side, top and front view, muzzle to the
+right), names and roles in the game from its `src/data/weapons.json`.
+- **Size:** at the in-game size next to the characters, not real-world: the pistol is 0.30 m long (the Kenney
+  blaster the game held before measured 0.46 m × its grip scale 0.65 = 0.30 m; the guard's mitten is ~0.2 m long).
+  The other guns keep their sheet proportions relative to the pistol.
+- **Look:** as the characters: big faceted volumes, 8-sided barrels and rings, single 45° chamfers, details as
+  geometry (stripes, rings, ridges, sights). The bore is a dark recess, not a hole (shells stay closed).
+- **Colours** (roles → cells): `primary` body 52 gun grey, `secondary` grip and details 54 black, `metal` 51 silver,
+  `accent` 19 orange, `special` 39 light blue (energy window), `dark` 55 (bore).
+- **Grip:** on the handle's centre line where the mitten closes (≈ the middle of the handle); checked with the
+  guard holding the gun in `aim_1h`. Around `handslot.r` in that pose the guard's mitten reaches ~13 cm back and
+  ~8 cm forward, 7.5 cm down and 12 cm up (thumb), 3 cm to the inner side and 13 cm to the outer side: the handle
+  sits on the palm side of the fist.
 
 ## 11. Preview renders → style.json
 

@@ -1,0 +1,13 @@
+{
+  "colors": { "accent": 19, "dark": 55, "metal": 51, "primary": 52, "secondary": 54, "special": 39 },
+  "kind": "prop",
+  "name": "pistol",
+  "part": "pistol-kestrel",
+  "reference": {
+    "image": "specs/pistol/reference/sheet.png",
+    "length_m": 0.3,
+    "views": { "item_front": [1776, 62, 2086, 669], "item_side": [54, 63, 801, 669], "item_top": [875, 197, 1661, 477] }
+  },
+  "style": "tinfox",
+  "type": "weapon"
+}

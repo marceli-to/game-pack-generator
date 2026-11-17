@@ -199,7 +199,7 @@ Clips only some games need (first: Tinfox, a shooter). A character gets them whe
 
 ## 9. Naming conventions
 
-- Characters: `character-<name>` (kebab-case), e.g. `character-knight`
+- Characters: `character-<name>` (kebab-case), e.g. `character-knight`; props (§9b): `prop-<name>`, e.g. `prop-pistol`
 - Parts: `<slot>-<variant>`, the slot name exactly as listed below, e.g. `head-round`, `torso-armor`, `feet-boots-chunky`, `headwear-wizard-hat`, `accessory_hand_r-staff-crystal`
 - Slots: `head`, `hair`, `headwear`, `face`, `torso`, `arms`, `hands`, `legs`, `feet`, `accessory_back`, `accessory_hand_l`, `accessory_hand_r`, `accessory_waist`
   - `face`: eyes, brows, moustache and beard. `torso`: also long robes/skirts down to the boots (then `legs` may be empty) and symmetric belts. `accessory_waist`: one-sided belt items (pouch, scabbard), rigid on `hips`. New slots are only ever appended (the `slot` attribute stores the index).
@@ -221,6 +221,57 @@ Clips only some games need (first: Tinfox, a shooter). A character gets them whe
 - **Hand accessories** have a grip mode, set per character in `spec.grip` (`{slot: mode}`, default `weapon`):
   - `weapon`: modelled along the handslot's bone axis (KayKit convention, −Y in the T-pose); swings with the hand in every clip (swords, axes, tools).
   - `upright`: modelled along world +Z in the rest pose, grip at the handslot; in the clips the slot keeps its rest orientation and only follows the hand's position, so the item stays vertical (staffs, banners, lanterns). `apply_animations` bakes this into the slot's keys of every clip. Where the item would cut through the headwear (the staff's crystal and the hat brim in `run`), it leans outward around the grip just enough to clear the hat's profile by `upright_clearance` = 1.5 cm (wizard: 10° in `idle`, up to 18° in `interact`); where its foot would go below the floor it slides up in the hand. In `upright_held_clips` (`die`) it is upright only at the first frame and then stays fixed in the hand, so the staff falls with the character instead of standing next to it.
+
+## 9b. Props → core.json (`props`)
+
+A **prop** is an item on its own, outside a character: weapons, thrown items, pickups (later: crates, barrels).
+Same style, palette, roles and shading as the characters; no rig, no animation, no slots.
+
+- **Spec:** `specs/<name>/spec.json` with `"kind": "prop"`, `style`, `type` (one of `props.types`), `part` (the
+  prop's build script in the library) and `colors` (roles → palette cells, as for characters). A spec without
+  `kind` is a character. Optional `reference` (for `compare_reference`): `image` (repo-relative), `length_m` (the
+  item's length in the side view, sets the scale), `views` = `{view: [x0, y0, x1, y1]}` (a pixel box around each
+  drawn view, views from `props.views`).
+- **Built like a part** (§9a): `build_prop(prop, script, type)` runs an agent-written script with the same builder
+  `P` (no template: `lm`, `bones` and `guides` are empty) and stores `styles/<style>/props/<prop>.{py,blend,json,png}`.
+  Hard checks as for parts (roles, closed shells, not inside-out, the type's hard budget) plus the type's anchors.
+- **Units & orientation:** metres, at the size the item has next to the characters in the game (not its real-world
+  size: Tinfox hands are oversized). Held items (`weapon`, `thrown`) are modelled **lying along +X**: muzzle /
+  front towards +X, top towards +Z, so their right side faces −Y. In glTF that is front +X, top +Y: the frame of
+  `handslot.r` while aiming (§8b: the gun points along the slot's local +X, local +Y is up, local +Z is the
+  hand's outer side), so the game parents the GLB to `handslot.r` without a rotation.
+- **Anchors:** the script names points with `P.anchor(name, point)`; assembly exports each as an empty glTF node of
+  that name (identity rotation: its +X is the item's forward). Required per type (`props.types.<type>.anchors`):
+  - `grip`: the point that sits at the hand's slot (the `handslot` origin). Weapons: on the handle's centre line, at
+    the height where the fist closes round it. Thrown items: their centre.
+  - `muzzle`: the barrel tip on the bore axis; shots and the muzzle flash start there, along +X.
+- **Origin** (`props.types.<type>.origin`): `grip` (held items: assembly moves the mesh so the `grip` anchor is at
+  0, 0, 0; the GLB's origin is the grip) or `floor` (pickups: the footprint's centre at x = y = 0, bottom at z = 0).
+- **Types:**
+
+| Type | Anchors | Origin | Budget (§3) |
+|---|---|---|---|
+| `weapon` | `grip`, `muzzle` | `grip` | `weapon` |
+| `thrown` | `grip` | `grip` | `weapon` |
+| `pickup` | — | `floor` | `prop` |
+
+- **Assembly** (`assemble_from_parts` on a prop spec): the part, moved to its origin, one mesh object named after
+  the spec, palette from `spec.colors`, the style's shading, AO baked like characters (§5) but over the style's
+  `shading.ao.prop_distance` when it sets one (an AO distance made for bodies darkens a 30 cm gun broadly), one
+  empty per anchor. Vertex AO is sampled at vertices: a piece whose vertices all sit inside other pieces bakes dark.
+- **validate** (§12 rules for roles, colours, surface, topology, shading, vertex colours) and for props: hard: tris
+  over the type's hard limit, a required anchor missing, origin wrong (held items: `grip` not at 0, 0, 0 within
+  `props.origin_tolerance` = 1 mm; pickups: bottom not at z 0 or footprint not centred), `muzzle` not in front of
+  the grip (x ≤ 0); soft: tris above the type's target. No height, skeleton, weight or symmetry rules.
+- **Export:** `export/prop-<name>.glb`: §10 rules (palette sampler, `COLOR_0` for AO styles, glTF validator, test
+  load without a clip); no skin, no animations; nodes: the mesh and the anchor empties, all at the scene root.
+- **Views** (`props.views`, used by `render_preview` and `compare_reference` on props) named like the sheets:
+  `item_side` (from −Y: the right side, muzzle to the right), `item_top` (from above, muzzle to the right),
+  `item_front` (from +X, into the muzzle), `item_three_quarter` (perspective, front right, from above).
+  `compare_reference` crops each drawn view from `spec.reference`, renders the same view at the same metres per
+  pixel, aligns the two by the centres of their outlines (sheets are not always consistent between views; the
+  sniper's top view is drawn ~10 % short), and reports IoU per view plus an overlay (red = sheet only, blue = render
+  only).
 
 ## 10. Export → core.json
 

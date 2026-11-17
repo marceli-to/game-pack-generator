@@ -77,6 +77,11 @@ VIEWS = {
     "side": (Vector((1, 0, 0)), False),     # character's left side (+X)
     "back": (Vector((0, 1, 0)), False),
     "three_quarter": (Vector((-0.7, -1, 0.35)), True),  # front-right, slightly from above
+    # props (STYLE.md §9b): held items lie along +X (muzzle), top +Z; named like the sheets' views
+    "item_side": (Vector((0, -1, 0)), False),           # the item's right side, muzzle to the right
+    "item_top": (Vector((0, 0, 1)), False),             # from above, muzzle to the right
+    "item_front": (Vector((1, 0, 0)), False),           # into the muzzle
+    "item_three_quarter": (Vector((0.8, -1, 0.55)), True),  # front right, from above
 }
 
 
@@ -113,7 +118,10 @@ def render_views(out_dir, views=None, size=None, prefix="view", frame=None, ligh
             dist = extent * 3
         cam.data.clip_end = dist * 4
         cam.location = center + d * dist
-        cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
+        if abs(d.z) > 0.999:   # straight down: to_track_quat has no up reference (rolled 180 deg); +X right, +Y up
+            cam.rotation_euler = (0.0, 0.0, 0.0) if d.z > 0 else (math.pi, 0.0, 0.0)
+        else:
+            cam.rotation_euler = (-d).to_track_quat("-Z", "Y").to_euler()
         p = out_dir / f"{prefix}_{v}.png"
         bpy.context.scene.render.filepath = str(p)
         bpy.ops.render.render(write_still=True)

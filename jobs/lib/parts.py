@@ -57,6 +57,12 @@ class PartBuilder:
         self.deform = self.bm.verts.layers.deform.verify()
         self.groups = {}
         self.covers = []   # features of other parts this part hides (core.json `part_covers`), e.g. ["ears"]
+        self.anchors = {}  # props (STYLE.md §9b): named points exported as empties, e.g. grip, muzzle
+
+    def anchor(self, name, point):
+        """Name a point of a prop (STYLE.md §9b: `grip`, `muzzle`); exported as an empty glTF node."""
+        self.anchors[str(name)] = [float(x) for x in Vector(point)]
+        return self.anchors[str(name)]
 
     # --- roles & bones -------------------------------------------------------------------
     def set_role(self, faces, role):
@@ -472,10 +478,62 @@ def check_part(obj, slot, tpl, unset_roles):
     """Hard errors and warnings for a freshly built part."""
     style = S.load()
     mesh = obj.data
-    hard, soft = [], []
-    tris = sum(len(p.vertices) - 2 for p in mesh.polygons)
     if not mesh.polygons:
         return ["part has no faces"], [], {"tris": 0}
+    key, target, hard_lim = budget_for(slot)
+    hard, soft, st = mesh_checks(obj, unset_roles, key, target, hard_lim)
+
+    lo, hi = _bbox(obj)
+    lm = {k: Vector(v) for k, v in tpl["landmarks"].items()}
+    soft += [f"fit: {m}" for m in fit_checks(slot, lo, hi, lm, style["parts"]["fit_tolerance"])]
+
+    if not slot.startswith("accessory"):
+        pts = [v.co for v in mesh.vertices]
+        kd = KDTree(len(pts))
+        for i, co in enumerate(pts):
+            kd.insert(co, i)
+        kd.balance()
+        asym = sum(1 for co in pts if kd.find(Vector((-co.x, co.y, co.z)))[2] > 0.002)
+        if asym:
+            soft.append(f"asymmetric: {asym} of {len(pts)} vertices have no X-mirror partner (base parts are symmetric)")
+
+    allowed = set(style["skeleton"]["part_bones"][slot]) | set(style["skeleton"].get("part_blend_bones", {}).get(slot, []))
+    for g in obj.vertex_groups:
+        if g.name not in allowed:
+            hard.append(f"vertex group {g.name!r} is not an allowed bone for {slot}: {sorted(allowed)}")
+    return hard, soft, st
+
+
+def check_prop(obj, ptype, unset_roles, anchors):
+    """Hard errors and warnings for a freshly built prop (STYLE.md §9b)."""
+    style = S.load()
+    types = style["props"]["types"]
+    if ptype not in types:
+        return [f"unknown prop type {ptype!r} (known: {sorted(types)})"], [], {"tris": 0}
+    if not obj.data.polygons:
+        return ["prop has no faces"], [], {"tris": 0}
+    key = types[ptype]["budget"]
+    b = style["budget"].get(key)
+    if b is None:
+        return [f"style {style['style']!r} has no {key!r} budget (styles/<style>/STYLE.md §3)"], [], {"tris": 0}
+    hard, soft, st = mesh_checks(obj, unset_roles, key, b["target"], b["hard"])
+    missing = [a for a in types[ptype]["anchors"] if a not in anchors]
+    if missing:
+        hard.append(f"missing anchors {missing} for a {ptype} (P.anchor(name, point))")
+    if "grip" in anchors and "muzzle" in anchors and anchors["muzzle"][0] <= anchors["grip"][0]:
+        hard.append("muzzle must lie in front of the grip (+X: held items are modelled along +X, top +Z)")
+    if obj.vertex_groups:
+        hard.append("props carry no bone weights")
+    st["anchors"] = {k: [round(x, 4) for x in v] for k, v in anchors.items()}
+    return hard, soft, st
+
+
+def mesh_checks(obj, unset_roles, key, target, hard_lim):
+    """Checks every built mesh gets: roles, budget, closed and outward shells, n-gons, zero-area faces."""
+    style = S.load()
+    mesh = obj.data
+    hard, soft = [], []
+    tris = sum(len(p.vertices) - 2 for p in mesh.polygons)
     if unset_roles:
         hard.append(f"{unset_roles} faces without a role (use P.set_role or a primitive's role argument)")
     roles = style["roles"]
@@ -485,7 +543,6 @@ def check_part(obj, slot, tpl, unset_roles):
     if bad:
         hard.append(f"{bad} faces with an invalid role value")
 
-    key, target, hard_lim = budget_for(slot)
     if tris > hard_lim:
         hard.append(f"{tris} tris > hard limit {hard_lim} ({key} budget)")
     elif tris > target:
@@ -525,25 +582,7 @@ def check_part(obj, slot, tpl, unset_roles):
     if tiny:
         soft.append(f"{tiny} zero-area faces")
     bm.free()
-
     lo, hi = _bbox(obj)
-    lm = {k: Vector(v) for k, v in tpl["landmarks"].items()}
-    soft += [f"fit: {m}" for m in fit_checks(slot, lo, hi, lm, style["parts"]["fit_tolerance"])]
-
-    if not slot.startswith("accessory"):
-        pts = [v.co for v in mesh.vertices]
-        kd = KDTree(len(pts))
-        for i, co in enumerate(pts):
-            kd.insert(co, i)
-        kd.balance()
-        asym = sum(1 for co in pts if kd.find(Vector((-co.x, co.y, co.z)))[2] > 0.002)
-        if asym:
-            soft.append(f"asymmetric: {asym} of {len(pts)} vertices have no X-mirror partner (base parts are symmetric)")
-
-    allowed = set(style["skeleton"]["part_bones"][slot]) | set(style["skeleton"].get("part_blend_bones", {}).get(slot, []))
-    for g in obj.vertex_groups:
-        if g.name not in allowed:
-            hard.append(f"vertex group {g.name!r} is not an allowed bone for {slot}: {sorted(allowed)}")
     st = {"tris": tris, "verts": len(mesh.vertices), "roles": used, "shells": len(vol),
           "bbox": [[round(x, 4) for x in lo], [round(x, 4) for x in hi]]}
     return hard, soft, st

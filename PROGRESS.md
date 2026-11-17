@@ -3,10 +3,11 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-17 (session end) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard done; rifle guard + stride fix in the game (reply received; open: vest colour). **Officer done** (Marcel OK'd it,
-2026-11-17): GLB + `OFFICER.md` ready in `~/Desktop/tinfox` for Marcel to hand to the game. **Next: weapons** (prop mode +
-pistol, new session), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+_Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+there). Guard, rifle guard, officer in the game. **Weapons started:** prop mode (STYLE.md §9b) built, **pistol** done
+(924 tris, IoU ~0.89 vs its sheet; Marcel's fixes in), GLB + `PISTOL.md` in `~/Desktop/tinfox`, Marcel hands it to the game.
+**Next:** Marcel's look at the pistol, then the other guns (SMG, sniper: two-handed) and the grenade / ammo pickups;
+then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -19,7 +20,7 @@ pistol, new session), then `hero-f` + the worker. Lowpoly Phase 4 items below st
 | 3 — Skinning & animation | ✅ done, wizard approved 2026-11-16 (animated, GLB plays in three.js) |
 | 4 — Parts library | **nearly done** (lowpoly: 3–5 parts per slot, 8 characters from specs, catalog grid; Marcel's look at the new parts) |
 | 5 — Packs & batch | — |
-| 6 — Integration & extensions (image route, props, …) | — |
+| 6 — Integration & extensions (image route, props, …) | props started (prop mode §9b, Tinfox pistol) |
 
 | Style | Status | Character |
 |---|---|---|
@@ -35,18 +36,15 @@ pistol, new session), then `hero-f` + the worker. Lowpoly Phase 4 items below st
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-1. **Next: weapons** (Marcel, 2026-11-17: before the worker; in a new session). Why first: in first person the
-   player's gun is always on screen, and every enemy in the game still holds a Kenney blaster. Sheets in
-   `~/Desktop/tinfox/weapons/sheets/` (01 pistol … 06 ammo), prompts in `weapons/prompts/`, notes in
-   `GENERATOR.md` §5 (sniper top view drawn ~10 % short: length from the side view; grenade ring upright; ammo: use
-   side + front views; magazine colour: pick one look). Plan:
-   a. **Prop mode** in the generator: STYLE.md ↔ core.json/style.json first (no rig, no animation, size in metres,
-      origin rules, own tris budget: first-person guns get more than barrels/boxes), spec kind `prop`, `validate`
-      rules for props, export of named empty nodes **`grip`** (where the hand holds it) and **`muzzle`** (barrel
-      tip). Grip frame must match the characters' `handslot.r` (gun axis = +X) so the game can parent it directly.
-   b. **Pistol** first as the test (sheet 01), then a brief for the game (it guesses grip/muzzle today in
-      `attachHeldGun` / `findMuzzle`, `src/render/modelCharacter.ts`, and will switch to the named points).
-   c. Then the other guns and the ammo/grenade pickups.
+1. **Weapons** (Marcel, 2026-11-17: before the worker). Done: prop mode + the pistol (see "Tinfox: weapons").
+   a. **Pistol OK'd** (Marcel, after removing the sight post and shrinking the trigger guard); `PISTOL.md` goes to
+      the game. Wait for its reply (grip in the mitten, muzzle flash at the ring, size, first
+      person; whether two-handed guns want a `grip_l` node).
+   b. **Next guns** (sheets `~/Desktop/tinfox/weapons/sheets/`, notes `GENERATOR.md` §5): `02-pistol-silenced`
+      (pistol + silencer, reuse the pistol script), `03-smg`, `04-sniper` (length from the side view; the top view
+      is ~10 % short), both two-handed (`hold: "two"`: check with `aim_2h`, maybe a `grip_l` anchor for the left
+      hand), then `05-grenade` (type `thrown`, ring upright) and `06-ammo` (type `pickup`; side + front views;
+      magazine colour: pick one look). Sizes relative to the pistol (0.30 m). Workflow below.
 2. **Then the worker** (after weapons). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
    (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
    narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
@@ -67,6 +65,14 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    `validate` rule "face/detail islands must touch or enter their base shell".
 6. Then players (two suits, four heads; `hero-m` + `hero-f`).
 7. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
+
+**Workflow for a new Tinfox weapon** (as used for the pistol): copy the sheet to `specs/<name>/reference/sheet.png`;
+`workspace/tinfox/weapons/sheetbox.py <sheet>` (view boxes) and `grid.py` (metric grid over one view, 1 cm lines) to
+measure; write `workspace/tinfox/weapons/<part>.py` (lying along +X, top +Z, `P.anchor("grip"/"muzzle", …)`), spec
+`specs/<name>/spec.json` (`kind: prop`, `type`, `part`, `colors`, `reference` with view boxes + `length_m`); loop
+`.venv/bin/python workspace/tinfox/weapons/run.py <name> --build [--export]` (build_prop → init → assemble →
+validate → preview → compare [→ export]); in-hand check: `node node/testload.mjs workspace/guard/export/character-guard.glb
+$PWD/out.png aim_1h "cam=hand&camoff=-0.45,0.15,0.55" workspace/<name>/export/prop-<name>.glb`.
 
 **Workflow for a new Tinfox character** (as used for the rifle guard): copy the sheet to
 `specs/<name>/reference/turnaround.png`; spec from the guard's (parts, colours, `extra_clips`,
@@ -794,6 +800,39 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   guard's categories (73 vs the guard's 77; pads over the sleeve tops, thighs into the jacket hem in crouch, belt).
   Export ok (validator, three.js load).
 
+## Tinfox: weapons (2026-11-17)
+
+- **Prop mode** (root STYLE.md §9b ↔ core.json `props`): spec `kind: "prop"` + `type` (`weapon` grip + muzzle, origin
+  at the grip; `thrown` grip; `pickup` origin on the floor) + `part` + `colors` + `reference`. `build_prop` (job
+  `build_prop`, same builder `P`, no template; `P.anchor(name, point)`; `PT.check_prop`: roles, shells, the type's
+  budget, anchors, muzzle in front of the grip) → `styles/<style>/props/<prop>.{py,blend,json,png}`;
+  `assemble_from_parts` dispatches to job `assemble_prop` (origin, palette, shading, AO over
+  `shading.ao.prop_distance`, one empty per anchor); `validate` → `measure.prop_violations` (common §12 rules split
+  out of `violations` into `_common_rules`); `render_preview` uses `props.views` (`item_side/top/front/three_quarter`,
+  new in `render.VIEWS`); `compare_reference` → job `compare_prop` (crops from `spec.reference`, scale from the side
+  view's width = `length_m`, aligned by outline centres); `export` → `prop-<name>.glb`, checks the anchor nodes,
+  test load with `cam=fit`. Animation/fit tools refuse props (`C.require_character`). MCP tools `build_prop`,
+  `list_props`.
+- **Frame:** held items lie along +X, top +Z (Blender) = glTF +X forward, +Y up, +Z right side = `handslot.r` in
+  `aim_1h` (measured on the guard: slot local X → forward, Y → up). The game parents the GLB with no transform.
+- **Tinfox:** budget `weapon` 2,500 / 4,000 (`prop` 1,500 / 2,500); palette cell 52 `#6E6E6E` → gun grey `#565656`
+  (sampled off the pistol sheet; unused by the characters, but their workspace .blends carry the old palette.png
+  packed: re-assemble before re-validating them); prop AO 0.015 m (median corner AO 0.66 at 0.3 m, 0.83 at 0.03 m,
+  0.95 at 0.015 m).
+- **Pistol** (`specs/pistol`, part `pistol-kestrel`): 0.30 m long (the in-hand size of the Kenney blaster today:
+  0.46 × grip scale 0.65), 924 tris, 6 colours (52 body, 54 grip, 51 silver, 19 orange, 39 window, 55 bore). IoU
+  vs sheet front / side / top 0.91 / 0.87 / 0.88. glTF validator 0/0; nodes `pistol`, `grip` (0, 0, 0), `muzzle`
+  (0.244, 0.110, 0). In three.js on the guard's `handslot.r` (no offset) the gun is level and forward in `aim_1h`,
+  the handle inside the mitten. Fixes on the way: top-view camera rolled 180° (straight down has no up reference
+  in `to_track_quat`), barrel and recessed glass baked dark (vertex AO at buried vertices: open ring added, glass
+  flush), AO bake failed on a library-loaded object ("No valid selected objects": view layer not updated).
+- Viewer: `?cam=fit` (frame the model), `?held=<glb>&hand=<bone>` (prop on a bone, no transform), `?cam=hand&camoff=`;
+  `testload.mjs` takes a 5th argument (held GLB).
+- Marcel's round: sight post removed, trigger guard loop smaller (IoU 0.90 / 0.88 / 0.88). OK'd.
+- Handed over: `~/Desktop/tinfox/PISTOL.md`, `weapons/glb/pistol.glb` (sha `cf2b3a25…`) + previews.
+- Tests: `tests/test_props.py` (names/types, missing anchor, end-to-end incl. GLB nodes and frame), style sync for
+  the props table and the weapon budget row. 87 pass, 1 skipped.
+
 ## Tinfox: officer (2026-11-17)
 
 - Sheet `specs/officer/reference/turnaround.png` (Marcel's set), 2.043 mm/px, `add_reference` top_y 45 / floor 926,
@@ -855,6 +894,14 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   end-to-end). 80 tests pass.
 
 ## Decisions (with reasons)
+
+- **Weapon sheets go in the repo** (Marcel, 2026-11-17), like the character sheets (`specs/<name>/reference/`).
+- **Weapons export in the hand's frame, origin at the grip** (2026-11-17): the game parents the GLB to `handslot.r`
+  with no transform and reads `muzzle` as a node; guessing grip and muzzle from the mesh (today) breaks on every new
+  gun shape. Weapons are modelled at in-game size next to the figures (pistol 0.30 m, as the Kenney blaster in hand).
+- **Fidelity brief (Marcel's `blender_character_fidelity_brief.md`) checked, not adopted** (2026-11-17): most of it
+  is already in place (ortho comparison, region fit, approval gate); the new parts (landmark error, contour distance,
+  per-region scores) would measure better but not model better; the gap to the sheets is form. Weapons first.
 
 - **Crouch aim as separate baked clips** (2026-11-17, game's preferred option): the aim layer keys arm rotations
   relative to the chest, so one clip can't be level over both an upright and a leaning chest; an upright-chest
@@ -946,6 +993,8 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - **AI spike** has its own venv (`spikes/ai-texture/.venv`, torch + diffusers); models (~13 GB) are cached in `~/.cache/huggingface`. 16 GB RAM is not enough to run it without swapping.
 - **Fit lives in the workspace spec:** `fit_to_reference` writes `workspace/<name>/spec.json`; `run.py` re-inits from
   `specs/<name>/spec.json`, so copy `fit` + `compare.arms_down_deg` there or the next rebuild drops them.
+- **AO bake on objects loaded from a library:** `bpy.ops.object.bake` fails with "No valid selected objects" until
+  `view_layer.update()` (now in `SH.bake_ao`).
 - **Tests and `GPG_STYLE`:** don't run pytest in a shell where `GPG_STYLE` is exported (e.g. after `export
   GPG_STYLE=tinfox` for the detail renders): the tests then default to that style and ~9 fail. Use a subshell.
 - **Detail renders for Tinfox:** `ARMS=72 GPG_STYLE=tinfox REG='{...}' workspace/knight-lowpoly/detail/body.sh guard [part ...]`.
@@ -956,7 +1005,7 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (84, ~90 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (87, ~95 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -968,6 +1017,11 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Pistol: Marcel's fixes (no sight post, smaller trigger guard), OK'd; GLB re-sent.
+- **2026-11-17** — Fidelity brief checked (nothing that changes the build). Prop mode (§9b) + pistol (936 tris, IoU
+  ~0.89, grip/muzzle nodes, held on the guard's `handslot.r` with no transform); `PISTOL.md` + GLB in
+  `~/Desktop/tinfox`. 87 tests pass. Awaiting Marcel's look.
 
 - **2026-11-17** — Order changed (Marcel): weapons next (prop mode + pistol), then `hero-f` + worker.
 - **2026-11-17** — ump: officer + parts committed; next session: `hero-f` template + worker.

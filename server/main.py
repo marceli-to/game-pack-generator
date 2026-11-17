@@ -28,6 +28,8 @@ render_parts_catalog (build missing parts with build_part) -> assemble_from_part
 [painted styles: paint_surface] -> validate -> compare_reference (max. 3 correction rounds, then ask
 the human) -> apply_animations -> pose_test -> export. Re-run paint_surface (painted styles) and apply_animations after every assemble_from_parts.
 Check an existing model: init_character -> import_glb -> stats / validate -> render_preview -> export.
+Props (weapons, thrown items, pickups; STYLE.md §9b): build_prop -> init_character(spec with kind "prop", type,
+part, colors, reference) -> assemble_from_parts -> validate -> compare_reference -> export (no animation tools).
 Every result lists preview images: open them to see what you did.
 """
 
@@ -133,6 +135,25 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
     Model in metres, -Y forward, +Z up, T-pose; left side is +X. Follow the STYLE.md §3 segment & bevel
     guide (12-16 sides for round shapes, bevelled boxes). Look at the returned preview."""
     return T_parts.build_part(part, script, archetype, overwrite, style)
+
+
+@mcp.tool()
+@_safe
+def build_prop(prop: str, script: str, type: str, overwrite: bool = False, style: str | None = None) -> dict:  # noqa: A002
+    """Build a library prop (STYLE.md §9b: weapon, thrown, pickup) with the same builder P as build_part, but
+    without a template. Saved to styles/<style>/props/ (.blend, .py, .json, .png) if it passes the hard checks
+    (roles, closed shells, the type's budget, its anchors). Model in metres at the in-game size; held items lie
+    along +X (muzzle/front +X, top +Z, right side -Y). Name points with P.anchor(name, point): weapons need
+    `grip` (handle centre line, where the fist closes) and `muzzle` (barrel tip on the bore axis); thrown items
+    `grip` (their centre). Use it in a prop spec: {"kind": "prop", "type": ..., "part": prop, "colors": {...}}."""
+    return T_parts.build_prop(prop, script, type, overwrite, style)
+
+
+@mcp.tool()
+@_safe
+def list_props(style: str | None = None) -> dict:
+    """List the style's props (STYLE.md §9b) with type, tris, roles and anchors."""
+    return T_parts.list_props(style)
 
 
 @mcp.tool()

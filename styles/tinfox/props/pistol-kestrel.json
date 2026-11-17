@@ -1,0 +1,44 @@
+{
+ "prop": "pistol-kestrel",
+ "type": "weapon",
+ "style": "tinfox",
+ "script_sha256": "2184c0a6cdbd81e7e55aff857af85f2eea30c05ea11b57692b66b6a413ff0b28",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 924,
+ "verts": 504,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 21,
+ "bbox": [
+  [
+   0.0,
+   -0.0545,
+   0.0
+  ],
+  [
+   0.3,
+   0.0545,
+   0.242
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.056,
+   0.0,
+   0.06
+  ],
+  "muzzle": [
+   0.3,
+   0.0,
+   0.17
+  ]
+ },
+ "warnings": []
+}

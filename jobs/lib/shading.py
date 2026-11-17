@@ -57,9 +57,10 @@ def ao_config():
     return S.load()["shading"].get("ao")
 
 
-def bake_ao(obj):
+def bake_ao(obj, distance=None):
     """Bake ambient occlusion (rest pose, Cycles) into the corner colour attribute `AO` and multiply it into
-    the object's palette material (STYLE.md §5). No-op without `shading.ao`. Returns stats or None."""
+    the object's palette material (STYLE.md §5). No-op without `shading.ao`. `distance` overrides the style's
+    (props: `shading.ao.prop_distance`, STYLE.md §9b). Returns stats or None."""
     import bpy
     import numpy as np
     cfg = ao_config()
@@ -79,9 +80,10 @@ def bake_ao(obj):
     sc.cycles.samples = cfg["samples"]
     if sc.world is None:
         sc.world = bpy.data.worlds.new("World")
-    sc.world.light_settings.distance = cfg["distance"]
+    sc.world.light_settings.distance = distance or cfg["distance"]
     sc.render.bake.target = "VERTEX_COLORS"
     vl = bpy.context.view_layer
+    vl.update()   # objects linked just before (props loaded from a library) are not in the layer yet
     for o in vl.objects:
         o.select_set(o is obj)
     vl.objects.active = obj

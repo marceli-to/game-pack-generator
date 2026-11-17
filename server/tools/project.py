@@ -18,6 +18,15 @@ def init_character(name: str, spec: dict | None = None, overwrite: bool = False)
     spec.setdefault("name", name)
     spec.setdefault("style", style_name())
     style = load_style(spec["style"])
+    if C.is_prop(spec):   # STYLE.md §9b
+        types = style["props"]["types"]
+        if spec.get("type") not in types:
+            raise C.CharacterError(f"a prop spec needs type, one of {sorted(types)}")
+        C.save_spec(name, spec)
+        r = run_job("init_character", {"out": str(blend)}, style=spec["style"])
+        r["outputs"] = [str(blend), str(C.spec_path(name))]
+        r["stats"] = {"spec_hash": C.spec_hash(spec)}
+        return r
     spec.setdefault("archetype", style["default_archetype"])
     if spec["archetype"] not in style["archetypes"]:
         raise C.CharacterError(f"unknown archetype {spec['archetype']!r} in style {spec['style']!r}: "

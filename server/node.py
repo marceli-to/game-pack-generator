@@ -31,5 +31,6 @@ def gltf_validate(glb: Path) -> dict:
     return _run("validate.mjs", str(glb))
 
 
-def test_load(glb: Path, screenshot: Path, anim: str = "idle") -> dict:
-    return _run("testload.mjs", str(glb), str(screenshot), anim, timeout=180)
+def test_load(glb: Path, screenshot: Path, anim: str = "idle", extra: str = "", held: Path | None = None) -> dict:
+    """extra: more viewer query (e.g. "cam=fit"); held: a prop GLB parented to the hand bone (STYLE.md §9b)."""
+    return _run("testload.mjs", str(glb), str(screenshot), anim, extra, str(held or ""), timeout=180)

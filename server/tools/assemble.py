@@ -12,12 +12,21 @@ def assemble_from_parts(name: str, spec: dict | None = None) -> dict:
     if spec is not None:
         spec = {**(C.load_spec(name) or {}), **spec}
         spec.setdefault("name", name)
-        spec.setdefault("archetype", load_style(spec.get("style"))["default_archetype"])
+        if not C.is_prop(spec):
+            spec.setdefault("archetype", load_style(spec.get("style"))["default_archetype"])
         C.save_spec(name, spec)
     spec = C.load_spec(name)
     if spec is None:
         raise C.CharacterError(f"character {name!r} has no spec; call init_character first")
-    r = run_job("assemble", {"spec": spec, "out": str(C.blend_path(name))}, style=C.style_of(name))
+    if C.is_prop(spec):   # STYLE.md §9b
+        from .parts import props_dir
+        blend = props_dir(C.style_of(name)) / f"{spec.get('part', name)}.blend"
+        if not blend.exists():
+            raise C.CharacterError(f"prop {spec.get('part', name)!r} not built yet ({blend}); use build_prop")
+        r = run_job("assemble_prop", {"spec": spec, "part_blend": str(blend), "out": str(C.blend_path(name))},
+                    style=C.style_of(name))
+    else:
+        r = run_job("assemble", {"spec": spec, "out": str(C.blend_path(name))}, style=C.style_of(name))
     if r.get("ok"):
         r["stats"]["spec_hash"] = C.spec_hash(spec)
     return r

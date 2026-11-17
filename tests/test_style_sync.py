@@ -34,7 +34,9 @@ def test_budgets_match(name):
     assert f"| Head incl. hair/headwear | ≤ {b['head']['target']:,} | {b['head']['hard']:,} |" in STYLE_MD
     assert f"| Hand-held accessory (weapon, tool) | ≤ {b['accessory_hand']['target']:,} | {b['accessory_hand']['hard']:,} |" in STYLE_MD
     assert f"| Back accessory (cape, backpack) | ≤ {b['accessory_back']['target']:,} | {b['accessory_back']['hard']:,} |" in STYLE_MD
-    assert f"| Prop (later) | ≤ {b['prop']['target']:,} | {b['prop']['hard']:,} |" in STYLE_MD
+    assert re.search(rf"\| Prop[^|]*\| ≤ {b['prop']['target']:,} \| {b['prop']['hard']:,} \|", STYLE_MD)
+    if "weapon" in b:   # props (STYLE.md §9b)
+        assert re.search(rf"\| Weapon[^|]*\| ≤ {b['weapon']['target']:,} \| {b['weapon']['hard']:,} \|", STYLE_MD)
 
 
 @pytest.mark.parametrize("name", STYLES_ALL)
@@ -120,3 +122,18 @@ def test_paint_approaches_documented(name):
         assert f"`steps` {ai['steps']}" in md
         for key in ("view_size", "frame_margin", "depth_subsurf", "crease_deg", "projection"):
             assert f"`ai.{key}`" in md, key
+
+
+def test_props_match():
+    """STYLE.md §9b types table <-> core.json props.types; views; every budget a type names exists somewhere."""
+    pr = S["props"]
+    for name, ty in pr["types"].items():
+        anchors = ", ".join(f"`{a}`" for a in ty["anchors"]) or "—"
+        assert f"| `{name}` | {anchors} | `{ty['origin']}` | `{ty['budget']}` |" in STYLE_MD, name
+    for v in pr["views"]:
+        assert f"`{v}`" in STYLE_MD, v
+    assert f"`props.origin_tolerance` = {round(pr['origin_tolerance'] * 1000)} mm" in STYLE_MD
+    for name in STYLES_ALL:
+        st = load_style(name)
+        if "prop_distance" in (st["shading"].get("ao") or {}):
+            assert f"Props bake over **{st['shading']['ao']['prop_distance']} m** (`prop_distance`)" in style_md(name)

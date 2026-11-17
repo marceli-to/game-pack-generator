@@ -108,6 +108,7 @@ def measure(spec=None):
         "weights_over_max_bones": 0, "unweighted_verts": 0,
         "z_min": None, "body_top": None, "headwear_top": None, "total_top": None,
         "transforms_applied": True,
+        "bbox": None, "empties": {},
     }
     body_slots = {slots.index(s) for s in slots if s not in style["height_excluded_slots"]}
     headwear_slot = slots.index("headwear")
@@ -125,6 +126,12 @@ def measure(spec=None):
         m["tris"] += sum(len(p.vertices) - 2 for p in mesh.polygons)
         m["vertex_color_layers"] += len(mesh.color_attributes)
         m["vertex_color_names"] += [a.name for a in o.data.color_attributes]
+        for v in mesh.vertices:
+            w = mw @ v.co
+            if m["bbox"] is None:
+                m["bbox"] = [list(w), list(w)]
+            else:
+                m["bbox"] = [[min(a, b) for a, b in zip(m["bbox"][0], w)], [max(a, b) for a, b in zip(m["bbox"][1], w)]]
         flat, unmarked = SH.check(o.data)
         m["flat_faces"] += flat
         m["unmarked_creases"] += unmarked
@@ -289,6 +296,11 @@ def measure(spec=None):
             from . import overlap as OV
             m["covered_visible"] = OV.covered_visible(char, OV.spec_covers(spec), sf, slots, style["covers_check"])
 
+    m["empties"] = {o.name: [round(x, 5) for x in o.matrix_world.translation]
+                    for o in bpy.context.scene.objects if o.type == "EMPTY"}
+    if m["bbox"] is not None:
+        m["bbox"] = [[round(x, 5) for x in c] for c in m["bbox"]]
+
     # derived
     floor = 0.0
     m["body_height"] = round(m["body_top"] - floor, 4) if m["body_top"] is not None else None
@@ -357,6 +369,8 @@ def violations(m, spec=None):
             elif n > b[key]["target"]:
                 W(f"tris_{label}_target", f"{label}: {n} tris above target {b[key]['target']}")
 
+    _common_rules(m, spec, style, H, W)
+
     arch = spec.get("archetype", style["default_archetype"])
     lo, hi = style["archetypes"][arch]["height"]
     h = m["body_height"]
@@ -372,6 +386,43 @@ def violations(m, spec=None):
     if not m["has_slot"]:
         info.append({"code": "no_slot_attr", "message": "no 'slot' face attribute: height includes hair/headwear/accessories; per-slot budgets and symmetry not checked"})
 
+    if m["symmetry_checked_verts"] and m["asymmetric_verts"]:
+        pct = 100 * m["asymmetric_verts"] / m["symmetry_checked_verts"]
+        if pct > 1:
+            W("asymmetry", f"{pct:.0f}% of base-part vertices have no X-mirror partner")
+
+    sk = m["skeleton"]
+    if not sk["present"]:
+        H("no_armature", "no armature")
+    else:
+        if sk["missing"] or sk["extra"] or sk["wrong_parent"]:
+            H("skeleton", f"skeleton differs from the standard: missing={sk['missing']} extra={sk['extra']} wrong_parent={sk['wrong_parent']}")
+        # slot bones of upright grips deform on purpose (STYLE.md §9a)
+        sb = style["skeleton"]["slot_bones"]
+        upright = {sb[s] for s, mode in (spec.get("grip") or {}).items() if mode == "upright" and s in sb}
+        sk["deform_mismatch"] = [b for b in sk["deform_mismatch"] if b not in upright]
+        if sk["deform_mismatch"]:
+            W("deform_flags", f"deform flags differ from core.json: {sk['deform_mismatch']}")
+    if m["weights_over_max_bones"]:
+        W("weights", f"{m['weights_over_max_bones']} vertices weighted to more than "
+                     f"{style['skinning']['max_bones_per_vertex']} bones")
+    if sk.get("present") and m["unweighted_verts"]:
+        W("unweighted", f"{m['unweighted_verts']} vertices have no bone weights")
+
+    for feat, c in m.get("covered_visible", {}).items():
+        W("covered_visible", f"{feat}: {c['verts']} of {c['of']} vertices visible although {c['by']} cover(s) them "
+                             f"(e.g. at {c['at']})")
+    if len(m["objects"]) != 1 or m["objects"][0] != style["skeleton"]["mesh_object"]:
+        W("objects", f"expected one mesh object '{style['skeleton']['mesh_object']}', found {m['objects']}")
+    if not m["transforms_applied"]:
+        W("transforms", "mesh objects have unapplied transforms")
+    info.append({"code": "joint_loops", "message": "edge loops at joints: not checked yet (Phase 3, pose_test)"})
+    info.append({"code": "gltf_validator", "message": "glTF validator runs in `export`"})
+    return {"hard": hard, "soft": soft, "info": info}
+
+
+def _common_rules(m, spec, style, H, W):
+    """§12 rules for every mesh asset, characters and props (§9b): roles, colours, surface, topology, shading."""
     if not m["has_role"]:
         H("no_role", "faces without a 'role' attribute (FACE, INT)")
     if m["invalid_role_faces"]:
@@ -410,39 +461,6 @@ def violations(m, spec=None):
           f"`{SH.AO_ATTR}` layer is allowed, and only with shading.ao, STYLE.md §5)")
     if ao and SH.AO_ATTR not in m["vertex_color_names"]:
         W("no_ao", f"the style bakes AO (shading.ao) but the mesh has no `{SH.AO_ATTR}` layer (re-assemble)")
-    if m["symmetry_checked_verts"] and m["asymmetric_verts"]:
-        pct = 100 * m["asymmetric_verts"] / m["symmetry_checked_verts"]
-        if pct > 1:
-            W("asymmetry", f"{pct:.0f}% of base-part vertices have no X-mirror partner")
-
-    sk = m["skeleton"]
-    if not sk["present"]:
-        H("no_armature", "no armature")
-    else:
-        if sk["missing"] or sk["extra"] or sk["wrong_parent"]:
-            H("skeleton", f"skeleton differs from the standard: missing={sk['missing']} extra={sk['extra']} wrong_parent={sk['wrong_parent']}")
-        # slot bones of upright grips deform on purpose (STYLE.md §9a)
-        sb = style["skeleton"]["slot_bones"]
-        upright = {sb[s] for s, mode in (spec.get("grip") or {}).items() if mode == "upright" and s in sb}
-        sk["deform_mismatch"] = [b for b in sk["deform_mismatch"] if b not in upright]
-        if sk["deform_mismatch"]:
-            W("deform_flags", f"deform flags differ from core.json: {sk['deform_mismatch']}")
-    if m["weights_over_max_bones"]:
-        W("weights", f"{m['weights_over_max_bones']} vertices weighted to more than "
-                     f"{style['skinning']['max_bones_per_vertex']} bones")
-    if sk.get("present") and m["unweighted_verts"]:
-        W("unweighted", f"{m['unweighted_verts']} vertices have no bone weights")
-
-    for feat, c in m.get("covered_visible", {}).items():
-        W("covered_visible", f"{feat}: {c['verts']} of {c['of']} vertices visible although {c['by']} cover(s) them "
-                             f"(e.g. at {c['at']})")
-    if len(m["objects"]) != 1 or m["objects"][0] != style["skeleton"]["mesh_object"]:
-        W("objects", f"expected one mesh object '{style['skeleton']['mesh_object']}', found {m['objects']}")
-    if not m["transforms_applied"]:
-        W("transforms", "mesh objects have unapplied transforms")
-    info.append({"code": "joint_loops", "message": "edge loops at joints: not checked yet (Phase 3, pose_test)"})
-    info.append({"code": "gltf_validator", "message": "glTF validator runs in `export`"})
-    return {"hard": hard, "soft": soft, "info": info}
 
 
 def _palette_rules(m, style, H, W):
@@ -500,3 +518,54 @@ def _painted_rules(m, spec, style, H, W):
     base = {colors[r] for r in m["roles_used"] if r in colors}
     if len(base) > style["palette"]["max_colors"]:
         W("colours", f"{len(base)} base colours used (max {style['palette']['max_colors']})")
+
+
+def prop_violations(m, spec):
+    """STYLE.md §9b: the §12 rules for meshes plus the prop's budget, anchors and origin."""
+    style = S.load()
+    hard, soft, info = [], [], []
+
+    def H(code, msg):
+        hard.append({"code": code, "message": msg})
+
+    def W(code, msg):
+        soft.append({"code": code, "message": msg})
+
+    types = style["props"]["types"]
+    ptype = spec.get("type")
+    if ptype not in types:
+        H("prop_type", f"spec.type {ptype!r} is not a prop type {sorted(types)}")
+        return {"hard": hard, "soft": soft, "info": info}
+    t = types[ptype]
+    b = style["budget"].get(t["budget"])
+    if b is None:
+        H("budget", f"style {style['style']!r} has no {t['budget']!r} budget")
+    elif m["tris"] > b["hard"]:
+        H("tris_hard", f"{m['tris']} tris > {t['budget']} hard limit {b['hard']}")
+    elif m["tris"] > b["target"]:
+        W("tris_target", f"{m['tris']} tris above the {t['budget']} target {b['target']}")
+    if m["bbox"] is None:
+        H("no_geometry", "no mesh geometry")
+    _common_rules(m, spec, style, H, W)
+
+    tol = style["props"]["origin_tolerance"]
+    anchors = m["empties"]
+    missing = [a for a in t["anchors"] if a not in anchors]
+    if missing:
+        H("anchors", f"missing anchor empties {missing} for a {ptype}")
+    if t["origin"] == "grip" and "grip" in anchors and max(abs(x) for x in anchors["grip"]) > tol:
+        H("origin", f"grip at {anchors['grip']}, must be the origin (0, 0, 0)")
+    if t["origin"] == "floor" and m["bbox"] is not None:
+        lo, hi = m["bbox"]
+        if abs(lo[2]) > tol or abs(lo[0] + hi[0]) / 2 > tol or abs(lo[1] + hi[1]) / 2 > tol:
+            H("origin", f"bounding box {m['bbox']}: a pickup stands on z 0 with its footprint centred on the origin")
+    if "muzzle" in anchors and "grip" in anchors and anchors["muzzle"][0] <= anchors["grip"][0]:
+        H("muzzle", "muzzle must lie in front of the grip along +X")
+    if len(m["objects"]) != 1 or m["objects"][0] != spec.get("name"):
+        W("objects", f"expected one mesh object {spec.get('name')!r}, found {m['objects']}")
+    if not m["transforms_applied"]:
+        W("transforms", "mesh objects have unapplied transforms")
+    if m["skeleton"].get("present"):
+        W("armature", "props have no armature")
+    info.append({"code": "gltf_validator", "message": "glTF validator runs in `export`"})
+    return {"hard": hard, "soft": soft, "info": info}

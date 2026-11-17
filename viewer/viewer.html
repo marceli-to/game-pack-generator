@@ -105,9 +105,25 @@ function load(url) {
     mixer = new THREE.AnimationMixer(model);
     select.innerHTML = clips.map((c) => `<option>${c.name}</option>`).join("");
     state.animations = clips.map((c) => c.name);
-    state.loaded = true;
     const box = new THREE.Box3().setFromObject(model);
     state.height = +(box.max.y - box.min.y).toFixed(3);
+    // ?cam=fit: frame the model's box (props, STYLE.md §9b: a 30 cm gun is a speck in the default framing)
+    if (params.get("cam") === "fit") {
+      const c = box.getCenter(new THREE.Vector3()), r = box.getSize(new THREE.Vector3()).length();
+      controls.target.copy(c);
+      camera.position.copy(c).add(new THREE.Vector3(0.55, 0.35, 0.9).normalize().multiplyScalar(r * 1.9));
+      camera.near = r / 50;
+      camera.updateProjectionMatrix();
+      controls.update();
+    }
+    // ?held=<glb>&hand=<bone>: parent a prop's scene to the bone with no offset or rotation (STYLE.md §9b:
+    // its origin is the grip, +X the muzzle, +Y up, the frame of handslot.r while aiming)
+    if (params.get("held")) {
+      const bone = model.getObjectByName(THREE.PropertyBinding.sanitizeNodeName(params.get("hand") || "handslot.r"));
+      if (!bone) { state.error = "hand bone not found"; console.error(state.error); }
+      else new GLTFLoader().load(params.get("held"), (g) => { bone.add(g.scene); state.held = true; state.loaded = true; },
+        undefined, (err) => { state.error = String(err && err.message || err); console.error(err); });
+    } else state.loaded = true;
     status.textContent = `${url.split("/").pop()} — ${clips.length} animations — height ${state.height} m`;
     play(params.get("anim") || (state.animations.includes("idle") ? "idle" : state.animations[0]));
   }, undefined, (err) => { state.error = String(err && err.message || err); status.textContent = "error: " + state.error; console.error(err); });
@@ -118,9 +134,20 @@ addEventListener("dragover", (e) => e.preventDefault());
 addEventListener("drop", (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) load(URL.createObjectURL(f)); });
 addEventListener("resize", () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
 
+// ?cam=hand: follow the hand bone (offset ?camoff=x,y,z in metres, default from the front right)
+const camOff = new THREE.Vector3(...(params.get("camoff") || "-0.55,0.25,0.75").split(",").map(Number));
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
   if (mixer) { mixer.update(dt); state.time += dt; }
+  if (params.get("cam") === "hand" && model) {
+    const bone = model.getObjectByName(THREE.PropertyBinding.sanitizeNodeName(params.get("hand") || "handslot.r"));
+    if (bone) {
+      const p = bone.getWorldPosition(new THREE.Vector3());
+      controls.target.copy(p);
+      camera.position.copy(p).add(camOff);
+      controls.update();
+    }
+  }
   state.frames++;
   renderer.render(scene, camera);
 });

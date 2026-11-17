@@ -66,6 +66,57 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
     return r
 
 
+def props_dir(style: str | None = None) -> Path:
+    st = load_style(style)
+    return REPO / "styles" / st["style"] / st["props"]["dir"]
+
+
+def build_prop(prop: str, script: str, type: str, overwrite: bool = False, style: str | None = None) -> dict:  # noqa: A002
+    """STYLE.md §9b: build a prop with the part builder; stored in styles/<style>/props/ if it passes."""
+    if not VARIANT_RE.match(prop or ""):
+        raise PartError(f"prop name {prop!r} must be kebab-case, e.g. 'pistol-kestrel'")
+    style = load_style(style)
+    types = style["props"]["types"]
+    if type not in types:
+        raise PartError(f"unknown prop type {type!r}; types: {sorted(types)}")
+    if types[type]["budget"] not in style["budget"]:
+        raise PartError(f"style {style['style']!r} has no {types[type]['budget']!r} budget (its STYLE.md §3)")
+    lib_dir = props_dir(style["style"])
+    blend = lib_dir / f"{prop}.blend"
+    if blend.exists() and not overwrite:
+        raise PartError(f"prop {prop!r} exists (pass overwrite=true to replace it)")
+    scratch = workspace() / "_props" / style["style"] / prop
+    r = run_job("build_prop", {"prop": prop, "type": type, "script": script, "out_dir": str(scratch), "save": True},
+                style=style["style"])
+    if not r.get("ok"):
+        return r
+    lib_dir.mkdir(parents=True, exist_ok=True)
+    (scratch / f"{prop}.blend").replace(blend)
+    preview = lib_dir / f"{prop}.png"
+    Path(r["previews"][0]).replace(preview)
+    script = script.rstrip() + "\n"
+    (lib_dir / f"{prop}.py").write_text(script)
+    meta = {
+        "prop": prop, "type": type, "style": style["style"],
+        "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
+        "built": dt.date.today().isoformat(), "blender": style["blender"]["version"],
+        **{k: r["stats"][k] for k in ("tris", "verts", "roles", "shells", "bbox", "anchors")},
+        "warnings": r.get("soft", []),
+    }
+    (lib_dir / f"{prop}.json").write_text(json.dumps(meta, indent=1) + "\n")
+    r["outputs"] = [str(blend), str(lib_dir / f"{prop}.py"), str(lib_dir / f"{prop}.json"), str(preview)]
+    r["previews"] = [str(preview)]
+    return r
+
+
+def list_props(style: str | None = None) -> dict:
+    out = []
+    for meta in sorted(props_dir(style).glob("*.json")):
+        m = json.loads(meta.read_text())
+        out.append({k: m.get(k) for k in ("prop", "type", "tris", "roles", "anchors")})
+    return {"ok": True, "style": style_name(style), "props": out}
+
+
 def list_parts(slot: str | None = None, style: str | None = None) -> dict:
     out = {}
     for meta in sorted(parts_dir(style).glob("*/*.json")):
