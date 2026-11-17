@@ -7,7 +7,9 @@ _Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tin
 there): shooter clips, style `tinfox` (hero-m, budget 8,000) and the **guard** built through Marcel's viewer rounds
 (V chest, pads that follow the arms, face, smaller boots, 2H stance with shoulders forward). Surface: flat palette + **baked AO in vertex colours** (Marcel's pick, ~75 % of the sheet; form pass / image-to-3D
 only if it still bothers him in the game). Guard is in the game (tin-wolf `?art=tinfox`); fixes from its report committed (`7ba481f`) and
-sent (`GUARD-UPDATE-1.md`). Next: rifle guard, officer.
+sent (`GUARD-UPDATE-1.md`). **Automatic fitting loop** (`fit_to_reference`, STYLE.md §7b) built; guard fitted
+(IoU ~0.69 → ~0.79, Marcel: "not bad!"), committed `3ff649c`; the game still has the unfitted GLB. Hunyuan spike
+cleaned up (~25 GB). Next: send the fitted guard to the game, then rifle guard, officer (fit each one).
 Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
@@ -44,7 +46,10 @@ when Marcel wants it).
 
 **Automatic fitting loop: built (2026-11-17)**, see "Fit to the reference" below. Guard fitted. **Marcel: "not bad!"** (sheet `workspace/tinfox/guard/guard_fitted_vs_sheet.png`) → `fit` + `arms_down_deg` 69
 copied into `specs/guard/spec.json`, guard rebuilt. Not re-sent to the game yet (the Desktop GLB is unfitted).
-Next candidates from the side-by-side: head + cap smaller than the sheet, arms hang lower (template, not parts). Lowpoly characters: report-only (it would undo hand-tuned
+Next: (a) send the fitted guard to the game (new GLB + `GUARD-UPDATE-2.md` on the Desktop: fitted proportions,
+same rig/clips/palette); (b) candidates from the side-by-side: head + cap smaller than the sheet, arms hang lower
+(both in the `hero-m` template: affects the officer and rifle guard too). For new characters: build the parts,
+then `fit_to_reference` (set `compare.fit_exclude` first for regions that deviate on purpose). Lowpoly characters: report-only (it would undo hand-tuned
 choices like the rogue's snug hood) until Marcel says which regions to lock.
 
 **Then:**
@@ -722,6 +727,9 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 
 ## Hunyuan3D image-to-3D spike (2026-11-17, Marcel: "see how far we can get"; licence parked, prototype only)
 
+- **Cleaned up (2026-11-17):** weights, venv and the dinov2-giant HF cache deleted (~25 GB); to rerun, reinstall
+  (`install.sh` in the port, ~22 GB download). Kept in `workspace/hunyuan/`: scripts, `run2/` (raw output),
+  `hyb10/` (best hybrid), the comparison PNGs.
 - Port `hunyuan3d-2.1-mac` (MPS, shape + PBR paint) in `workspace/_sources/hunyuan3d-2.1-mac` (gitignored; venv on
   arm64 Python 3.12 from /opt/homebrew, weights ~14 GB in its `weights/`, dinov2 in the HF cache). Run:
   `venv/bin/python tests/e2e_visual.py --image <png> --out <dir> --octree 256 --tex-preset safe --tex-views 6
@@ -874,6 +882,8 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — ump: fit committed, Hunyuan files cleaned up; next: fitted guard to the game.
 
 - **2026-11-17** — Automatic fitting loop (`fit_to_reference`, §7b): guard IoU ~0.69 → ~0.79 (workspace only). 80 tests.
 
