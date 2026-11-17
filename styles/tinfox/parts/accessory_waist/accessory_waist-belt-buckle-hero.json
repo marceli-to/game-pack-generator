@@ -1,0 +1,31 @@
+{
+ "part": "accessory_waist-belt-buckle-hero",
+ "slot": "accessory_waist",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "189192461d9e05c34e26a53c6262b5de8313355e297a1be3a92c79c82dd61054",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 236,
+ "verts": 128,
+ "roles": [
+  "dark",
+  "metal"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.207,
+   -0.186,
+   0.91
+  ],
+  [
+   0.207,
+   0.157,
+   1.015
+  ]
+ ],
+ "warnings": []
+}

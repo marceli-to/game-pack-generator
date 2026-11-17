@@ -63,6 +63,10 @@
       "accessory_hand_l": ["hand.l"],
       "accessory_hand_r": ["hand.r"],
       "accessory_waist": ["hips"]
+    },
+    "part_blend_bones": {
+      "_comment": "extra bones a part of the slot may use in explicit blended weights (P.set_weights), never as nearest-bone targets (STYLE.md §9a)",
+      "torso": ["upperarm.l", "upperarm.r"]
     }
   },
   "animations": {
@@ -118,6 +122,7 @@
         "loop": true,
         "range": [8, 48],
         "arms_only": true,
+        "stance": {"forward": 0.85, "inward": 0.25, "down": 0.3, "left": {"along": 0.18, "out": 0.08, "down": 0.02}, "elbow": {"out": 0.25, "forward": 0.2, "down": 0.15}, "shoulder": {"forward": 0.12, "in": 0.03}},
         "frames": 40
       },
       {
@@ -127,6 +132,7 @@
         "loop": false,
         "range": [0, 8],
         "arms_only": true,
+        "stance": {"forward": 0.85, "inward": 0.25, "down": 0.3, "left": {"along": 0.18, "out": 0.08, "down": 0.02}, "elbow": {"out": 0.25, "forward": 0.2, "down": 0.15}, "shoulder": {"forward": 0.12, "in": 0.03}},
         "frames": 8
       },
       {

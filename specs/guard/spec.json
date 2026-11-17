@@ -1,0 +1,42 @@
+{
+  "name": "guard",
+  "style": "tinfox",
+  "archetype": "hero-m",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 8,
+    "primary": 29,
+    "secondary": 54,
+    "accent": 19,
+    "leather": 54,
+    "metal": 43,
+    "dark": 53,
+    "special": 45
+  },
+  "parts": {
+    "head": "head-hero-square",
+    "hair": "hair-short-hero",
+    "headwear": "headwear-cap-antenna-hero",
+    "face": null,
+    "torso": "torso-jacket-hero",
+    "arms": "arms-sleeves-padded-hero",
+    "hands": "hands-mitten-hero",
+    "legs": "legs-trousers-hero",
+    "feet": "feet-boots-big-hero",
+    "accessory_waist": "accessory_waist-belt-buckle-hero"
+  },
+  "reference": "specs/guard/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 72,
+    "hide_slots": []
+  },
+  "extra_clips": [
+    "aim_1h",
+    "shoot_1h",
+    "aim_2h",
+    "shoot_2h",
+    "crouch",
+    "crouch_walk"
+  ]
+}

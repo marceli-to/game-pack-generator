@@ -1,0 +1,97 @@
+# styles/tinfox/STYLE.md — the "tinfox" style (draft)
+
+Characters for **Tinfox**, Marcel's first-person shooter: low-poly, faceted, **flat shading**, flat saturated
+palette colours, like `lowpoly`, but **not chibi**: about 5 heads tall, heroic build. Reference: the guard sheet
+(`specs/guard/reference/turnaround.png`, Marcel's own work) and the other sheets in `~/Desktop/tinfox/characters/sheets/`
+(handoff: `~/Desktop/tinfox/GENERATOR.md`).
+
+This file fills in the **per-style sections** of the root `STYLE.md` (same section numbers). Values marked
+`→ style.json` live in `styles/tinfox/style.json`; the shared rules (skeleton, roles, slots, topology, export,
+approval) are in the root `STYLE.md` / `core.json`. Change values here first, then style.json;
+`tests/test_style_sync.py` checks they agree.
+
+---
+
+## 1. Visual style
+
+**In one sentence:** sturdy toy-soldier figures built from big faceted volumes, one flat colour per area, the
+facets are the shading.
+
+- **Proportions:** about 5 heads tall; head a little larger than realistic, broad shoulders with big padded
+  shoulder pieces, slightly oversized hands and boots, sturdy legs.
+- **Shapes:** big volumes with visible facets: 8–12 sides for limbs and heads, single 45° chamfers on boxy shapes.
+- **Face:** geometry, not paint: eyes, eyebrows, mouth (and moustache, beard) as small flat pieces on the head;
+  a nose as a small wedge; ears as blocks.
+- **Details:** through geometry and colour areas: stripes on the shoulder pads, chest patch, belts, buckles, cap
+  peaks, antennas. Small badges and emblems may be skipped.
+- **Mood:** friendly but tough; readable at FPS distances.
+
+**Not allowed:** smooth shading, photo textures, normal maps, gradients, transparency, more than one material.
+
+## 2a. Archetypes & height → style.json
+
+| Archetype | Body height | Heads tall (approx.) |
+|---|---|---|
+| `hero-m` (default) | 1.65–1.95 | 5 |
+
+`hero-f` (worker, players 2 and 4: slimmer waist, narrower shoulders) comes later, from the worker sheet.
+Headwear may add at most 30 % of body height on top (caps, helmets, antennas).
+
+The game scales every figure to its gameplay height, so height differences disappear in game; characters are
+still modelled at natural heights.
+
+## 3. Polygon budget → style.json
+
+| Asset | Target | Hard limit |
+|---|---|---|
+| Character complete | 3,000–7,000 tris | 8,000 |
+| Head incl. hair/headwear | ≤ 2,000 | 2,600 |
+| Hand-held accessory (weapon, tool) | ≤ 400 | 700 |
+| Back accessory (cape, backpack) | ≤ 300 | 500 |
+| Prop (later) | ≤ 1,500 | 2,500 |
+
+Marcel, 2026-11-17: first 3,000–4,500 / hard 5,000 (up to 4 players plus guards on screen), then raised to
+hard 8,000 to try more detail: ~20 characters × 8,000 tris is ~160,000 triangles per frame, small for any current
+GPU (one mesh and one material per character either way, so no extra draw calls). The facets are the look: spend
+tris on silhouette and details, not on rounding everything. Weapons get their own budget
+with the prop mode (seen up close in first person).
+
+**Hands:** a mitten with a separate thumb first (Marcel, 2026-11-17); fingers only if the guard reads wrong in game.
+
+**Segment & bevel guide:** as `lowpoly`, one size up: heads, limbs, torsos 8–12 sides; small round things 6;
+boxy shapes (boots, belts, pouches, gloves) one 45° chamfer (`P.rbox(..., seg=1)`).
+
+## 4. Surface: palette → style.json
+
+Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to one flat palette colour.
+
+- **One material** `M_Palette`, base colour = `styles/tinfox/palette.png`, roughness 1.0, metallic 0.0.
+- **palette.png:** 256 × 256 px, 8 × 8 grid → 64 cells of 32 × 32 px each, closest filtering, UVs collapsed to
+  cell centres. Layout and colours of `lowpoly`, with cells taken from the Tinfox sheets (lit flat areas):
+  1 skin `#F7AE7A`, 8 hair `#4A2C1B`, 19 orange `#FE7603`, 29 olive `#666B32` (guard uniform), 43 brass `#B8883A`,
+  53 dark grey `#383838` (belt), 54 black `#2B2B2B` (gloves, boots), 55 near-black `#1A1A1A` (cap peak); the four
+  player slot colours 33 blue `#2F5F8F`, 17 red `#8F3A2F`, 28 green `#3F7F3F`, 25 yellow `#8F7F2F`.
+- Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
+
+## 5. Shading & normals
+
+- **Flat shading**: every face flat-shaded, every facet visible; the GLB carries face normals. `validate` warns
+  on smooth faces.
+- Normals consistently outward; no flipped faces. No vertex colours.
+
+## 7a. Proportion templates (values) → style.json
+
+Templates live in `styles/tinfox/proportions/<archetype>.json` (+ `_preview.png`).
+
+- **`hero-m` (draft):** read off the guard sheet with a metric grid (`workspace/lib4/grid.py`), front and side
+  view, at 2.055 mm/px so the skull top under the cap is at 1.80 m (floor at y 926; the sheet has no floor line):
+  head joint 1.47 m (chin), shoulders x ±0.25 (joint; read ±0.30 off the sheet, moved in under the pads so two-handed
+  aiming reaches in front of the chest; the pads reach ±0.43), arm 0.53 m shoulder to wrist (0.49 read off the sheet;
+  longer for the same reason), hips 0.86 m (x ±0.16: the guard stands with his legs apart, thighs centred at ≈ ±0.17, boots at ≈ ±0.22; the template legs are straight, so the boots sit 2.5 cm further out than the ankles; crotch ≈ 0.73), ankles 0.13 m, foot bone 0.26 m (the boot
+  sole is ≈ 0.45 m long and 0.30 m wide, heel 0.16 m behind the ankle), head 0.30 × 0.30 m, torso 0.44 × 0.32 m
+  without the pads.
+
+## 11. Preview renders → style.json
+
+As `lowpoly`: Workbench, orthographic front/side/back + perspective ¾, 512 px per view, background `#E8E8E8`, lit
+with Blender's built-in `paint.sl` studio light.

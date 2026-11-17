@@ -1,0 +1,30 @@
+{
+ "part": "hair-short-hero",
+ "slot": "hair",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "70d1711fb2ed97bc89f71d124b58051b875388bb1a8c1991e96e1f5b358bc033",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 174,
+ "verts": 93,
+ "roles": [
+  "hair"
+ ],
+ "shells": 3,
+ "bbox": [
+  [
+   -0.1356,
+   -0.1573,
+   1.5685
+  ],
+  [
+   0.1356,
+   0.1705,
+   1.805
+  ]
+ ],
+ "warnings": []
+}

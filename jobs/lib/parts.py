@@ -80,6 +80,19 @@ class PartBuilder:
             v[self.deform].clear()
             v[self.deform][g] = 1.0
 
+    def set_weights(self, verts_or_faces, weights):
+        """Blended weights `{bone: weight}` (normalised) on these vertices, e.g. a shoulder pad shared between
+        `chest` and `upperarm.l`. Bones outside the slot's `part_bones` must be in `part_blend_bones`."""
+        tot = sum(weights.values()) or 1.0
+        verts = set()
+        for x in verts_or_faces:
+            verts.update(x.verts if isinstance(x, bmesh.types.BMFace) else [x])
+        for v in verts:
+            v[self.deform].clear()
+            for b, w in weights.items():
+                if w > 1e-4:
+                    v[self.deform][self.group(b)] = w / tot
+
     # --- helpers -------------------------------------------------------------------------
     @staticmethod
     def ring(center, rx, ry=None, n=8, axis="z", phase=None, angles=None):
@@ -527,7 +540,7 @@ def check_part(obj, slot, tpl, unset_roles):
         if asym:
             soft.append(f"asymmetric: {asym} of {len(pts)} vertices have no X-mirror partner (base parts are symmetric)")
 
-    allowed = set(style["skeleton"]["part_bones"][slot])
+    allowed = set(style["skeleton"]["part_bones"][slot]) | set(style["skeleton"].get("part_blend_bones", {}).get(slot, []))
     for g in obj.vertex_groups:
         if g.name not in allowed:
             hard.append(f"vertex group {g.name!r} is not an allowed bone for {slot}: {sorted(allowed)}")

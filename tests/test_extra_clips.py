@@ -52,7 +52,12 @@ def test_extra_clips_bake_and_export(mannequin, tmp_path):
         rep = clips[c["name"]]["arms_only"]
         assert max(rep["reach_error_m"].values()) < 0.01, (c["name"], rep)
         assert rep["gun_max_yaw_deg"] < 5, (c["name"], rep)          # points forward on the upright torso
-        assert rep["hand_spacing_change_m"] < 0.01, (c["name"], rep)  # 2H: the left hand stays on the gun
+        if c.get("stance"):   # 2H stance: both hands well in front of the shoulders, close together on the gun
+            st = rep["stance"]
+            assert st["hands_forward_m"] > 0.4 * st["arm_length_m"], (c["name"], rep)
+            assert st["hand_spacing_m"] < 0.5 * st["arm_length_m"], (c["name"], rep)
+        else:
+            assert rep["hand_spacing_change_m"] < 0.01, (c["name"], rep)  # the left hand stays on the gun
         if c["name"].startswith("aim"):
             assert rep["gun_max_pitch_deg"] < 6, (c["name"], rep)
     assert not set(names) & set(r["stats"]["floor_lift_m"]) - {"crouch", "crouch_walk"}

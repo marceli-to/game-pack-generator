@@ -30,9 +30,10 @@ with arm channels only. Lowpoly Phase 4 items below still wait for Marcel._
 ## Next session: start here
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; plan and order of work
-in `~/Desktop/tinfox/GENERATOR.md`): clips done (see "Tinfox: shooter clips" below). Next per GENERATOR.md:
-style `tinfox` (lowpoly look, not chibi; ~5 heads) with a `hero-m` template from `characters/sheets/01-guard.png`,
-then the guard (parts, fit, rig, `extra_clips`, export) and the guard in the game. Clips sheet `workspace/tinfox/clips/baked_layered.png`: Marcel "looks good" (2026-11-17). Name: **Tinfox**
+in `~/Desktop/tinfox/GENERATOR.md`): clips done; style `tinfox` + `hero-m` template done (see "Tinfox: style"
+below). **Guard v2** (see "Tinfox: guard" below; v2 after Marcel: chest, hips, shoulders, sole). **Next:**
+Marcel's look (`workspace/tinfox/guard/guard_v5.png`, GLB `workspace/guard/export/character-guard.glb`), then the guard in the
+game (art-set profile, Kenney blasters for now, one level; the GLB has the 8 base clips + the 6 shooter clips). Clips sheet `workspace/tinfox/clips/baked_layered.png`: Marcel "looks good" (2026-11-17). Name: **Tinfox**
 (Marcel, 2026-11-17; the docs said "Tin Wolf", renamed). Open: tell the game which
 clip names exist (and that `run` tilts the aim 10–20° down: the game's aim pitch corrects it).
 
@@ -527,7 +528,126 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   pose before evaluating an arms-only clip on its own (cost me a false 10 cm "grip error").
 - 71 tests (new `tests/test_extra_clips.py`).
 
+## Tinfox: style (2026-11-17)
+
+- **`styles/tinfox/`** (draft): STYLE.md ↔ style.json, palette.png, `proportions/hero-m.json` + preview; root
+  STYLE.md table. Look as `lowpoly` (palette surface, flat shading) but ~5 heads. Budget (Marcel): character
+  3,000–4,500, hard 5,000; head 1,200 / 1,600; hand items 400 / 700. Hands: mitten + thumb first (Marcel).
+- **Palette:** lowpoly's layout, cells from the guard sheet's lit flat areas (1 skin, 8 hair, 19 orange, 29 olive,
+  43 brass, 53/54/55 belt grey / glove-boot black / cap peak) + the four player slot colours (33, 17, 28, 25).
+- **`hero-m` template** from the guard sheet (`specs/guard/reference/turnaround.png`, committed: Marcel's, OK to
+  publish) with a metric grid at 2.055 mm/px (skull top under the cap = 1.80 m; floor y 926, no floor line):
+  head joint 1.47, shoulders ±0.30, arm 0.49, hips 0.86 (±0.12), ankles 0.13, foot bone 0.26; head 0.30 × 0.30,
+  torso 0.44 × 0.32, boots 0.30 × 0.45 m. Segment factors vs KayKit: leg 1.95, torso 1.0, arm 0.85, head 1.32.
+  Mannequin vs sheet IoU 0.66 / 0.78 / 0.65 at arms_down 72° (joints line up; the gap is the guard's bulk:
+  pads, sleeves, boots). Measuring files: `workspace/tinfox/guard/grid_front.png`, `grid_side.png`.
+- `guard` character: spec (style tinfox, archetype hero-m, reference, compare arms_down 72°), `add_reference`
+  top_y 50 / floor_y 926 / 1.80 m, views front 321 / side 795 / back 1343. 75 tests.
+
+## Tinfox: guard (2026-11-17)
+
+- 9 parts (`styles/tinfox/parts/`, dev scripts in `workspace/tinfox/parts/`; `workspace/lib4/run.py` now takes the
+  style from the spec): `head-hero-square` (square jaw, neck; eyes, brows, nose wedge, smile, ears as geometry),
+  `hair-short-hero` (closed loft 1.6 cm over the head, tucked in; sideburns), `headwear-cap-antenna-hero` (crown
+  sloping to the back, black peak, orange earpiece + antenna on the left), `torso-jacket-hero` (stand-up collar,
+  placket, name patch, down over the crotch), `arms-sleeves-padded-hero` (bulky sleeves, rolled cuff, bare wrist,
+  shoulder pad on the upper arm with a flush orange stripe), `hands-mitten-hero`, `legs-trousers-hero`,
+  `feet-boots-big-hero` (cuffed shaft, long foot, grey sole sticking out), `accessory_waist-belt-buckle-hero`.
+  Colours (8): skin 1, eyes 9, hair 8, olive 29, orange 19, black 54 (gloves, boots, cap peak), brass 43, grey 53
+  (belt, soles).
+- 3,746 tris, validate 0 hard; IoU 0.69 / 0.75 / 0.67 (arms_down 72°); all 14 clips (`extra_clips`: the six
+  shooter clips) animate, feet on the floor, contact ok in walk/run; export ok. Pose test: visible findings are
+  joint seams in one colour (thigh into the jacket's lower edge in crouch/run up to 10 cm, trousers into boots
+  4–6 cm, arms into the torso in the aim clips ~3.6 cm); they read as one jumpsuit in the frames.
+- Fixes on the way: `hip_x` 0.12 → 0.16 (misread the grid: the guard stands with legs apart); boot soles merged at
+  x 0 (non-manifold) → boots 3 cm further out; crown tilted down to the back, antenna shortened; crotch closed
+  lower; thighs/boots thicker; shoulder stripe stood 1–2 cm proud and read as orange fins with the arms down →
+  flush. Left vs the sheet: the guard reads slimmer (sheet: rounder pads sitting higher on the shoulders,
+  rounder and wider cap, arms hanging closer to the body).
+- **v2** (Marcel: "chest, hips and shoulders need some refinement, also the plate (foot)"): shoulder pads moved
+  from the arms to the torso (caps over the shoulder joints, rigid on the chest: the arm hangs and aims from under
+  them, as on the sheet; on the upper arm they tipped outward with the arms down), bigger and lower on the
+  outside, wider flush stripes; broader chest with a crease under it, higher shoulders; wide hips, upside-down V
+  at the crotch, trousers narrower at the top (they stuck out under the belt); one thick sole (7 cm) following the
+  boot's width section by section, underside rising under the arch (the v1 sole was a plate sticking out all
+  round; a three-piece sole read as stacked steps from the front). 3,826 tris, IoU 0.70 / 0.76 / 0.68, 14 clips,
+  floor/contact ok, export ok. New pose-test findings "torso inside arms" (5–7 cm) are the pad over the sleeve
+  top: renders show the arm coming out from under the pad (idle, aim_2h), as intended.
+- **v3** (Marcel: chest more V-shaped, bulky): chest 0.28 half-width × 0.40 deep at 1.30 (was 0.235 × 0.37), tapering
+  to 0.18 at the waist under the belt (was 0.19); pads bigger (0.18 × 0.135 radii) and reaching further out
+  (≈ ±0.43 with the arms down, like the sheet); upper sleeves thicker (0.095–0.1); placket and name patch moved
+  out with the chest. 3,834 tris.
+- **Budget raised** (Marcel, 2026-11-17: "try 8000"): tinfox character 3,000–7,000, hard 8,000; head 2,000 / 2,600.
+  Performance: ~20 characters × 8,000 ≈ 160,000 triangles per frame, small for any current GPU; one mesh and one
+  material per character either way (no extra draw calls); flat shading makes ~2–3 vertices per triangle, skinned on
+  the GPU. **v4** spends some of it on more sides (torso 16, sleeves/legs 14, pads 16, head and boots two chamfers
+  per corner, cap three): 4,746 tris. Side by side with v3 (`workspace/tinfox/guard/v3_vs_v4.png`) the difference
+  is small (a little rounder head and pads): more sides barely show at this size; the extra budget is better spent
+  on details (fingers, pockets, seams, straps) than on rounding. v3 scripts kept in `workspace/tinfox/parts_v3/`.
+- **v5: face + fingers** (Marcel: details, the face first). `head-hero-square` rebuilt: rounded-square rings
+  (16 points, superellipse) with a centre-front profile (brow ridge, nose base, mouth recess, chin jutting 3 cm);
+  bigger tall eyes, thick stern brows, a nose wedge with a bridge, a slight smirk, ears as rounded plates with a
+  raised rim, angled out 15° at the back (flat-shaded skin on skin vanished from the side; angled they catch their
+  own light; at 25° they looked like handles) (812 tris). New `hands-glove-fingers-hero` (palm block, four thick
+  fingers in three faceted segments curling into a half fist, little finger shorter, thumb, cuff; 936 tris) replaces
+  the mitten in the guard's spec (the mitten stays in the library). In the comparison pose the fingers look like an
+  outward hook (the tool's arm rotation); in the clips they curl in towards the thigh. 5,474 tris, 14 clips, floor/
+  contact ok, export ok; hands vs arms/torso 3.3–3.8 cm in the 1H/2H shoot clips. Sheets
+  `workspace/tinfox/guard/guard_v5.png`, `face_hands_v5.png`.
+  **Marcel: mittens are OK, fingers not worth the tris** → the guard is back on `hands-mitten-hero` (552 tris
+  instead of 936); `hands-glove-fingers-hero` stays in the library. Guard 5,090 tris.
+- **v6: more on the face** (Marcel: rather spend on ears, nose, chin). Ears: a rim swept round a C open at the
+  front over a recessed bowl, an earlobe, still angled out 15°; nose: a rounded 8-sided loft from the bridge to a
+  broad tip (≈ 3 cm in front of the face; a 4.5 cm tip read as a beak in ¾) + nostril wings; chin/jaw: 20 points per
+  head ring and extra chin rings (square chin jutting ≈ 3.6 cm), lower face 5 mm wider each side. Head 1,452 tris
+  (head group within 2,000), guard 5,730. Sheet `workspace/tinfox/guard/face_v6.png`.
+  Fixes (Marcel: ears detached, hole in the nose): angling the ears out swung their back edge off the head → bowl
+  and rim now root 3.5–4 cm inside the skull (rim: strap `inset` 0.04); the nose was a tube of round rings whose
+  back edge floated up to 9 mm in front of the face → every ring now spans from the nose's front to 1 cm inside the
+  face. Check for loose face pieces: each head island's vertex count inside the skull (scratch `/tmp/claude-ear4.py`
+  idea: worth a `validate` rule "part islands must touch/enter their base shell").
+- **Boots smaller** (Marcel: too big, in the viewer): foot 0.39 × 0.24 m (was 0.47 × 0.30, the sheet's size),
+  shaft/cuff 15 % slimmer, sole 6 cm (was 7), boots 1 cm closer in. Deliberately smaller than the sheet.
+- **Ears 30 % smaller** (Marcel: massive): whole ear scaled to 70 % about where it meets the head (still rooted).
+- **Nose:** nostril wings removed, tip ~20 % wider (Marcel). Head 1,364 tris, guard 5,642.
+- **Mouth:** thin warm-brown line (Marcel: thinner and brown), wider and flatter like the sheet (±0.07 m). Colour:
+  the sheet's `#A75D35` ≈ palette cell 45 `#A0673A`, on the guard's unused role `special` → **9 colours** (soft
+  `colours` warning, like the wizard); within 8 it would have had to be the hair's dark brown. Guard 5,654 tris.
+- **Shins back into the boots** (Marcel): the boot shaft is centred 3.5 cm behind the lower-leg bone (the foot reaches
+  forward), the trousers followed the bone and entered the boot's front → lower trouser rings run back to the shaft
+  centre and end slimmer inside the shaft; v3 (Marcel: a little more to the back/corner): y 0.004 → 0.05 and
+  x +2 cm from the knee down (the shaft also sits 2 cm further out than the leg), end 0.082 × 0.08.
+- **2H aim/shoot fixed** (Marcel: shoot_2h weird, arms should point forward). Cause: the source 2H stance turns the
+  body 46°, so on the wide guard (shoulders ±0.30) the clip's hands were 0.6–0.9 m apart; the bake kept that
+  spacing, so the hands ended at the chest centre with the elbows out (and the out-of-reach fix pulled the right
+  hand behind the shoulder). Fix: `stance` in the 2H clip configs (core.json ↔ STYLE.md §8b, `anim.bake_arms_only`):
+  right wrist placed forward 0.62 / inward 0.5 / down 0.28 arm-lengths from the right shoulder (+ the clip's sway/
+  recoil), left wrist 0.15 arm-lengths along the gun from it, elbows bend down; report `stance.hands_forward_m` /
+  `hand_spacing_m` (test updated). Reach on the guard needed narrower shoulder joints: `hero-m` shoulder_x 0.30 →
+  0.25 (under the pads), arm_length 0.49 → 0.53; all parts rebuilt (no script changes). Hands now 0.34–0.43 m in
+  front, both arms forward. 1H unchanged (reach error ≤ 1.4 cm). Sheet `workspace/tinfox/guard/guard_v6.png`.
+- **Shoulders move** (Marcel: still weird with the shoulders not moving): pads rigid on the chest stayed put while
+  the arm swung forward. Now blended weights: new `P.set_weights(verts, {bone: w})` + core.json
+  `skeleton.part_blend_bones` (`torso` may blend into `upperarm.l/r`; never used for nearest-bone weighting;
+  STYLE.md §9a). Each pad vertex shares chest/upper arm by its position along the pad (smoothstep, 0 at the collar
+  → `follow` 0.6 at the outer end). Plain blending dropped the pads ~40° with the arms hanging (sloping shoulders) →
+  in the rest pose each pad vertex is pre-tilted up by its arm share × 72° (the arms-down angle) about the shoulder
+  joint, so with the arms down the pads sit as modelled and roll forward when aiming. Sheets
+  `workspace/tinfox/guard/shoulders_idle_aim_walk.png`, `guard_v7.png`.
+- **2H arms through the chest** (Marcel, after the pads followed the arms): upper arms from the joints at ±0.25
+  crossed the deep chest front. Fix in the stance: hands further forward and less inward (forward 0.85, inward
+  0.25), elbows out/forward (`stance.elbow`), and **shoulder joints moved forward 12 cm / in 3 cm** during 2H
+  (`stance.shoulder`, a location key on `upperarm` in the arms-only clip; stands in for the missing collarbone);
+  chest front-outer corners rounder (corner radius 0.09 → 0.15). The arms now reach out in front of the chest.
+  Pose-test depths for arms/torso stay 4–10 cm: they include the sleeve's inner end inside the jacket (hidden by
+  the pad); judge by the frames.
+  Sheet: `workspace/tinfox/guard/guard_v3.png`.
+- Close-up renderer (`workspace/knight-lowpoly/detail/render.py`) takes `ARMS=<deg>`; `body.sh`/`head.sh` take
+  `GPG_STYLE` and `REG` (regions) from the environment.
+
 ## Decisions (with reasons)
+
+- **Tinfox budget 3,000–7,000, hard 8,000** (Marcel, 2026-11-17; first 3,000–4,500 / 5,000); **mitten + thumb hands** (Marcel: fingers tried, not worth the tris); **sheets committed** (Marcel).
 
 - **Arms-only clips are baked, not just filtered** (2026-11-17): the KayKit aim clips get their aim from the whole
   body's stance; arm rotations alone point the gun sideways on a forward-facing body.
@@ -619,6 +739,34 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — 2H stance: shoulders forward, arms in front of the chest. Tinfox style + guard committed + pushed.
+
+- **2026-11-17** — Guard shoulders follow the arms (blended pad weights, pre-tilted).
+
+- **2026-11-17** — 2H stance (arms forward), hero-m shoulders 0.25 / arm 0.53; trousers into the boots.
+
+- **2026-11-17** — Guard face: smaller ears, no nostrils, wider nose tip, thin brown smile (9 colours).
+
+- **2026-11-17** — Guard boots smaller (Marcel).
+
+- **2026-11-17** — Guard face fixes: ears rooted in the head, solid nose (Marcel). 5,730 tris.
+
+- **2026-11-17** — Guard v6: ears (rim + bowl + lobe), rounded nose with wings, squarer chin. 5,730 tris.
+
+- **2026-11-17** — Guard back on mittens (Marcel); 5,090 tris.
+
+- **2026-11-17** — Guard v5: face rebuilt (profile, eyes, brows, nose, smirk, ears), gloves with fingers. 5,474 tris.
+
+- **2026-11-17** — Tinfox budget → hard 8,000; guard v4 (more sides, 4,746 tris): barely visible vs v3.
+
+- **2026-11-17** — Guard v3: V-shaped chest. Awaiting Marcel.
+
+- **2026-11-17** — Guard v2 (chest, hips, shoulder pads on the torso, sole). 3,826 tris. Awaiting Marcel.
+
+- **2026-11-17** — Tinfox guard v1: 9 parts, 3,746 tris, 14 clips, exported. Awaiting Marcel's look.
+
+- **2026-11-17** — Style `tinfox` + `hero-m` template from the guard sheet; guard spec + reference. 75 tests.
 
 - **2026-11-17** — Tinfox shooter clips OK'd by Marcel (baked_layered sheet). Next: style `tinfox` + guard.
 

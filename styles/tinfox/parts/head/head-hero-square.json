@@ -1,0 +1,35 @@
+{
+ "part": "head-hero-square",
+ "slot": "head",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "63b8d2b55016152398b83b047d3c5ef9164b111ad10052abc63313b8a73385db",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 1376,
+ "verts": 716,
+ "roles": [
+  "eyes",
+  "hair",
+  "skin",
+  "special"
+ ],
+ "shells": 14,
+ "bbox": [
+  [
+   -0.1672,
+   -0.1781,
+   1.38
+  ],
+  [
+   0.1672,
+   0.156,
+   1.806
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 30 of 716 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

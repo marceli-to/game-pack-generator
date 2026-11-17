@@ -1,0 +1,191 @@
+{
+  "_comment": "Machine-readable twin of styles/tinfox/STYLE.md; merged over core.json by the tools.",
+  "name": "tinfox",
+  "surface": "palette",
+  "default_archetype": "hero-m",
+  "headwear_max_ratio": 0.3,
+  "archetypes": {
+    "hero-m": {
+      "height": [
+        1.65,
+        1.95
+      ],
+      "heads": 5,
+      "template": "styles/tinfox/proportions/hero-m.json",
+      "targets": {
+        "_comment": "Marcel's guard sheet (specs/guard/reference/turnaround.png) at 2.055 mm/px, 1.80 m to the skull top under the cap (STYLE.md §7a)",
+        "hip_z": 0.86,
+        "head_base_z": 1.47,
+        "head_top_z": 1.8,
+        "arm_length": 0.53,
+        "shoulder_x": 0.25,
+        "hip_x": 0.16,
+        "ankle_z": 0.13,
+        "foot_length": 0.26,
+        "head_width": 0.3,
+        "head_depth": 0.3,
+        "torso_width": 0.44,
+        "torso_depth": 0.32,
+        "foot_width": 0.3,
+        "foot_height": 0.14,
+        "foot_heel": 0.16
+      }
+    }
+  },
+  "budget": {
+    "character": {
+      "target": [
+        3000,
+        7000
+      ],
+      "hard": 8000
+    },
+    "head": {
+      "target": 2000,
+      "hard": 2600,
+      "slots": [
+        "head",
+        "hair",
+        "headwear",
+        "face"
+      ]
+    },
+    "accessory_hand": {
+      "target": 400,
+      "hard": 700,
+      "slots": [
+        "accessory_hand_l",
+        "accessory_hand_r"
+      ]
+    },
+    "accessory_back": {
+      "target": 300,
+      "hard": 500,
+      "slots": [
+        "accessory_back"
+      ]
+    },
+    "prop": {
+      "target": 1500,
+      "hard": 2500
+    }
+  },
+  "shading": {
+    "_comment": "STYLE.md §5: every face flat-shaded",
+    "mode": "flat",
+    "crease_deg": 40
+  },
+  "palette": {
+    "file": "styles/tinfox/palette.png",
+    "size": 256,
+    "grid": 8,
+    "cell": 32,
+    "material": "M_Palette",
+    "max_colors": 8,
+    "rows": [
+      "skin + greys",
+      "hair",
+      "reds/oranges",
+      "yellows/greens",
+      "blues/purples",
+      "metal 40-44 + leather 45-47",
+      "neutrals 48 white -> 55 black",
+      "eyes 56-57 + glow/crystal 58-63"
+    ],
+    "colors": [
+      "#FFE0C7",
+      "#F7AE7A",
+      "#E0A47A",
+      "#C68458",
+      "#9C6440",
+      "#6E4630",
+      "#9A9A9A",
+      "#6C6C6C",
+      "#4A2C1B",
+      "#2B2420",
+      "#E8C46A",
+      "#B5482A",
+      "#8E8E8E",
+      "#F2F0EA",
+      "#5B8DEF",
+      "#C25FD9",
+      "#E04040",
+      "#8F3A2F",
+      "#7A1E1E",
+      "#FE7603",
+      "#E0581E",
+      "#FFA26B",
+      "#F28CA8",
+      "#BE5F68",
+      "#FFD23F",
+      "#8F7F2F",
+      "#B7D84B",
+      "#6FBF3B",
+      "#3F7F3F",
+      "#666B32",
+      "#4FC9A6",
+      "#2E8A74",
+      "#5AA9F0",
+      "#2F5F8F",
+      "#1F428F",
+      "#16285C",
+      "#8F6BE0",
+      "#5A3473",
+      "#9A5BBA",
+      "#7FD6F0",
+      "#8A8F99",
+      "#C3CAD4",
+      "#F2C230",
+      "#B8883A",
+      "#C9663B",
+      "#A0673A",
+      "#7A4A28",
+      "#4E2F1A",
+      "#FFFFFF",
+      "#E6E6E6",
+      "#C2C2C2",
+      "#999999",
+      "#6E6E6E",
+      "#383838",
+      "#2B2B2B",
+      "#1A1A1A",
+      "#1C1C24",
+      "#F4F4FF",
+      "#5CFFE6",
+      "#FFE45C",
+      "#FF5CD6",
+      "#7CFF5C",
+      "#5C9DFF",
+      "#FF8A3D"
+    ]
+  },
+  "parts": {
+    "_comment": "part library (STYLE.md §9a)",
+    "dir": "styles/tinfox/parts",
+    "fit_tolerance": 0.03,
+    "preview_colors": {
+      "skin": 1,
+      "hair": 13,
+      "primary": 29,
+      "secondary": 54,
+      "accent": 19,
+      "metal": 43,
+      "leather": 54,
+      "eyes": 9,
+      "dark": 54,
+      "special": 58
+    }
+  },
+  "preview": {
+    "engine": "BLENDER_WORKBENCH",
+    "views": [
+      "front",
+      "side",
+      "back",
+      "three_quarter"
+    ],
+    "view_size": 512,
+    "background": "#E8E8E8",
+    "studio_light": "paint.sl"
+  }
+}

@@ -1,0 +1,30 @@
+{
+ "part": "hands-mitten-hero",
+ "slot": "hands",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "2ebbe16afdc6c00a1fb1c6e8f68ea9e959dd5e3bd6ecb4c729f697f49b6202a8",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 552,
+ "verts": 288,
+ "roles": [
+  "leather"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.95,
+   -0.124,
+   1.266
+  ],
+  [
+   0.95,
+   0.075,
+   1.398
+  ]
+ ],
+ "warnings": []
+}

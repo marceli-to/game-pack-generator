@@ -1,0 +1,35 @@
+{
+ "part": "headwear-cap-antenna-hero",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "6c70363bab20b9a3a13b434c6595cdf3c8c9825569237e2bdf841a900df18425",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 364,
+ "verts": 192,
+ "roles": [
+  "accent",
+  "dark",
+  "primary",
+  "secondary"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.142,
+   -0.2531,
+   1.68
+  ],
+  [
+   0.1803,
+   0.18,
+   1.897
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 54 of 192 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}
