@@ -35,7 +35,17 @@ Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride").
 
-1. **Build the officer** (Marcel, 2026-11-17: next character; details below in item 3).
+1. **Build the officer** (Marcel, 2026-11-17: next character, in a new session; details below in item 3).
+   Started: sheet copied to `specs/officer/reference/turnaround.png` (1672×941, like the guard's). Measured: floor
+   y 926, belt centre y ≈ 455 → **2.043 mm/px, `top_y` 45** (same size as the guard); view centres front 309 /
+   side 797 / back 1339, x ranges 0–640 / 640–1000 / 1000–1672. From the profiles (front half-widths, side
+   front..back): cap top 1.87, crown ±0.195 at 1.74–1.78 (saucer, wider than the guard's cap), peak at 1.70 reaching
+   y −0.23; epaulettes ±0.39 at 1.26 (fringed, orange); coat hem ≈ 0.55 m, coat flares to ±0.25 at the hem
+   (front) / −0.22..+0.24 (side); boot shafts to ≈ 0.53 m (tall: they reach just under the hem, i.e. above the
+   knee 0.42; the hem/boot-top/knee overlap in walk/run is the risk), boot ±0.28 wide, sole ±0.39 front. Plan:
+   reuse head, hair, mittens, trousers, belt; new `headwear-cap-peaked-hero` (brass badge), `face-moustache-hero`
+   (handlebar, hair colour), `torso-coat-hero` (stand-up collar with brass trim, buttons, name patch, epaulettes
+   on the torso like the guard's pads, skirt to 0.55), `feet-boots-tall-hero`; maybe sleeves with wide cuffs.
 2. Replies pending from the game agent (Marcel handed both over 2026-11-17): `GUARD-UPDATE-3.md` (the game must play
    `run` at `speed / 4.0` instead of `speed / 5`; check planted feet in walk/run) and `RIFLE-GUARD.md` (GLB sha
    `291836f8…`, 7,058 tris; mid distance next to a guard, crouched with the SMG, firing). Possible later polish of
@@ -927,6 +937,8 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Officer sheet copied + measured (2.043 mm/px, top_y 45); building starts next session.
 
 - **2026-11-17** — ump: rifle guard + update 3 handed to the game by Marcel; next: the officer.
 
