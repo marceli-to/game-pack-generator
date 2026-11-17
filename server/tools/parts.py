@@ -57,6 +57,7 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
         "script_sha256": hashlib.sha256(script.encode()).hexdigest(),
         "built": dt.date.today().isoformat(), "blender": style["blender"]["version"],
         **{k: r["stats"][k] for k in ("tris", "verts", "roles", "shells", "bbox")},
+        **({"covers": r["stats"]["covers"]} if r["stats"].get("covers") else {}),
         "warnings": r.get("soft", []),
     }
     (lib_dir / f"{part}.json").write_text(json.dumps(meta, indent=1) + "\n")

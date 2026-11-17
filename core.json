@@ -105,6 +105,15 @@
       { "bone": "lowerleg", "parent": "upperleg", "axis": "down_z", "width": 0.04 }
     ]
   },
+  "part_covers": {
+    "_comment": "features a part may declare it hides (P.covers in the build script, STYLE.md §9a); validate checks them (§12)",
+    "ears": "the head's islands out at the sides (centre beyond 70 % of the skull's half-width) must not be visible"
+  },
+  "covers_check": {
+    "_comment": "validate's covered_visible rule (STYLE.md §12): a direction counts only if a cone of rays cone_deg wide gets out; warn from min_verts visible vertices",
+    "cone_deg": 4,
+    "min_verts": 3
+  },
   "foot_contact_tolerance": 0.02,
   "pose_test": {
     "penetration_tolerance": 0.01,
@@ -114,6 +123,8 @@
     "tile_size": 256,
     "frame_scale": 1.1,
     "floor_margin": 0.06,
-    "max_upright_tilt_deg": 30
+    "max_upright_tilt_deg": 30,
+    "visible_cone_deg": 4,
+    "visible_tolerance": 0.03
   }
 }

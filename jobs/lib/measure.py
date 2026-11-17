@@ -279,6 +279,15 @@ def measure(spec=None):
         }
     m["actions"] = sorted(a.name for a in bpy.data.actions)
 
+    # features a part declares it hides (P.covers) that are still visible in the rest pose (§12)
+    m["covered_visible"] = {}
+    char = bpy.data.objects.get(style["skeleton"]["mesh_object"])
+    if char is not None and spec.get("parts"):
+        sf = _int_face_attr(char.data, "slot")
+        if sf is not None:
+            from . import overlap as OV
+            m["covered_visible"] = OV.covered_visible(char, OV.spec_covers(spec), sf, slots, style["covers_check"])
+
     # derived
     floor = 0.0
     m["body_height"] = round(m["body_top"] - floor, 4) if m["body_top"] is not None else None
@@ -419,6 +428,9 @@ def violations(m, spec=None):
     if sk.get("present") and m["unweighted_verts"]:
         W("unweighted", f"{m['unweighted_verts']} vertices have no bone weights")
 
+    for feat, c in m.get("covered_visible", {}).items():
+        W("covered_visible", f"{feat}: {c['verts']} of {c['of']} vertices visible although {c['by']} cover(s) them "
+                             f"(e.g. at {c['at']})")
     if len(m["objects"]) != 1 or m["objects"][0] != style["skeleton"]["mesh_object"]:
         W("objects", f"expected one mesh object '{style['skeleton']['mesh_object']}', found {m['objects']}")
     if not m["transforms_applied"]:

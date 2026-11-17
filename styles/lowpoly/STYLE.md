@@ -106,6 +106,12 @@ Templates live in `styles/lowpoly/proportions/<archetype>.json` (+ `_preview.png
   (longer pitches the toe joint below the floor with this low ankle; the boot mesh itself is 0.27 × 0.39 m). Face features as big as the chibi's, head much wider (cheeks/ears ±0.29), torso
   0.58 × 0.42 m. Same clip damping as `chibi` (mitten hands). Its parts are separate from the chibi's (built
   against this template, named `-dwarf`).
+- **Clip offsets (`clip_offsets`, per clip):** `dwarf` turns `hand.r` by 60° about its local y axis in `interact`:
+  the clip reaches forward at face height, and a held weapon (the axe) swung through his face and helmet (6 cm
+  into the head); turned, it stands up beside his head. Tried and dropped: the upper arms turned outward 12° in
+  every clip (idle better, walk and the axe worse) and per-clip upper-arm turns in `attack`/`die` (the left
+  shoulder pad still pushes 3.5–5 cm into the side of the beard, which is as wide as the shoulders: a geometry
+  question, not a clip one).
 - **Clip damping (`clip_damping`):** `chibi` plays `hand.l`/`hand.r` rotations at 50 % of the clip (slerp towards
   the rest pose). KayKit bends the hands 50–75° against the forearm (small hands); chibi mittens sit in wide cuffs
   and their thumbs swung back through the sleeve (Marcel, `run`).

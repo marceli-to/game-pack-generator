@@ -3,6 +3,8 @@
 # half only, chevron-shaped (point up at the centre, dipping at the brow), sloping down towards the ears; a raised
 # steel nose ridge from the band to the crest; slanted cheek guards close round the face; a chunky red crest that
 # arches from the forehead over the top and hangs down behind.
+# The cheek/neck guard hides the ears: validate checks that none of them shows (STYLE.md §12).
+P.covers = ["ears"]
 def rr(z, sx, f, b, r, seg=2):
     return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=seg)
 # (z, half width, front y, back y, corner radius); the first ring is an inner flange that closes the rim towards

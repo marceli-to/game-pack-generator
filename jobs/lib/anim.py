@@ -48,6 +48,32 @@ def damp_rotations(action, factors):
             fc.update()
 
 
+def offset_rotations(action, offsets):
+    """Per-archetype, per-clip correction (STYLE.md §8): `{bone: [axis, degrees]}` adds a fixed rotation about
+    the bone's own local axis ('x', 'y' or 'z') on every key of `action` (q' = q @ offset), e.g. turning the
+    dwarf's right wrist in `interact` so the axe swings past his face instead of through it."""
+    from mathutils import Quaternion
+    axes = {"x": Vector((1, 0, 0)), "y": Vector((0, 1, 0)), "z": Vector((0, 0, 1))}
+    for bone, (axis, deg) in offsets.items():
+        path = f'pose.bones["{bone}"].rotation_quaternion'
+        fcs = {fc.array_index: fc for fc in SC.action_fcurves(action) if fc.data_path == path}
+        if len(fcs) != 4:
+            raise RuntimeError(f"{action.name}: no rotation keys on {bone} to correct")
+        n = len(fcs[0].keyframe_points)
+        if any(len(fc.keyframe_points) != n for fc in fcs.values()):
+            raise RuntimeError(f"{action.name}: {bone} rotation curves are not keyed on the same frames")
+        q_off = Quaternion(axes[axis], math.radians(deg))
+        for k in range(n):
+            q = Quaternion([fcs[i].keyframe_points[k].co[1] for i in range(4)])
+            d = q @ q_off
+            for i in range(4):
+                kp = fcs[i].keyframe_points[k]
+                kp.co[1] = d[i]
+                kp.handle_left_type = kp.handle_right_type = "AUTO_CLAMPED"
+        for fc in fcs.values():
+            fc.update()
+
+
 def upright_slots(spec):
     """{slot: slot bone} for the hand accessories the spec holds upright (spec.grip)."""
     sb = S.load()["skeleton"]["slot_bones"]
@@ -63,9 +89,11 @@ def add_clips(arm, spec):
     acts = R.append_actions(names)
     off = template_of(spec)["offset_factors"]
     damp = archetype_of(spec).get("clip_damping", {})
+    offs = archetype_of(spec).get("clip_offsets", {})
     for a in acts:
         R.scale_clip_locations(a, off)
         damp_rotations(a, damp)
+        offset_rotations(a, offs.get(a.name, {}))
     R.bind_actions(arm, acts)
     return sorted(acts, key=lambda a: names.index(a.name))
 

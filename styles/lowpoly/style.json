@@ -32,6 +32,7 @@
       "heads": 2.5,
       "template": "styles/lowpoly/proportions/dwarf.json",
       "clip_damping": { "hand.l": 0.5, "hand.r": 0.5 },
+      "clip_offsets": { "interact": { "hand.r": ["y", 60] } },
       "targets": {
         "_comment": "Marcel's dwarf sheet at 2.18 mm/px (STYLE.md §7a)",
         "hip_z": 0.24,

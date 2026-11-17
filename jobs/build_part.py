@@ -51,6 +51,10 @@ def run(args):
     exec(compile(args["script"], f"<part {part}>", "exec"), ns)  # noqa: S102 - agent-written part script
     obj, unset = B.to_object(slot)
     hard, soft, st = PT.check_part(obj, slot, tpl, unset)
+    bad = [c for c in B.covers if c not in style["part_covers"]]
+    if bad:
+        hard.append(f"P.covers: unknown {bad} (known: {sorted(style['part_covers'])})")
+    st["covers"] = sorted(set(B.covers))
 
     out_dir = Path(args["out_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)

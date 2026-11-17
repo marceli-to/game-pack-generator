@@ -3,9 +3,9 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-17 — Rogue + villager detail pass done (same method as the knight): rogue mantle, olive
-tunic, stepped cuffs, low boots, leaf daggers, hood open behind the ears; villager dusty-rose dress, fringe locks,
-small collar, short apron, wide belt. "Finished look" checklist in lowpoly STYLE.md §1a. Awaiting Marcel's look._
+_Last updated: 2026-11-17 — Rogue + villager detail pass done (awaiting Marcel's look). Then three QA items:
+`pose_test` now tells visible overlaps from hidden ones, `validate` checks ears a part declares it covers
+(`P.covers`), and the dwarf's axe no longer swings through his face in `interact` (per-clip `clip_offsets`)._
 
 ---
 
@@ -50,15 +50,15 @@ small collar, short apron, wide belt. "Finished look" checklist in lowpoly STYLE
 3. Phase 4 wrap-up: dwarf slots still have one part each (dwarf parts only fit the dwarf template); decide whether
    Phase 4 needs dwarf variants or moves on to Phase 5 (`build_pack`, 10-character pack).
 4. Open from the earlier sheets: all sheets: boots closer together, arms hanging steeper. Dwarf: head group 1,248
-   tris (> 1,000), arm through the beard in `attack`/`die` (6–7 cm), axe through the head/helmet in `interact`.
-   Tried and dropped (2026-11-17): a per-archetype `clip_offsets` turning the upper arms outward 12° in every clip:
-   idle better, walk and the `interact` axe worse, beard hits unchanged (they come from the arm swinging across the
-   front). Next idea: a per-clip correction (forearm/hand) for `attack`/`die`/`interact`, or hide the weapon in
-   `interact`.
+   tris (> 1,000); the left shoulder pad pushes 3.5–5 cm into the side of the beard in `attack`/`die` (the beard is
+   as wide as the shoulders: narrow it where it meets the shoulders, if Marcel minds).
+   **What the visible pose test now shows on every robed/tunic character** (real, was hidden in the noise):
+   boots/shins come out through the back of skirts and tunics when the foot kicks back in walk/run/jump
+   (villager 12 cm, rogue 10 cm, wizard, ranger, farmer); collars/mantles touch the head in `die`. Fix idea: the
+   skirt weights' back hem following the shin, or shorter kick-back via per-clip `clip_offsets` on `lowerleg`.
 5. Phase 3 leftovers (optional): kicked-back shins pierce the back of the wizard's robe in walk/run; in `die` the
-   held staff lies across the wizard's face; `pose_test` counts are dominated by hidden overlaps (boots under
-   hems/trousers: 4–10 cm on every trousered character) → a "visible" check would help; knight `hit` 14 cm torso
-   into helmet (probably the C-shaped guard shell fooling the parity test).
+   held staff lies across the wizard's face; knight `hit` 14 cm torso into helmet (probably the C-shaped guard
+   shell fooling the parity test; not among the visible findings any more).
 6. Painted/`ai` open points (lower priority): lighter skin treatment in auto paint, mouth spilling onto the beard,
    iron too light/even, 512 px per view thin for a full body; the knight body.
 
@@ -471,7 +471,32 @@ Open (painted, parked): lighter skin treatment in auto paint (less shadow/AO on 
   the known hidden ones: boots inside skirts/tunics, mantle vs hood in attack/interact) and export.
   First mantle try was a 1.8 cm shell: seen edge-on from the side it read as flaps/spikes → closed loft.
 
+- **QA: visible overlaps, covered ears, dwarf `interact` (2026-11-17).** New `jobs/lib/overlap.py` (shells,
+  inside tests, crossing points, visibility; shared by `pose_test` and `validate`).
+  `pose_test`: where a part goes into another shell, the crossing points are *visible* if a ring of view
+  directions 10–75° above the horizon (+ straight above) reaches them with a 4° cone of rays (`visible_cone_deg`;
+  a few-mm slit doesn't count). Not from below: under a hem every boot "enters" the skirt's underside (first try,
+  −10°, flagged them all). Every penetration gets `visible` (+ `visible_depth_m` = depth of the vertices next to
+  the visible crossings, so an armpit seam is shallow); findings only for visible ones deeper than
+  `visible_tolerance` = 3 cm. Wizard 70 pairs → 23 findings; what is left is real (see Next item 4).
+  `validate`: parts declare features they hide, `P.covers = ["ears"]` (core.json `part_covers`, stored in the part
+  .json); soft `covered_visible` when ≥ 3 ear vertices are visible in the rest pose (`covers_check`). Ears = the
+  head's islands out at the sides (> 70 % of the skull's half-width; the eyes and mouth are islands too).
+  Knight helmet declares it (clean; fires when the ears are pushed out 1 cm). First idea dropped: "head vertex
+  visible on the outer side of headwear/hair" also flagged the approved wizard (ears on his side hair) and the
+  dwarf (ear tips under the rim): only the part knows whether ears should show, hence the declaration.
+  Dwarf: per-archetype, per-clip `clip_offsets` (`{clip: {bone: [axis, deg]}}`, q' = q @ offset); `dwarf`
+  `interact` turns `hand.r` 60° about local y: the axe stands up beside his head instead of crossing his face
+  (6.1 cm into the head → none). Local z −40° swung the blade across his nose. 67 tests (new `tests/test_overlap.py`:
+  synthetic head/ears/helmet in Blender, doc sync).
+
 ## Decisions (with reasons)
+
+- **Covered features are declared, not inferred** (2026-11-17): whether ears should show depends on the part (the
+  knight's guard hides them, the rogue's hood and the villager's hair show them); a geometric rule flagged
+  approved looks.
+- **Pose-test findings only for visible overlaps** (2026-11-17): hidden ones (boots inside skirts) drowned the real
+  problems; the report keeps all of them.
 
 - **Palette cells changed for the sheets** (2026-11-17): lowpoly 29 dark green → olive `#566539` (rogue tunic),
   23 raspberry → dusty rose `#BE5F68` (villager dress); both were used only by those characters (the wizard's
@@ -552,6 +577,9 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-17** — Visible-overlap pose test, `P.covers` + `covered_visible` in validate, dwarf `interact` axe fix
+  (`clip_offsets`). 67 tests pass. Not committed yet.
 
 - **2026-11-17** — Rogue + villager detail pass (tunic mantle, hood behind the ears, cuffs, daggers, low boots;
   hair fringe, collar, apron, belt; two palette cells from the sheets); "finished look" checklist in lowpoly

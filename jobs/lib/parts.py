@@ -56,6 +56,7 @@ class PartBuilder:
         self._set = self.bm.faces.layers.int.new("_role_set")
         self.deform = self.bm.verts.layers.deform.verify()
         self.groups = {}
+        self.covers = []   # features of other parts this part hides (core.json `part_covers`), e.g. ["ears"]
 
     # --- roles & bones -------------------------------------------------------------------
     def set_role(self, faces, role):

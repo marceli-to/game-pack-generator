@@ -5,8 +5,8 @@
  "archetypes": [
   "chibi"
  ],
- "script_sha256": "340631f0318ed7920e77f0572c77dd6fb9d16d1db6f198af1ab13b9a7a6cdb73",
- "built": "2026-11-16",
+ "script_sha256": "a01c4c7d7be97a1d8fc0dc34debc89ef47f59c07c6ddfc0a33b07c33b37e87a4",
+ "built": "2026-11-17",
  "blender": "5.2.4",
  "tris": 736,
  "verts": 378,
@@ -28,6 +28,9 @@
    0.3241,
    1.4287
   ]
+ ],
+ "covers": [
+  "ears"
  ],
  "warnings": []
 }

@@ -3,104 +3,26 @@
 args: { spec: {...}, out_dir, clips?: [names], step?: frames, columns?: frames per clip in the sheet, size?: px }
 Checks per clip, on the skinned mesh (sampled every `step` frames, plus the last frame):
   - penetration: vertices of one part that end up inside another part's closed shell although they were
-    outside it in the rest pose, deeper than `pose_test.penetration_tolerance`
+    outside it in the rest pose, deeper than `pose_test.penetration_tolerance`; `visible` when a viewer above
+    the horizon can see where the part goes in (lib/overlap.py). Only visible ones deeper than
+    `visible_tolerance` become findings.
   - floor: lowest point per slot below -foot_contact_tolerance
   - foot contact (walk/run): each foot's lowest point over the cycle within ±foot_contact_tolerance
 Sheet: one row per clip, `columns` evenly spaced frames, front view then side view.
 """
 import math
-from collections import defaultdict
 from pathlib import Path
 
 import bpy
 import numpy as np
 from mathutils import Vector
-from mathutils.bvhtree import BVHTree
 
 from lib import anim as A
 from lib import measure as M
+from lib import overlap as O
 from lib import render as RD
 from lib import scene as SC
 from lib import style as S
-
-RAY = Vector((0.31, 0.17, 0.93)).normalized()   # skewed so rays rarely graze edges
-
-
-def _islands(mesh):
-    """Connected face islands -> list of polygon index arrays (union-find over shared vertices)."""
-    parent = list(range(len(mesh.vertices)))
-
-    def find(i):
-        while parent[i] != i:
-            parent[i] = parent[parent[i]]
-            i = parent[i]
-        return i
-
-    for p in mesh.polygons:
-        vs = p.vertices
-        for a in vs[1:]:
-            ra, rb = find(vs[0]), find(a)
-            if ra != rb:
-                parent[ra] = rb
-    groups = defaultdict(list)
-    for p in mesh.polygons:
-        groups[find(p.vertices[0])].append(p.index)
-    return list(groups.values())
-
-
-class Shells:
-    """Closed shells of the character with their slot, for inside tests on posed coordinates."""
-
-    def __init__(self, mesh, slot_of_face):
-        self.polys = [list(p.vertices) for p in mesh.polygons]
-        self.islands = []
-        for faces in _islands(mesh):
-            verts = sorted({v for f in faces for v in self.polys[f]})
-            remap = {v: i for i, v in enumerate(verts)}
-            self.islands.append({
-                "slot": int(slot_of_face[faces[0]]),
-                "verts": np.array(verts),
-                "polys": [[remap[v] for v in self.polys[f]] for f in faces],
-            })
-
-    def inside(self, co, vert_slot, skip_same_slot=True, tol=0.0):
-        """{(vertex, island): depth} for vertices inside a shell of another slot."""
-        out = {}
-        for k, isl in enumerate(self.islands):
-            pts = co[isl["verts"]]
-            lo, hi = pts.min(axis=0), pts.max(axis=0)
-            cand = np.nonzero(np.all((co > lo) & (co < hi), axis=1))[0]
-            cand = cand[vert_slot[cand] != isl["slot"]] if skip_same_slot else cand
-            if not len(cand):
-                continue
-            bvh = BVHTree.FromPolygons([Vector(p) for p in pts], isl["polys"])
-            for v in cand:
-                p = Vector(co[v])
-                hits, o = 0, p
-                for _ in range(64):
-                    loc, _, _, _ = bvh.ray_cast(o, RAY)
-                    if loc is None:
-                        break
-                    hits += 1
-                    o = loc + RAY * 1e-5
-                if hits % 2:
-                    depth = bvh.find_nearest(p)[3]
-                    if depth > tol:
-                        out[(int(v), k)] = depth
-        return out
-
-
-def _coords(obj):
-    dg = bpy.context.evaluated_depsgraph_get()
-    ev = obj.evaluated_get(dg)
-    m = ev.to_mesh()
-    co = np.empty(len(m.vertices) * 3, dtype=np.float64)
-    m.vertices.foreach_get("co", co)
-    ev.to_mesh_clear()
-    co = co.reshape(-1, 3)
-    mw = np.array(obj.matrix_world)
-    return co @ mw[:3, :3].T + mw[:3, 3]
-
 
 def _frames(action, step):
     f0, f1 = (int(round(x)) for x in action.frame_range)
@@ -145,15 +67,13 @@ def run(args):
     slot_face = M._int_face_attr(mesh, "slot")
     if slot_face is None:
         raise RuntimeError("mesh has no `slot` attribute (assemble_from_parts sets it)")
-    vslot = np.full(len(mesh.vertices), -1, dtype=np.int32)
-    for p in mesh.polygons:
-        for v in p.vertices:
-            vslot[v] = slot_face[p.index]
-    shells = Shells(mesh, slot_face)
+    vslot = O.vertex_slots(mesh, slot_face)
+    shells = O.Shells(mesh, slot_face)
+    dirs = O.view_dirs()
 
     arm.data.pose_position = "REST"
     bpy.context.view_layer.update()
-    rest = _coords(char)
+    rest = O.coords(char)
     rest_inside = set(shells.inside(rest, vslot))
     feet = slots.index("feet")
     foot_side = {"l": np.nonzero((vslot == feet) & (rest[:, 0] > 0))[0],
@@ -173,19 +93,37 @@ def run(args):
         tilt = {b: 0.0 for b in upright.values()}
         for f in _frames(a, step):
             sc.frame_set(f)
-            co = _coords(char)
+            co = O.coords(char)
             for b in tilt:   # angle between the slot's posed and rest orientation (armature space)
                 q = arm.pose.bones[b].matrix.to_quaternion().rotation_difference(
                     arm.data.bones[b].matrix_local.to_quaternion())
                 tilt[b] = max(tilt[b], abs(math.degrees(q.angle)) % 360)
-            for (v, k), depth in shells.inside(co, vslot, tol=tol_pen).items():
-                if (v, k) in rest_inside:
+            ins = shells.inside(co, vslot)
+            groups = {}   # (vertex slot, island) -> [vertices deeper than the tolerance]
+            for (v, k), depth in ins.items():
+                if (v, k) in rest_inside or depth <= tol_pen:
                     continue
-                key = (slots[vslot[v]], slots[shells.islands[k]["slot"]])
-                e = pen.setdefault(key, {"depth": 0.0, "frame": f, "verts": set()})
-                e["verts"].add(v)
+                groups.setdefault((int(vslot[v]), k), []).append(v)
+            allb = O.scene_bvh(co, shells.polys) if groups else None
+            for (vs_, k), verts in groups.items():
+                key = (slots[vs_], slots[shells.islands[k]["slot"]])
+                e = pen.setdefault(key, {"depth": 0.0, "frame": f, "verts": set(), "visible_depth": 0.0,
+                                         "visible_frame": None, "visible_points": 0})
+                e["verts"].update(verts)
+                depth = max(ins[(v, k)] for v in verts)
                 if depth > e["depth"]:
                     e["depth"], e["frame"] = depth, f
+                # visible: where the part goes in, can anyone see it? (boots entering a skirt through its
+                # underside are hidden; an arm through a beard is not)
+                # depth of what shows: the inside vertices next to a visible crossing (an armpit seam is
+                # shallow even where the sleeve's hidden inner end lies deep in the torso)
+                seen = [v for p, v in shells.crossings(co, ins, verts, k)
+                        if O.visible(allb, p, dirs, spread_deg=pt["visible_cone_deg"])]
+                if seen:
+                    e["visible_points"] += len(seen)
+                    vd = max(ins[(v, k)] for v in seen)
+                    if vd > e["visible_depth"]:
+                        e["visible_depth"], e["visible_frame"] = vd, f
             for s in np.unique(vslot[vslot >= 0]):
                 z = float(co[vslot == s, 2].min())
                 if z < lowest.get(slots[s], (9.0, None))[0]:
@@ -201,10 +139,17 @@ def run(args):
             if a.name not in held and t > pt["max_upright_tilt_deg"]:
                 findings.append(f"{a.name}: {b} tilts {t:.0f}° although the grip is upright")
         for (va, sb), e in sorted(pen.items(), key=lambda kv: -kv[1]["depth"]):
+            vis = e["visible_points"] > 0
             r["penetrations"].append({"part": va, "into": sb, "depth_m": round(e["depth"], 4),
-                                      "frame": e["frame"], "verts": len(e["verts"])})
-            findings.append(f"{a.name}@{e['frame']}: {va} {e['depth'] * 100:.1f} cm inside {sb} "
-                            f"({len(e['verts'])} vertices)")
+                                      "frame": e["frame"], "verts": len(e["verts"]), "visible": vis,
+                                      **({"visible_depth_m": round(e["visible_depth"], 4),
+                                          "visible_frame": e["visible_frame"],
+                                          "visible_points": e["visible_points"]} if vis else {})})
+            if vis and e["visible_depth"] > pt["visible_tolerance"]:
+                # hidden overlaps (boots inside a skirt) and shallow visible seams at joints (a sleeve meeting
+                # the torso at the armpit) stay in the report, not in the findings
+                findings.append(f"{a.name}@{e['visible_frame']}: {va} {e['visible_depth'] * 100:.1f} cm inside {sb}, "
+                                f"visible ({e['visible_points']} crossing points seen)")
         for s, (z, f) in lowest.items():
             if z < -tol_floor:
                 r["below_floor"].append({"slot": s, "z": round(z, 4), "frame": f})
@@ -232,7 +177,7 @@ def run(args):
         boxes = []
         for f in frs:
             sc.frame_set(f)
-            co = _coords(char)
+            co = O.coords(char)
             boxes.append((co.min(axis=0), co.max(axis=0)))
         lo = np.min([b[0] for b in boxes], axis=0)
         hi = np.max([b[1] for b in boxes], axis=0)
