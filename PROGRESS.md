@@ -41,8 +41,8 @@ the stride fix (see "Tinfox: stride").
    side 797 / back 1339, x ranges 0–640 / 640–1000 / 1000–1672. From the profiles (front half-widths, side
    front..back): cap top 1.87, crown ±0.195 at 1.74–1.78 (saucer, wider than the guard's cap), peak at 1.70 reaching
    y −0.23; epaulettes ±0.39 at 1.26 (fringed, orange); coat hem ≈ 0.55 m, coat flares to ±0.25 at the hem
-   (front) / −0.22..+0.24 (side); boot shafts to ≈ 0.53 m (tall: they reach just under the hem, i.e. above the
-   knee 0.42; the hem/boot-top/knee overlap in walk/run is the risk), boot ±0.28 wide, sole ±0.39 front. Plan:
+   (front) / −0.22..+0.24 (side); boot shafts to ≈ 0.39 m (just under the knee 0.42; trousers show between boot
+   top and hem, 0.40–0.55; the hem over the knees in walk/run is the risk), boot ±0.28 wide, sole ±0.39 front. Plan:
    reuse head, hair, mittens, trousers, belt; new `headwear-cap-peaked-hero` (brass badge), `face-moustache-hero`
    (handlebar, hair colour), `torso-coat-hero` (stand-up collar with brass trim, buttons, name patch, epaulettes
    on the torso like the guard's pads, skirt to 0.55), `feet-boots-tall-hero`; maybe sleeves with wide cuffs.
