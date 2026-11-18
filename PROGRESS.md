@@ -1341,6 +1341,7 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-18** — Snowfort kit + dummy copied from `packs/tinfox/` to `~/Desktop/tinfox` on this machine (+ `palette/tinfox-palette.png`, same as the one in the GLBs) with `HANDOFF.md` for the game agent.
 - **2026-11-18** — Snowfort kit 33–39 and the practice dummy built, exported, handed over (`SNOWFORT-KIT.md`,
   `DUMMY.md`); ten palette cells. 88 tests pass.
 - **2026-11-18** — Red/yellow hip fix (thighs angle in at the top), re-sent.
