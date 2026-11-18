@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "metal": 7, "primary": 29, "secondary": 30},
+  "kind": "prop",
+  "name": "crate-tall",
+  "part": "crate-large",
+  "reference": {
+    "image": "specs/crate-tall/reference/sheet.png",
+    "length_m": 1.55,
+    "views": {
+      "item_side": [52, 211, 546, 712],
+      "item_front": [603, 211, 1077, 712],
+      "item_top": [1133, 209, 1628, 712]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

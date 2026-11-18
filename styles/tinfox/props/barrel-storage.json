@@ -1,0 +1,30 @@
+{
+ "prop": "barrel-storage",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "b72d6633de979e86ef19e163ce5354186116bbb2aadc19217c0fb0f57f89a905",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 388,
+ "verts": 198,
+ "roles": [
+  "metal",
+  "primary",
+  "special"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.325,
+   -0.325,
+   0.0
+  ],
+  [
+   0.325,
+   0.325,
+   1.05
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

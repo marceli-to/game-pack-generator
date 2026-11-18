@@ -1,0 +1,22 @@
+{
+  "colors": {
+    "accent": 19,
+    "metal": 7,
+    "primary": 29,
+    "secondary": 30
+  },
+  "kind": "prop",
+  "name": "crate",
+  "part": "crate-supply",
+  "reference": {
+    "image": "specs/crate/reference/sheet.png",
+    "length_m": 0.97,
+    "views": {
+      "item_side": [81, 192, 564, 679],
+      "item_front": [646, 192, 1128, 679],
+      "item_top": [1215, 185, 1694, 676]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

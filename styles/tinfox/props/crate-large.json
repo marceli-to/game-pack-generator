@@ -1,0 +1,31 @@
+{
+ "prop": "crate-large",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "c482900db453317d8a5acff5d05fba0137df07c36b449e55beab81902b3c6cda",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 384,
+ "verts": 228,
+ "roles": [
+  "accent",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 18,
+ "bbox": [
+  [
+   -0.775,
+   -0.77,
+   0.0
+  ],
+  [
+   0.775,
+   0.77,
+   1.41
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

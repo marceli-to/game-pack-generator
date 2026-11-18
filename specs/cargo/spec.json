@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "dark": 54, "metal": 26, "primary": 7, "secondary": 52},
+  "kind": "prop",
+  "name": "cargo",
+  "part": "cargo-container",
+  "reference": {
+    "image": "specs/cargo/reference/sheet.png",
+    "length_m": 2.9,
+    "views": {
+      "item_side": [56, 242, 814, 594],
+      "item_front": [856, 242, 1257, 594],
+      "item_top": [1297, 244, 1995, 589]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

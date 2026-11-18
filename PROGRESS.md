@@ -5,9 +5,9 @@ Living status of the project. **Read this first in every session; update it befo
 
 _Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). Guard, rifle guard, officer, all seven weapons and props 1 (barrel, surprise box, ammo crate, range target)
-are in the game and confirmed. Officer update 1 sent (coat split + half follow, brighter brass; waiting for the
-game's check). **Next:** the cover and depot kit (`COVER-AND-DEPOT.md`; sheet 07 cargo container is in, 05/06/08
-pending), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+are in the game and confirmed. Officer update 1 confirmed by the game (coat reads as cloth in `run`; darker coat
+left to Marcel after playing). **Cover batch (05–08) built and handed over** (`COVER.md`); all 16 kit sheets are
+in. **Next:** depot batch 09 locker, 12 desk, 13 terminal, 15 bunk bed (see "Tinfox: cover kit"), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -39,22 +39,22 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 1. **Cover and depot kit** (`~/Desktop/tinfox/COVER-AND-DEPOT.md`; sheets in `props/sheets/`, prompts 05–20):
    16 static `world` props, front +Z, origin floor centre, **exact box sizes** (the game stretches to its box),
    budgets cover ≤ 400 tris, furniture ≤ 800, terminal/console ≤ 1,500, flat tops on crates/container. Order: cover
-   05–08 first, then 09 (locker sets the kit's look), 12, 13, 15, then 14, then the rest. Sheet 07 (cargo
-   container, 2.90 × 1.41 × 1.55, doors on the ±X ends) is in; 05/06/08 pending. Hand over per batch with a short
+   05–08 (**done, `COVER.md`, wait for the game's report**), then 09 (locker sets the kit's look), 12, 13, 15, then
+   14, then the rest. All sheets are in `specs/<name>/reference/sheet.png` (names: locker, shelf, cabinet, desk,
+   terminal, console, bunk-bed, mess-table, chair, office-chair, armchair, side-table); no specs yet for 09–20. Hand over per batch with a short
    `.md` (file, sha256, size check, previews), as `PROPS.md` (now in `_archive/`). Workflow: as props 1
    (`workspace/tinfox/props/run.py <name> --build --export`, see "Tinfox: props").
    Weapons and props 1 are closed (game confirmed; see "Tinfox: game replies").
-   **Officer update 1** sent: wait for the game's check of the coat in `run` and his read at 7 m.
+   **Officer update 1** confirmed (see "Tinfox: game replies"); officer closed unless Marcel wants a darker coat.
 2. **Then the worker** (after the cover kit, or between batches while sheets are pending). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
    (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
    narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
    `styles/tinfox/proportions/` (as `hero-m` from the guard sheet: metric grid, `make_template` + `make_mannequin`
    jobs, STYLE.md ↔ style.json). Worker parts: overalls (torso + legs), utility belt with pouches, hard hat,
    ponytail, brown work gloves, brown boots (guard boots recoloured). Follow the workflow below.
-3. **Officer handed over** (Marcel OK'd it after the badge fix): `~/Desktop/tinfox/OFFICER.md`,
-   `characters/glb/officer.glb` (sha `b088f6da…`, 7,322 tris, 1.856 m with the cap), `officer-preview.png`,
-   `officer-vs-sheet.png`. Wait for the game's reply (coat hem in run/crouch walk, read at mid distance, epaulettes
-   while firing). Possible polish: fringe more visible from the front, tris under 7,000.
+3. **Officer** in the game (update 1, sha `d4ee1b26…`, confirmed 2026-11-18). Open design call for Marcel after
+   playing: darker coat (at 7 m he still reads olive like the guard, though brass, moustache and epaulettes set him
+   apart). Possible polish: fringe more visible from the front, tris under 7,000.
 4. **Game replied to update 3 + rifle guard** (`GUARD-UPDATE-3-REPLY.md`, 2026-11-17): both in the game; walk/run
    feet planted (game now has `groundSpeed` per profile, Tin Fox 1.6 / 4.0); rifle guard is a drop-in
    (`PROFILES.tinfox.archetypes.guard_rifle`), crouch/firing clean. **Open design call for Marcel:** at 7 m the rifle
@@ -971,6 +971,25 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   `hinge.rotation.x`; `board_centre` unused. Explosion, breaking, pop-back and tipping all fine. Nothing to change.
   Next from the game: the cover and depot kit (`COVER-AND-DEPOT.md`) as Marcel's sheets 05–20 come in.
 
+- **Officer update 1 confirmed (2026-11-18, `_archive/OFFICER-UPDATE-1-REPLY.md`, `characters/report/ofc-u1-*`):**
+  drop-in, no code change. In `run` the panels follow the thigh part way, the slit opens like a coat, no tear, buttons
+  whole; crouch walk fine on our strip. At 7 m the brass reads as gold points, he reads as a different figure but
+  still "an olive enemy" at a glance: darker coat left to Marcel after playing. No clipping vs pistol/arms/epaulettes.
+
+## Tinfox: cover kit (2026-11-18)
+
+- Sheets 05–20 copied to `specs/<name>/reference/sheet.png`. View boxes per sheet: scratch `boxes.py` idea (non-
+  background columns); sizes from the game's box, not the sheet: per-axis cm/px (across from the width, up from the height).
+- **Kit helpers** `workspace/tinfox/props/_kit.py` (`run.py` now pastes any `# @include <file>.py`): `pbox` = one closed
+  box with recessed chamfered panels per face (34 tris a face; `ch=0` plain rectangle, 18), `cap` = bevelled corner
+  cap (4-point ring; `wedge=True` a 3-point ring whose diagonal is buried in the box, ends read as 45° cuts).
+  The ≤ 400 budget rules out chamfered lofts per detail: details are boxes/frustums, panels are recesses in the body.
+- Palette (tinfox STYLE.md §4 ↔ style.json): 30 dark olive `#4D5130`, 7 kit dark grey `#464646`, 26 khaki `#78723A`.
+- Built: `crate` (376 tris, IoU 0.93–0.95), `crate-tall` (384; 2 × 2 panels + latches front/back/top, ends plain
+  recess; 0.88–0.95), `cargo` (388; doors on −X only, as the sheet's top view; 0.91/0.93/top 0.74), `barrel-storage`
+  (388, round Ø 0.65, 12 sides; 0.93–0.96). Bounding boxes exact, validator 0/0. Handed over: `COVER.md` + GLBs,
+  previews, vs-sheet in `props/glb/`.
+
 ## Decisions (with reasons)
 
 - **Weapon sizes = 1.2 × the sheet prompts** (2026-11-17): the pistol's factor (0.30 m = its Kenney size in the
@@ -1099,6 +1118,11 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-18** — Cover batch (supply crate, large crate, cargo container, storage barrel; all < 400 tris) built,
+  exported, handed over (`COVER.md`). 88 tests pass.
+
+- **2026-11-18** — Game confirmed officer update 1 (coat fixed); reply archived. Darker coat: Marcel's call.
 
 - **2026-11-18** — Game confirmed props 1 (nothing to change); replies archived.
 

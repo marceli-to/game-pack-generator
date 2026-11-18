@@ -1,0 +1,31 @@
+{
+ "prop": "crate-supply",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "23235bb7ea7d824ad34ae8c72a356745e00e6d5311933a5dfd817433842c2a79",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 376,
+ "verts": 208,
+ "roles": [
+  "accent",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 10,
+ "bbox": [
+  [
+   -0.485,
+   -0.465,
+   0.0
+  ],
+  [
+   0.485,
+   0.465,
+   0.93
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

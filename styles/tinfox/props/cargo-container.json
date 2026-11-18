@@ -1,0 +1,32 @@
+{
+ "prop": "cargo-container",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "e876768a2ddacaf0d7b1ee3b15acc85ad4ce3c4a8ce4df3e1d38828531eb2828",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 388,
+ "verts": 248,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 27,
+ "bbox": [
+  [
+   -1.45,
+   -0.775,
+   0.0
+  ],
+  [
+   1.45,
+   0.775,
+   1.41
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

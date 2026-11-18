@@ -1,0 +1,17 @@
+{
+  "colors": {"metal": 7, "primary": 29, "special": 51},
+  "kind": "prop",
+  "name": "barrel-storage",
+  "part": "barrel-storage",
+  "reference": {
+    "image": "specs/barrel-storage/reference/sheet.png",
+    "length_m": 0.65,
+    "views": {
+      "item_side": [78, 104, 544, 845],
+      "item_front": [614, 104, 1084, 845],
+      "item_top": [1155, 231, 1601, 707]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}
