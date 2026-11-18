@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "dark": 55, "eyes": 39, "leather": 54, "metal": 7, "secondary": 50, "skin": 57, "special": 32},
+  "kind": "prop",
+  "name": "terminal",
+  "part": "terminal-depot",
+  "reference": {
+    "image": "specs/terminal/reference/sheet.png",
+    "length_m": 0.9,
+    "views": {
+      "item_side": [93, 63, 597, 836],
+      "item_front": [703, 62, 1088, 836],
+      "item_top": [1228, 261, 1677, 659]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

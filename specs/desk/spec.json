@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "leather": 54, "metal": 7, "primary": 29, "secondary": 50, "special": 30},
+  "kind": "prop",
+  "name": "desk",
+  "part": "desk-depot",
+  "reference": {
+    "image": "specs/desk/reference/sheet.png",
+    "length_m": 1.65,
+    "views": {
+      "item_side": [58, 194, 872, 544],
+      "item_front": [959, 198, 1300, 547],
+      "item_top": [1385, 212, 2109, 528]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

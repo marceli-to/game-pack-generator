@@ -1,0 +1,32 @@
+{
+ "prop": "bunk-bed-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "7424701d301ea84f9b6c7cd29bf169e27d2535ee2a55f2189fbaf38bb266462d",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 780,
+ "verts": 480,
+ "roles": [
+  "dark",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 45,
+ "bbox": [
+  [
+   -0.495,
+   -1.02,
+   0.0
+  ],
+  [
+   0.495,
+   1.02,
+   1.65
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

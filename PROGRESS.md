@@ -6,8 +6,9 @@ Living status of the project. **Read this first in every session; update it befo
 _Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). Guard, rifle guard, officer, all seven weapons and props 1 (barrel, surprise box, ammo crate, range target)
 are in the game and confirmed. Officer update 1 confirmed by the game (coat reads as cloth in `run`; darker coat
-left to Marcel after playing). **Cover batch (05–08) built and handed over** (`COVER.md`); all 16 kit sheets are
-in. **Next:** depot batch 09 locker, 12 desk, 13 terminal, 15 bunk bed (see "Tinfox: cover kit"), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+left to Marcel after playing). **Cover batch (05–08) and depot batch 2 (09 locker, 12 desk, 13 terminal, 15 bunk bed)
+built and handed over** (`COVER.md`, `DEPOT.md`); all 16 kit sheets are in. **Next:** 14 console (mission target),
+then the rest (10, 11, 16–20; see "Tinfox: cover kit"), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -39,9 +40,10 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 1. **Cover and depot kit** (`~/Desktop/tinfox/COVER-AND-DEPOT.md`; sheets in `props/sheets/`, prompts 05–20):
    16 static `world` props, front +Z, origin floor centre, **exact box sizes** (the game stretches to its box),
    budgets cover ≤ 400 tris, furniture ≤ 800, terminal/console ≤ 1,500, flat tops on crates/container. Order: cover
-   05–08 (**done, `COVER.md`, wait for the game's report**), then 09 (locker sets the kit's look), 12, 13, 15, then
-   14, then the rest. All sheets are in `specs/<name>/reference/sheet.png` (names: locker, shelf, cabinet, desk,
-   terminal, console, bunk-bed, mess-table, chair, office-chair, armchair, side-table); no specs yet for 09–20. Hand over per batch with a short
+   05–08 (**done, `COVER.md`**), 09, 12, 13, 15 (**done, `DEPOT.md`**; wait for the game's reports), then **14 console**
+   (build it with the terminal's parts: `_depot.py` helpers, `on_desk` buttons, screen + graphics), then the rest.
+   All sheets are in `specs/<name>/reference/sheet.png` (names: locker, shelf, cabinet, desk,
+   terminal, console, bunk-bed, mess-table, chair, office-chair, armchair, side-table); no specs yet for 10, 11, 14, 16–20. Hand over per batch with a short
    `.md` (file, sha256, size check, previews), as `PROPS.md` (now in `_archive/`). Workflow: as props 1
    (`workspace/tinfox/props/run.py <name> --build --export`, see "Tinfox: props").
    Weapons and props 1 are closed (game confirmed; see "Tinfox: game replies").
@@ -989,6 +991,16 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   recess; 0.88–0.95), `cargo` (388; doors on −X only, as the sheet's top view; 0.91/0.93/top 0.74), `barrel-storage`
   (388, round Ø 0.65, 12 sides; 0.93–0.96). Bounding boxes exact, validator 0/0. Handed over: `COVER.md` + GLBs,
   previews, vs-sheet in `props/glb/`.
+- **Depot batch 2** (09, 12, 13, 15): helpers `workspace/tinfox/props/_depot.py` (`slab` = chamfered prism along an
+  axis with bevelled ends, `bx` box in cm, `prism_x2`, `bolt` (hex or square), `annulus_y`). Scale per axis from the
+  game box (grid tool: scratch `grid2.py`, a cm grid over one view box). `locker` (644 tris; raised doors with
+  dark-olive walls as the groove line, vents, plates, handles, rivets; IoU 0.80/0.86/0.85), `desk` (596; pedestal +X,
+  panel leg −X, details off the long sides' middle for the stretched uses; 0.78/0.92/0.68), `terminal` (1,352; cheeks
+  flaring to ±45 beside the slanted desk give the 0.90 box width, buttons placed in the desk's slope frame `on_desk`;
+  0.82/0.94/0.76), `bunk-bed` (780 after trimming from 916: square bolts, plain bottom caps, cheaper blankets;
+  head end −Y = glTF +Z, ladder −X, frame shifted 2.75 cm +X so the ladder fits the 0.99 box; 0.66/0.86/0.71).
+  Lower IoU than the cover: the sheets aren't drawn at the box proportions. Palette: 32 → screen blue `#47C3F1`,
+  57 → screen highlight `#B1FAFD` (both unused). Handed over: `DEPOT.md` + GLBs, previews, vs-sheet.
 
 ## Decisions (with reasons)
 
@@ -1118,6 +1130,9 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-18** — Depot batch 2 (locker, desk, terminal, bunk bed) built, exported, handed over (`DEPOT.md`).
+  88 tests pass.
 
 - **2026-11-18** — Cover batch (supply crate, large crate, cargo container, storage barrel; all < 400 tris) built,
   exported, handed over (`COVER.md`). 88 tests pass.

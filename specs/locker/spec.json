@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "dark": 55, "leather": 54, "metal": 7, "primary": 29, "secondary": 30},
+  "kind": "prop",
+  "name": "locker",
+  "part": "locker-depot",
+  "reference": {
+    "image": "specs/locker/reference/sheet.png",
+    "length_m": 0.71,
+    "views": {
+      "item_side": [215, 23, 597, 864],
+      "item_front": [794, 23, 1011, 864],
+      "item_top": [1208, 342, 1568, 564]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

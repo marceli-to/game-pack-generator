@@ -1,0 +1,33 @@
+{
+ "prop": "desk-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "4363e729479303e1712313f3fdb68918ed7df45abfbd329f812477f35dd7240e",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 596,
+ "verts": 344,
+ "roles": [
+  "accent",
+  "leather",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 23,
+ "bbox": [
+  [
+   -0.825,
+   -0.41,
+   0.0
+  ],
+  [
+   0.825,
+   0.41,
+   0.75
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

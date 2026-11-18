@@ -1,0 +1,17 @@
+{
+  "colors": {"dark": 55, "metal": 7, "primary": 29, "secondary": 51, "special": 49},
+  "kind": "prop",
+  "name": "bunk-bed",
+  "part": "bunk-bed-depot",
+  "reference": {
+    "image": "specs/bunk-bed/reference/sheet.png",
+    "length_m": 0.99,
+    "views": {
+      "item_side": [894, 154, 1281, 791],
+      "item_front": [58, 154, 802, 791],
+      "item_top": [1377, 68, 1710, 797]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}
