@@ -1,0 +1,36 @@
+{
+  "colors": {
+    "accent": 24,
+    "primary": 16,
+    "secondary": 48
+  },
+  "kind": "prop",
+  "name": "double-blast",
+  "part": "powerup-blast",
+  "reference": {
+    "image": "specs/double-blast/reference/sheet.png",
+    "length_m": 0.399,
+    "views": {
+      "item_side": [
+        37,
+        280,
+        566,
+        810
+      ],
+      "item_front": [
+        622,
+        281,
+        830,
+        810
+      ],
+      "item_top": [
+        915,
+        444,
+        1407,
+        651
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

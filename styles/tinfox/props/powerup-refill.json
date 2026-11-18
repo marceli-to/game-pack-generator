@@ -1,0 +1,33 @@
+{
+ "prop": "powerup-refill",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "ddc83a62af0be1bd4faeda32439309acb630cdc6b7ff9548275c757800532c2c",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 568,
+ "verts": 332,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 24,
+ "bbox": [
+  [
+   -0.178,
+   -0.121,
+   0.006
+  ],
+  [
+   0.178,
+   0.141,
+   0.3988
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

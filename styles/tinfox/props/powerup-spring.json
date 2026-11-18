@@ -1,0 +1,30 @@
+{
+ "prop": "powerup-spring",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "68a1aa720347934dc0dc25b31859b9b0a5a94deba9b295cd71df39aa8bd4fbba",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 580,
+ "verts": 298,
+ "roles": [
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.114,
+   -0.114,
+   0.0
+  ],
+  [
+   0.114,
+   0.114,
+   0.3995
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

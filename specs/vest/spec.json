@@ -1,0 +1,38 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 53,
+    "leather": 55,
+    "primary": 34,
+    "secondary": 32
+  },
+  "kind": "prop",
+  "name": "vest",
+  "part": "pickup-vest",
+  "reference": {
+    "image": "specs/vest/reference/sheet.png",
+    "length_m": 0.4,
+    "views": {
+      "item_side": [
+        194,
+        51,
+        709,
+        675
+      ],
+      "item_front": [
+        908,
+        51,
+        1305,
+        675
+      ],
+      "item_top": [
+        1521,
+        201,
+        2004,
+        552
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

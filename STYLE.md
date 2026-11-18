@@ -279,6 +279,10 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
   the spec, palette from `spec.colors`, the style's shading, AO baked like characters (§5) but over the style's
   `shading.ao.prop_distance` when it sets one (an AO distance made for bodies darkens a 30 cm gun broadly), one
   empty per anchor. Vertex AO is sampled at vertices: a piece whose vertices all sit inside other pieces bakes dark.
+- **Split materials** (`spec.materials` = `{name: [roles]}`, optional): faces of those roles get a copy of the
+  palette material under that name (same palette texture, same baked AO), so the game can treat them apart. Only
+  for what the game asks for: the Tinfox bubble shield's bubble (`{"M_Bubble": ["special"]}`, made translucent in
+  the game). `validate` allows exactly the named extra materials.
 - **validate** (§12 rules for roles, colours, surface, topology, shading, vertex colours) and for props: hard: tris
   over the type's hard limit, a required anchor missing, origin wrong (held items: `grip` not at 0, 0, 0 within
   `props.origin_tolerance` = 1 mm; pickups: bottom not at z 0 or footprint not centred), `muzzle` not in front of

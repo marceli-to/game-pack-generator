@@ -1,0 +1,31 @@
+{
+ "prop": "powerup-potion",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "797d610010e4215d9815febf1a5f7df8978beff199bda72819c461140654a621",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 484,
+ "verts": 268,
+ "roles": [
+  "accent",
+  "leather",
+  "primary",
+  "secondary"
+ ],
+ "shells": 13,
+ "bbox": [
+  [
+   -0.1343,
+   -0.1423,
+   0.0
+  ],
+  [
+   0.1343,
+   0.1423,
+   0.4
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

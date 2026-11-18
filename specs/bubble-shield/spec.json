@@ -1,0 +1,18 @@
+{
+  "colors": {"primary": 31, "secondary": 48, "special": 39},
+  "kind": "prop",
+  "materials": {"M_Bubble": ["special"]},
+  "name": "bubble-shield",
+  "part": "powerup-shield",
+  "reference": {
+    "image": "specs/bubble-shield/reference/sheet.png",
+    "length_m": 0.393,
+    "views": {
+      "item_side": [42, 315, 499, 780],
+      "item_front": [535, 316, 928, 780],
+      "item_top": [963, 321, 1398, 761]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

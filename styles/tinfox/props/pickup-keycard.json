@@ -1,0 +1,31 @@
+{
+ "prop": "pickup-keycard",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "32ba2bd9506a57904e2e687b9c79d603ef25fdd79e1073dd3564115c3099d172",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 392,
+ "verts": 224,
+ "roles": [
+  "dark",
+  "leather",
+  "primary",
+  "special"
+ ],
+ "shells": 16,
+ "bbox": [
+  [
+   -0.14,
+   -0.015,
+   0.0
+  ],
+  [
+   0.14,
+   0.015,
+   0.18
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

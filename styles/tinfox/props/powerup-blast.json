@@ -1,0 +1,30 @@
+{
+ "prop": "powerup-blast",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "0719b27abf56895a237b468f987072fb6c129340c0d04eff7d204bbacaa5ff3a",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 552,
+ "verts": 302,
+ "roles": [
+  "accent",
+  "primary",
+  "secondary"
+ ],
+ "shells": 13,
+ "bbox": [
+  [
+   -0.1973,
+   -0.078,
+   0.0027
+  ],
+  [
+   0.1973,
+   0.078,
+   0.3973
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

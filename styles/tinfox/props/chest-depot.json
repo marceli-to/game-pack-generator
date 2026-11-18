@@ -1,0 +1,31 @@
+{
+ "prop": "chest-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "4441fd348d1acb5ea61d0bb284466fdabeac6e8725d1711f6c6ef293e302365c",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 564,
+ "verts": 328,
+ "roles": [
+  "accent",
+  "dark",
+  "primary",
+  "secondary"
+ ],
+ "shells": 23,
+ "bbox": [
+  [
+   -0.55,
+   -0.295,
+   0.0
+  ],
+  [
+   0.55,
+   0.295,
+   0.56
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

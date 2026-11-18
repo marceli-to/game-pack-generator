@@ -197,6 +197,7 @@
       "target": { "anchors": ["hinge", "board_centre"], "pieces": ["board"], "origin": "floor", "budget": "prop" }
     },
     "origin_tolerance": 0.001,
+  "split_materials": "spec.materials = {name: [roles]}: those faces get a named copy of the palette material (STYLE.md \u00a79b)",
     "views": ["item_side", "item_top", "item_front", "item_three_quarter"]
   },
   "foot_contact_tolerance": 0.02,

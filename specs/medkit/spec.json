@@ -1,0 +1,37 @@
+{
+  "colors": {
+    "accent": 16,
+    "dark": 52,
+    "metal": 50,
+    "secondary": 49
+  },
+  "kind": "prop",
+  "name": "medkit",
+  "part": "pickup-medkit",
+  "reference": {
+    "image": "specs/medkit/reference/sheet.png",
+    "length_m": 0.36,
+    "views": {
+      "item_side": [
+        123,
+        99,
+        756,
+        621
+      ],
+      "item_front": [
+        906,
+        95,
+        1301,
+        621
+      ],
+      "item_top": [
+        1478,
+        175,
+        2056,
+        610
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

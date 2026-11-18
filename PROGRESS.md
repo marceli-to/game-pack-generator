@@ -4,13 +4,11 @@ Living status of the project. **Read this first in every session; update it befo
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
 _Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard, rifle guard, officer, all seven weapons and props 1 (barrel, surprise box, ammo crate, range target)
-are in the game and confirmed. Officer update 1 confirmed by the game (coat reads as cloth in `run`; darker coat
-left to Marcel after playing). **Cover batch (05–08) and depot batch 2 (09 locker, 12 desk, 13 terminal, 15 bunk bed)
-built and handed over** (`COVER.md`, `DEPOT.md`, now in `_archive/`), **console (14) handed over** (`CONSOLE.md`);
-officer darker coat + rifle guard grey vest sent (`COLOURS-UPDATE.md`). **Depot rest (10, 11, 16–20) handed over**
-(`DEPOT-REST.md`): the kit 05–20 is complete. **Next:** pickups/power-ups 21–31 when Marcel's sheets are in
-(`PICKUPS-AND-POWERUPS.md`), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+there). Guard, rifle guard, officer, all seven weapons, props 1 and the depot kit 05–20 are in the game and confirmed
+(depot rest reply archived; the game draws the depot furniture 1.2× under `?art=tinfox`, nothing changes in our
+files). **Batch 3 built and handed over** (`PICKUPS.md`): six power-ups, medkit, vest, red/blue keycards, chest,
+satellite dish; every prop sheet 01–31 now has a model. **Next:** game confirmed batch 3 (nothing to change); now `hero-f` +
+the worker, then the players. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -39,19 +37,10 @@ officer darker coat + rifle guard grey vest sent (`COLOURS-UPDATE.md`). **Depot 
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-1. **Cover and depot kit** (`~/Desktop/tinfox/COVER-AND-DEPOT.md`; sheets in `props/sheets/`, prompts 05–20):
-   16 static `world` props, front +Z, origin floor centre, **exact box sizes** (the game stretches to its box),
-   budgets cover ≤ 400 tris, furniture ≤ 800, terminal/console ≤ 1,500, flat tops on crates/container. Order: cover
-   05–08 (**done, `COVER.md`**), 09, 12, 13, 15 (**done, `DEPOT.md`**), 14 (**done, `CONSOLE.md`**; wait for the game's
-   reports), then the rest (10 shelf, 11 cabinet, 16–20: **done, `DEPOT-REST.md`**; wait for the game's report).
-   Next: batch 3, pickups/power-ups 21–31 + the practice dummy (`PICKUPS-AND-POWERUPS.md`, `MISSING.md`; Marcel makes
-   the sheets in ChatGPT). Box sizes per prop: `~/Desktop/tinfox/COVER-AND-DEPOT.md`.
-   All sheets are in `specs/<name>/reference/sheet.png` (names: locker, shelf, cabinet, desk,
-   terminal, console, bunk-bed, mess-table, chair, office-chair, armchair, side-table); all have specs now. Hand over per batch with a short
-   `.md` (file, sha256, size check, previews), as `PROPS.md` (now in `_archive/`). Workflow: as props 1
-   (`workspace/tinfox/props/run.py <name> --build --export`, see "Tinfox: props").
-   Weapons and props 1 are closed (game confirmed; see "Tinfox: game replies").
-   **Officer update 1** confirmed (see "Tinfox: game replies"); officer closed unless Marcel wants a darker coat.
+1. **Props done (01–31), all confirmed by the game** (`_archive/PICKUPS-REPLY.md`, `props/report/b5-*`: nothing to
+   change; vest stays 0.16 deep, dish keeps the tall box; power-ups drawn 1.4×, `M_Bubble` at 40 %). Every prop and
+   pickup under `?art=tinfox` is ours now; left in code: catwalks, stairs, railings, pillars, alarm panels. Workflow for props: `workspace/tinfox/props/run.py <name> --build --export`; hand over per batch
+   with a short `.md` (file, sha256, size check from the GLB, `-preview.png`, `-vs-sheet.png`).
 2. **Then the worker** (after the cover kit, or between batches while sheets are pending). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
    (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
    narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
@@ -1030,7 +1019,32 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   are mostly not at box proportions: per-axis cm/px (across from the width, up from the height, deep from the side
   view's width). Handed over: `DEPOT-REST.md` (game file names from `MISSING.md`, e.g. `storage-cabinet.glb`).
 
+## Tinfox: pickups, power-ups, chest, dish (batch 3, 2026-11-18)
+
+- Sheets 21–31 → `specs/<name>/reference/sheet.png` (keycard sheet in `keycard-red`, shared by `keycard-blue`). Parts
+  in `workspace/tinfox/props/`: `powerup-boots|shield|blast|spring|refill|potion`, `pickup-medkit|vest|keycard`,
+  `chest-depot`, `dish-depot`. Pickups ≤ 600 tris (436–588), chest 564, dish 860. Measuring: scratch grid tool
+  (cm grid over a view box) as before.
+- Where the game gives an exact size (medkit, vest, keycard, chest, dish) the script builds in the sheet's
+  proportions and ends with a per-axis scale to the box (exact bbox); power-ups are uniform at ~0.40 m.
+  Medkit comes out flatter (0.22 incl. handle), vest half the drawn depth (0.16; offered 0.22), dish built to the
+  tall 1.38 × 4.34 × 2.08 box (tall mast, 1.38 m dish, deep pad) instead of the sheet's stubby proportions (offered).
+- **`spec.materials`** (new, root STYLE.md §9b ↔ core.json `props.split_materials`): `{name: [roles]}` → those faces
+  get a named copy of the palette material in `assemble_prop` (`split_materials`), `validate` allows exactly those
+  extra materials. Used by the bubble shield (`{"M_Bubble": ["special"]}`, the game makes it translucent).
+- Viewer `?translucent=<material>` (35 % opacity) for previews of such props.
+- Palette (tinfox STYLE.md §4 ↔ style.json, all unused before): 11 keycard red, 14 keycard blue, 15 purple,
+  27 green, 31 sky blue, 34 vest steel blue, 36 lilac.
+- Facet-following decals: the shrink ray's arrow puts every vertex 0.8 cm off the 12-gon belly (pieces split where
+  facets fold); a flat plate stuck out 2–3 cm at its ends. Concave shapes (hearts, stars, bursts) are two overlapping
+  convex prisms or centre-fan caps; overlapping halves must not share a vertex (merge → non-manifold).
+
 ## Decisions (with reasons)
+
+- **Exact-size pickups are built to the game's box, not the drawing** (2026-11-18): the game loads them at scale 1;
+  deviations (flat medkit, thin vest, tall dish) are named in the handoff for the game/Marcel to call.
+- **`M_Bubble` as a split palette material** (2026-11-18): the brief's only allowed second material; an opaque
+  bubble would hide the emblem.
 
 - **New role `armor`** (2026-11-18, core.json ↔ STYLE.md §4): the rifle guard's vest needed its own colour, and every
   existing role was taken on him (`secondary` is the black visor and knee pads). Appended as index 10, so stored
@@ -1163,6 +1177,11 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-18** — Game confirmed batch 3 (nothing to change); reply archived. Next: `hero-f`, worker, players.
+
+- **2026-11-18** — Batch 3 (power-ups 24–29, medkit, vest, keycards, chest, satellite dish) built, exported,
+  handed over (`PICKUPS.md`); `spec.materials` split for `M_Bubble`; 7 palette cells. Depot-rest reply archived.
 
 - **2026-11-18** — Depot rest (shelf, storage cabinet, office chair, chair, mess table, armchair, drawer cabinet)
   built, exported, handed over (`DEPOT-REST.md`); depot kit 05–20 complete. Committed + pushed `6eb129a`. Waiting for the

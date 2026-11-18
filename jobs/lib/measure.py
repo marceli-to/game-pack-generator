@@ -435,7 +435,7 @@ def _common_rules(m, spec, style, H, W):
     if m["surface"] == "painted":
         _painted_rules(m, spec, style, H, W)
     else:
-        _palette_rules(m, style, H, W)
+        _palette_rules(m, style, H, W, extra=tuple((spec.get("materials") or {}) if spec.get("kind") == "prop" else ()))
 
     if m["boundary_edges"] or m["non_manifold_edges"] or m["wire_edges"]:
         H("non_manifold", f"non-manifold geometry: {m['boundary_edges']} open edges, "
@@ -463,9 +463,12 @@ def _common_rules(m, spec, style, H, W):
         W("no_ao", f"the style bakes AO (shading.ao) but the mesh has no `{SH.AO_ATTR}` layer (re-assemble)")
 
 
-def _palette_rules(m, style, H, W):
-    """Surface `palette` (STYLE.md §4, §12): one M_Palette material, palette.png, UVs in single cells."""
-    mats = m["materials"]
+def _palette_rules(m, style, H, W, extra=()):
+    """Surface `palette` (STYLE.md §4, §12): one M_Palette material, palette.png, UVs in single cells.
+    extra: material names a prop spec splits off the palette material (`spec.materials`, §9b)."""
+    mats = [x for x in m["materials"] if x not in extra]
+    if set(extra) - set(m["materials"]):
+        H("materials", f"spec.materials {sorted(set(extra) - set(m['materials']))} missing on the mesh (re-assemble)")
     if len(mats) > 1:
         H("materials", f"{len(mats)} materials ({mats}); exactly one ({style['palette']['material']}) allowed")
     elif mats and mats[0] != style["palette"]["material"]:

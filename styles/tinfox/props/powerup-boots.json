@@ -1,0 +1,31 @@
+{
+ "prop": "powerup-boots",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "0a069a8841cfdcf7daea78c8e69197657eece3c596fe433c7727994ae1ac6359",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 588,
+ "verts": 328,
+ "roles": [
+  "accent",
+  "dark",
+  "primary",
+  "secondary"
+ ],
+ "shells": 17,
+ "bbox": [
+  [
+   -0.1635,
+   -0.223,
+   0.0
+  ],
+  [
+   0.1635,
+   0.2113,
+   0.396
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

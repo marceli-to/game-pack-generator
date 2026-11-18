@@ -1,0 +1,39 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 7,
+    "metal": 51,
+    "primary": 50,
+    "secondary": 12,
+    "special": 32
+  },
+  "kind": "prop",
+  "name": "satellite-dish",
+  "part": "dish-depot",
+  "reference": {
+    "image": "specs/satellite-dish/reference/sheet.png",
+    "length_m": 1.38,
+    "views": {
+      "item_side": [
+        130,
+        13,
+        652,
+        709
+      ],
+      "item_front": [
+        830,
+        24,
+        1314,
+        709
+      ],
+      "item_top": [
+        1505,
+        177,
+        2050,
+        618
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

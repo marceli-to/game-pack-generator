@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "dark": 53, "leather": 54, "primary": 24, "secondary": 48},
+  "kind": "prop",
+  "name": "zoom-boots",
+  "part": "powerup-boots",
+  "reference": {
+    "image": "specs/zoom-boots/reference/sheet.png",
+    "length_m": 0.296,
+    "views": {
+      "item_side": [63, 322, 411, 792],
+      "item_front": [467, 327, 1007, 792],
+      "item_top": [1069, 257, 1392, 820]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

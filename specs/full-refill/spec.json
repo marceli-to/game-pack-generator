@@ -1,0 +1,39 @@
+{
+  "colors": {
+    "accent": 16,
+    "dark": 53,
+    "metal": 50,
+    "primary": 19,
+    "secondary": 48,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "full-refill",
+  "part": "powerup-refill",
+  "reference": {
+    "image": "specs/full-refill/reference/sheet.png",
+    "length_m": 0.351,
+    "views": {
+      "item_side": [
+        43,
+        135,
+        570,
+        736
+      ],
+      "item_front": [
+        667,
+        137,
+        1044,
+        737
+      ],
+      "item_top": [
+        1104,
+        227,
+        1626,
+        666
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

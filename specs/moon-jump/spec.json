@@ -1,0 +1,36 @@
+{
+  "colors": {
+    "metal": 50,
+    "primary": 27,
+    "secondary": 48
+  },
+  "kind": "prop",
+  "name": "moon-jump",
+  "part": "powerup-spring",
+  "reference": {
+    "image": "specs/moon-jump/reference/sheet.png",
+    "length_m": 0.231,
+    "views": {
+      "item_side": [
+        198,
+        46,
+        599,
+        741
+      ],
+      "item_front": [
+        832,
+        41,
+        1220,
+        742
+      ],
+      "item_top": [
+        1453,
+        175,
+        1856,
+        587
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

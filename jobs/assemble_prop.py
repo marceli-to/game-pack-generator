@@ -23,6 +23,36 @@ def origin_offset(obj, origin, anchors):
     return Vector((-(lo.x + hi.x) / 2, -(lo.y + hi.y) / 2, -lo.z))
 
 
+def split_materials(obj, materials):
+    """spec.materials = {name: [roles]} (STYLE.md §9b): faces of those roles get a copy of the palette material
+    (same texture and baked AO) under that name, for the game to treat apart (e.g. `M_Bubble`, made translucent)."""
+    if not materials:
+        return {}
+    mesh = obj.data
+    roles = S.load()["roles"]
+    attr = mesh.attributes["role"]
+    base = mesh.materials[0]
+    out = {}
+    for name, rlist in materials.items():
+        bad = [r for r in rlist if r not in roles]
+        if bad or name == base.name:
+            raise RuntimeError(f"spec.materials[{name!r}]: unknown roles {bad}" if bad else f"{name!r} is the palette material")
+        mat = base.copy()
+        mat.name = name
+        mesh.materials.append(mat)
+        idx = len(mesh.materials) - 1
+        want = {roles.index(r) for r in rlist}
+        n = 0
+        for poly in mesh.polygons:
+            if attr.data[poly.index].value in want:
+                poly.material_index = idx
+                n += 1
+        if not n:
+            raise RuntimeError(f"spec.materials[{name!r}]: no faces with roles {rlist}")
+        out[name] = n
+    return out
+
+
 def run(args):
     style = S.load()
     spec = args["spec"]
@@ -57,6 +87,7 @@ def run(args):
     used_idx, missing_roles = PAL.apply_roles(obj, spec.get("colors") or {})
     cfg = SH.ao_config()
     ao = SH.bake_ao(obj, distance=(cfg or {}).get("prop_distance"))
+    split = split_materials(obj, spec.get("materials") or {})
     anchor_pieces = json.loads(obj.get("anchor_pieces", "{}"))
     if "anchor_pieces" in obj:
         del obj["anchor_pieces"]
@@ -75,5 +106,5 @@ def run(args):
     tris = sum(len(p.vertices) - 2 for p in obj.data.polygons)
     return {"outputs": [args["out"]], "warnings": warnings,
             "stats": {"tris": tris, "palette_indices": used_idx, "anchors": empties, "origin_offset": [round(x, 4) for x in off],
-                      "ao": ao, "missing_roles": missing_roles,
+                      "ao": ao, "missing_roles": missing_roles, "materials": split,
                       "pieces": json.loads(obj.get("pieces", "{}"))}}

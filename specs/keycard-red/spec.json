@@ -1,0 +1,37 @@
+{
+  "colors": {
+    "dark": 7,
+    "leather": 55,
+    "primary": 11,
+    "special": 32
+  },
+  "kind": "prop",
+  "name": "keycard-red",
+  "part": "pickup-keycard",
+  "reference": {
+    "image": "specs/keycard-red/reference/sheet.png",
+    "length_m": 0.28,
+    "views": {
+      "item_side": [
+        103,
+        108,
+        854,
+        615
+      ],
+      "item_front": [
+        1027,
+        108,
+        1150,
+        615
+      ],
+      "item_top": [
+        1329,
+        304,
+        2069,
+        428
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

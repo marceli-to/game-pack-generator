@@ -1,0 +1,32 @@
+{
+ "prop": "pickup-vest",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "51fad1536bec1345989b36eb90fc77087d351e5be7150e243f29e91738005377",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 588,
+ "verts": 336,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "primary",
+  "secondary"
+ ],
+ "shells": 21,
+ "bbox": [
+  [
+   -0.2,
+   -0.08,
+   0.0
+  ],
+  [
+   0.2,
+   0.08,
+   0.46
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

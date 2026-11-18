@@ -1,0 +1,37 @@
+{
+  "colors": {
+    "accent": 48,
+    "leather": 45,
+    "primary": 15,
+    "secondary": 36
+  },
+  "kind": "prop",
+  "name": "shrink-ray",
+  "part": "powerup-potion",
+  "reference": {
+    "image": "specs/shrink-ray/reference/sheet.png",
+    "length_m": 0.28,
+    "views": {
+      "item_side": [
+        190,
+        58,
+        631,
+        689
+      ],
+      "item_front": [
+        824,
+        62,
+        1255,
+        691
+      ],
+      "item_top": [
+        1441,
+        181,
+        1910,
+        651
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}

@@ -76,7 +76,7 @@ Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to 
   props (sheets in `specs/<prop>/reference/`, 2026-11-17): 16 red `#D8201C` (barrel, target rings), 24 yellow
   `#FFCE0A` (hazard stripes), 42 gold `#FBB40C` (surprise box frame), 38 purple `#8A2AAE`, 37 dark purple
   `#5A1E72`, 13 cream `#F2E5C0` (target board), 35 navy `#2A3A62` (target rim); for the cover and depot kit (sheets 05–20, 2026-11-18): 30 dark olive `#4D5130` (recessed
-  panels), 7 kit dark grey `#464646` (corner caps, container walls, lids), 26 khaki `#78723A` (container frame), 32 screen blue `#47C3F1` (terminal and console screens; was an unused sky blue), 57 screen highlight `#B1FAFD` (graphics on the screens; was an unused near-white). Depot rest (sheets 10, 11, 16–20): 6 cabinet grey `#A5A5A8` (storage cabinet and shelf bodies, sampled off sheet 11; was an unused mid grey).
+  panels), 7 kit dark grey `#464646` (corner caps, container walls, lids), 26 khaki `#78723A` (container frame), 32 screen blue `#47C3F1` (terminal and console screens; was an unused sky blue), 57 screen highlight `#B1FAFD` (graphics on the screens; was an unused near-white). Depot rest (sheets 10, 11, 16–20): 6 cabinet grey `#A5A5A8` (storage cabinet and shelf bodies, sampled off sheet 11; was an unused mid grey). Pickups and power-ups (sheets 21–29, 2026-11-18; all seven were unused): 11 keycard red `#D33A2C` and 14 keycard blue `#3A6BD3` (the game's key colours), 34 vest steel blue `#1E5E90`, 31 shield sky blue `#0EA6F2`, 27 power-up green `#74D20C`, 15 power-up purple `#A322D2`, 36 lilac `#DDB2F7` (sampled off the sheets).
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals

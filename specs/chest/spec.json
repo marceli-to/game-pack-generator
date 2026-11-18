@@ -1,0 +1,37 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 7,
+    "primary": 29,
+    "secondary": 30
+  },
+  "kind": "prop",
+  "name": "chest",
+  "part": "chest-depot",
+  "reference": {
+    "image": "specs/chest/reference/sheet.png",
+    "length_m": 1.1,
+    "views": {
+      "item_side": [
+        49,
+        162,
+        860,
+        580
+      ],
+      "item_front": [
+        921,
+        159,
+        1330,
+        579
+      ],
+      "item_top": [
+        1405,
+        155,
+        2121,
+        566
+      ]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

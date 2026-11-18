@@ -100,6 +100,13 @@ function load(url) {
         o.material.map.needsUpdate = true;
       }
     });
+    // ?translucent=<material>[,<material>]: show those materials see-through, as the game does (Tinfox M_Bubble)
+    const see = (params.get("translucent") || "").split(",").filter(Boolean);
+    if (see.length) model.traverse((o) => {
+      if (o.isMesh && see.includes(o.material.name)) {
+        o.material.transparent = true; o.material.opacity = 0.35; o.material.depthWrite = false;
+      }
+    });
     scene.add(model);
     clips = gltf.animations;
     mixer = new THREE.AnimationMixer(model);

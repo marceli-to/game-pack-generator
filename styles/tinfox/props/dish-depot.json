@@ -1,0 +1,33 @@
+{
+ "prop": "dish-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "14652049d5c19890752a4eb8fe3303dde1a92b8f1493b29d697bf16b82aaf80f",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 860,
+ "verts": 482,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 26,
+ "bbox": [
+  [
+   -0.69,
+   -1.04,
+   0.0
+  ],
+  [
+   0.69,
+   1.04,
+   4.34
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

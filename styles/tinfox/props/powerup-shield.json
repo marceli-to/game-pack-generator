@@ -1,0 +1,30 @@
+{
+ "prop": "powerup-shield",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "8fd933b7fbfa3a77c5409f13ec5f89672ecde33ed4d3a2b0159ee453fcc206ba",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 436,
+ "verts": 226,
+ "roles": [
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.195,
+   -0.195,
+   0.0
+  ],
+  [
+   0.195,
+   0.195,
+   0.4
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}
