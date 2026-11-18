@@ -1,0 +1,33 @@
+{
+ "part": "head-hero-grin",
+ "slot": "head",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "9960aa77e57568e4a32609f016c3efa37d39eb6b762acc6cefedfe8caa30789c",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 1608,
+ "verts": 834,
+ "roles": [
+  "eyes",
+  "hair",
+  "secondary",
+  "skin"
+ ],
+ "shells": 15,
+ "bbox": [
+  [
+   -0.1672,
+   -0.1781,
+   1.36
+  ],
+  [
+   0.1672,
+   0.156,
+   1.806
+  ]
+ ],
+ "warnings": []
+}

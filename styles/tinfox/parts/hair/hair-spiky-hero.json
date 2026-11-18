@@ -1,0 +1,32 @@
+{
+ "part": "hair-spiky-hero",
+ "slot": "hair",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "124d9624494385493034841176ec55060207bbb35af159fc725a6dbaa38f8fe3",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 414,
+ "verts": 221,
+ "roles": [
+  "hair"
+ ],
+ "shells": 7,
+ "bbox": [
+  [
+   -0.1907,
+   -0.2024,
+   1.575
+  ],
+  [
+   0.177,
+   0.2176,
+   1.905
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 152 of 221 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

@@ -9,7 +9,7 @@ there). Guard, rifle guard, officer, all seven weapons, props 1 and the depot ki
 files). **Batch 3 built and handed over** (`PICKUPS.md`): six power-ups, medkit, vest, red/blue keycards, chest,
 satellite dish; every prop sheet 01–31 now has a model; game confirmed batch 3. **`hero-f` template + worker built,
 OK'd by Marcel and handed over** (`WORKER.md`, sha `f845866c…`); **alarm panel (32) handed over** (`ALARM-PANEL.md`).
-Wait for the game's reports. **Next:** the players. Lowpoly Phase 4 items below still wait for Marcel._
+**All four players OK'd and handed over** (`PLAYERS.md`; yellow suit = cell 42, Marcel). Wait for the game's report. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -29,7 +29,7 @@ Wait for the game's reports. **Next:** the players. Lowpoly Phase 4 items below 
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
-| `tinfox` | draft; flat shading, ~5 heads (hero-m, hero-f) | worker v1 (hero-f, awaiting Marcel), guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
+| `tinfox` | draft; flat shading, ~5 heads (hero-m, hero-f) | player-1..4 (handed over), worker (handed over), guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
 
 ## Next session: start here
 
@@ -57,7 +57,19 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    Possible later polish (not asked for): rounder shoulder pads, puffier plates.
 5. Still open from the guard rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a
    `validate` rule "face/detail islands must touch or enter their base shell".
-6. Then players (two suits, four heads; `hero-m` + `hero-f`).
+6. **Players handed over** (`~/Desktop/tinfox/PLAYERS.md`, 2026-11-18; GLBs `characters/glb/player-1..4.glb`, sha
+   `0b7939d2…`, `7d3b97c0…`, `2f79ee98…`, `ded39c54…` after the hip fix); wait for the game's report. Asks: readability vs the guards,
+   heights after scaling, the braid, first person; the yellow suit is brighter than its slot colour (game's call).
+   History: player 1 OK'd by Marcel (2026-11-18, not handed
+   over yet); players 2 and 3 OK'd (2026-11-18); player 4 v1 awaiting Marcel's look (`workspace/knight-lowpoly/detail/
+   detail_player-4.png`, colour choice `workspace/tinfox/player-4/colour_choice.png`: sheet | slot 25 | cell 42).
+   Then hand all four over (`PLAYERS.md`: GLBs, sha256, previews, vs-sheet; note the slot-colour question).
+   Earlier: player 2 v1 (`workspace/knight-lowpoly/detail/
+   detail_player-2.png`, `workspace/player-2/renders/compare/compare_sheet.png`, GLB `workspace/player-2/export/`).
+   Then player 4: hero-f suit + `hair-curls-hero-f` + goggles (headwear) + grin; her suit has a white centre stripe
+   and white cuff bands (decide: suit variant or shared). Old plan text: a `hero-f` suit (`torso-suit-hero-f`, stripe trousers) for players 2 (red 17, braid)
+   and 4 (yellow 25, curls + goggles; her suit has a white centre stripe and white cuff bands). Hand over as one
+   `PLAYERS.md` (or per player if Marcel wants them sooner).
 7. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
 
 **Workflow for a new Tinfox weapon** (as used for the pistol): copy the sheet to `specs/<name>/reference/sheet.png`;
@@ -1072,6 +1084,82 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   m/s planted); pose findings are the guard's seam categories plus pouch vs thigh 4–6 cm in walk/run. Export ok
   (validator 0/0, three.js loads 18 clips, 1.0 MB).
 
+## Tinfox: players (2026-11-18)
+
+- Sheets 05–08 (`~/Desktop/tinfox/characters/sheets/`); prompts say "two bodies, four heads, recoloured suits"
+  (slot colours = tinfox cells 33 blue, 17 red, 28 green, 25 yellow; suit = role `primary`).
+- **Player 1** (`specs/player-1`, sheet → `specs/player-1/reference/turnaround.png`): the blue sheet is drawn at
+  the guard sheet's exact scale and layout (floor 926, centres 321/795/1343, same belt/shoulders/boots) →
+  `add_reference` top_y 50 / floor 926 / 1.80 m, guard body parts reused (sleeves, mittens, boots, belt). 4 new
+  parts (scripts `workspace/tinfox/parts/`): `head-hero-grin` (guard head with a big open grin: dark D-plate,
+  role `eyes`, + white teeth plate, role `secondary`, pushed out over the chin's centre bump), `hair-spiky-hero`
+  (short-hair cap made fuller, top 1.835, + 17 broad four-sided tufts: fringe up/forward, crown, sides, nape),
+  `torso-suit-hero` (guard jacket body; white pad stripes, white lines from under the pads to the belt front and
+  back, white name patch), `legs-trousers-stripe-hero` (guard trousers + white stripe on the outer front thigh).
+  Colours: skin 1, eyes 9, hair 8, primary 33, secondary 49 white, leather 7 dark grey (gloves, boots; sheet
+  `#424343`), metal 51 silver buckle, dark 54 (belt). Wolf emblem on the left sleeve left out (GENERATOR.md: skip
+  small details).
+- 6,000 tris (head group > 2,000 as the guard's), validate 0 hard; IoU 0.75/0.78/0.76 → fitted 0.76/0.79/0.77
+  (fit ≈ the guard's, copied into the spec). 18 clips, feet planted (walk 1.58–1.70, run 4.0 m/s); pose-test
+  findings are the guard's seam categories. Export ok (validator, three.js loads 18 clips, 1.877 m with hair).
+- Gotcha: the first grin's teeth were a 4 mm line: `max()` where the lower edge needed `min()`.
+- **Round 1** (Marcel: forehead hair, mouth, neck): grin rebuilt to the sheet (top edge almost straight, corners
+  just up, deep U of teeth, thin dark rim; placed with the face's centre-front bump so it doesn't sink into the
+  chin); neck jaw-wide (0.09 × 0.085); suit collar a wide open funnel (±0.15, `P.shell` cyclic) with the body
+  closed lower round the neck. Hair v2: the mass itself jagged (24 columns, every other one pushed out/up as a
+  point, shifting a column per ring → twisted shards; fringe points dip over the forehead) + 4 wide locks on top;
+  the cone spikes read as a crown/needles. Hair colour 8 → 46 `#7A4A28` (sheet `#6F3F26`). 6,246 tris (head group
+  2,022, soft). Exported again.
+- **Round 2** (Marcel: chin weird, suit may change): the guard's jutting chin poked through the front of the
+  collar → `torso-suit-hero`: collar rim and the body's top round the neck slope down to the front (back 1.505,
+  front 1.42); `head-hero-grin`: jaw narrows in straight planes to a flat chin (±0.06; the guard's round lower face
+  showed once the collar opened). Round 3 (Marcel: the suit then covered the collar in front): the collar is a
+  band all round again, front rim at 1.465 (above the chest's top edge at 1.43) and set forward to y −0.18 so the
+  chin sits just behind it. Exported again. **Marcel: "good!"** (2026-11-18).
+- **Player 3** (`specs/player-3`, sheet 07, same scale; views centred 318/789/1333): player 1's body and grin head +
+  `hair-short-hero` (dark hair shows under the beanie at the back) + 2 new parts: `face-beard-full-hero` (one
+  `P.shell` over the lower face from the head-hero-grin profile, top edge framing the grin and rising to the
+  sideburns, tucked under the jaw; moustache strap over the upper lip into the beard; role `accent` → cell 5
+  `#6E4630`, sheet `#654630`; 372 tris after thinning from 640: head group hit the 2,600 hard limit),
+  `headwear-beanie-hero` (cuff + step + crown, 16 sides, tilted back 12°: cuff bottom 1.71 front / 1.635 back;
+  `primary`, so it follows the slot colour; 286). Suit kept as player 1's (the green sheet has no chest lines and
+  wider thigh panels: one shared suit, as the prompts intend). primary 28. 6,664 tris (head group 2,440 soft),
+  9 colours (soft), validate 0 hard; IoU fitted 0.81/0.79/0.82 (fit narrows the head top to 0.85: the sheet's beanie
+  sits lower; torso 1.2× deeper: "broad-shouldered"). 18 clips, nothing below the floor; beard vs collar ≤ 2.9 cm.
+  Export ok. **Marcel: "good"** (2026-11-18).
+- **Player 2** (`specs/player-2`, sheet 06, 1448 × 1086): same head and belt heights as the worker sheet at
+  1.85 mm/px → `add_reference` top_y 78 / floor 997 / 1.70 m, views 250/688/1185; `hero-f` body. Reused: `head-hero-f`
+  (mouth `special` 45), `hands-glove-work-hero-f`, `feet-boots-big-hero-f`. New: `torso-suit-hero-f` (fitted suit:
+  bust, narrow waist, wide hips; open stand-up collar sloping 1.385 back / 1.345 front, set forward; front seam;
+  white name patch; the suit pads at 0.92 × hero-m with white stripes, same weights/pre-tilt, 74°; no chest lines or
+  thigh stripes, as the red sheet), `arms-sleeves-suit-hero-f` (cuff at mid-forearm), `legs-suit-hero-f` (slim),
+  `accessory_waist-belt-buckle-hero-f` (round silver buckle), `hair-braid-hero-f` (16-column rounded mass,
+  diagonal hairline high at the part on her left, a swept lock from the part to the right temple on the hair surface,
+  short strands in front of the ears; braid of 7 plaits alternating side to side + white band + tail to ~0.93 m).
+  **New rule:** `skeleton.part_blend_bones.hair = ["chest"]` (STYLE.md §9a ↔ core.json): the braid blends head →
+  chest between final z 1.40 and 1.30 so it stays on the back (≤ 2.4 cm into back/belt in crouch). Colours: primary
+  17, hair 46 (sheet `#753D24`), gloves/boots/soles 53 (sheet `#323232`), 9 colours. 6,042 tris (head group 2,330
+  soft). IoU fitted 0.79/0.86/0.79 (fit: arms 85°, torso narrower at the top): the hero-f shoulders (±0.22, from
+  the worker) are wider than this sheet's; not changed (worker handed over). 18 clips, export ok. **Marcel: "good"**.
+- **Player 4** (`specs/player-4`, sheet 08, 1672 × 941, drawn at the guard's scale): scaled from the head (chin →
+  hero-f 1.38): 1.94 mm/px → `add_reference` top_y 50 / floor 925 / 1.70 m, views 313/797/1338. **Suit variant**
+  (Marcel: variant, not shared): `torso-suit-stripe-hero-f` (white centre stripe from the collar rim to the belt instead
+  of the seam), `arms-sleeves-suit-cuffs-hero-f` (white band out of the cuff), `legs-suit-stripe-hero-f` (white
+  outer-thigh stripes). New: `head-hero-f-grin` (head-hero-f + the grin, 9-column plates), `hair-curls-hero-f`
+  (rounded mass + ~33 chunky five-sided double pyramids on an ellipsoid round the head, each turned differently),
+  `headwear-goggles-hero-f` (two 8-sided cups tilted up 35° on the forehead, silver rim, grey lens = `special` 52,
+  dark strap on a tilted ellipse round the curls, low at the back). Head group 2,590 (hard 2,600: curls and goggle
+  sides trimmed, grin plates 13 → 9 columns). 6,690 tris, 9 colours. `fit_exclude` + `head` (the fit widened the
+  head 1.17× for the curls, stretching the face; curls widened in the part instead). IoU fitted 0.74/0.74/0.76 (suit
+  drawn bulkier: torso/arms ~1.2×). 18 clips; hair/torso contact ≤ 2.8 cm. **Colour question:** slot 25 `#8F7F2F`
+  reads olive (guard-like); the sheet is `#E5A207` lit; cell 42 `#FBB40C` matches (preview above). **Marcel: the
+  brighter one** → primary 42. All four handed over (`PLAYERS.md`).
+- **Hip fix** (Marcel: legs should bend at the top to look connected; red and yellow): the suit top's lower front
+  and seat stood out as a separate rounded shape over straight leg tubes → `legs-suit(-stripe)-hero-f` v2: upper
+  thigh angles 2.6 cm in towards the crotch and a little forward, fuller front and back (ry 0.124 at the hip);
+  suit top's hip rings tucked in (front −0.096/−0.088, back 0.124/0.11). Legs/torso overlap up to 7.7 cm in `run`
+  (one colour, reads as one suit, like the guard's 10 cm). Both re-exported and re-copied.
+
 ## Decisions (with reasons)
 
 - **`hero-f` scaled from the head, not a fixed height** (2026-11-18): the sheets have no common scale; the guard's
@@ -1089,6 +1177,13 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   existing role was taken on him (`secondary` is the black visor and knee pads). Appended as index 10, so stored
   role values stay valid; parts that don't use it need no spec entry.
 - **Officer coat dark olive 30, rifle-guard vest grey 12** (Marcel, 2026-11-18): both read as the guard at 7 m.
+
+- **Yellow player's suit = cell 42, not the slot colour 25** (Marcel, 2026-11-18): `#8F7F2F` read as the guards'
+  olive; the other three slot colours match their sheets.
+- **Player suit variants** (Marcel, 2026-11-18): the yellow sheet's centre stripe / white cuffs / thigh stripes are a
+  variant (3 parts), not added to the shared female suit.
+- **Hair may blend into `chest`** (2026-11-18, `part_blend_bones.hair`): a waist-long braid rigid on `head` would cut
+  through the back whenever the body leans.
 
 - **Weapon sizes = 1.2 × the sheet prompts** (2026-11-17): the pistol's factor (0.30 m = its Kenney size in the
   hand); one rule keeps the guns in proportion to each other. The sniper comes out longer than Kenney's.
@@ -1216,6 +1311,17 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-18** — Red/yellow hip fix (thighs angle in at the top), re-sent.
+- **2026-11-18** — Player 4 OK'd (suit cell 42); all four players handed over (`PLAYERS.md`).
+- **2026-11-18** — Player 2 OK'd. Player 4 v1 (suit variant, curls, goggles), fitted, 18 clips, exported; colour question.
+- **2026-11-18** — Player 3 OK'd. Player 2 v1 (hero-f suit, braid blended to the chest), fitted, 18 clips, exported.
+- **2026-11-18** — Player 1 OK'd (Marcel). Player 3 v1 (beard, beanie, green), fitted, 18 clips, exported.
+- **2026-11-18** — Player 1 round 3: collar band all round, set forward in front of the chin.
+- **2026-11-18** — Player 1 round 2: collar slopes down at the front, narrower jaw.
+- **2026-11-18** — Player 1 round 1: grin, neck, funnel collar, jagged hair, lighter hair colour.
+- **2026-11-18** — Players started: player 1 (blue) v1 (grin head, spiky hair, squad suit + stripe trousers on the
+  guard body), fitted, 18 clips, exported. 88 tests pass. Awaiting Marcel's look.
 
 - **2026-11-18** — Alarm panel (32) built (392 tris, nodes `button`/`lamp`, `M_Button`/`M_Lamp`), handed over.
 - **2026-11-18** — Marcel OK'd the worker; handed over (`WORKER.md`, GLB + preview + vs-sheet). Next: players.

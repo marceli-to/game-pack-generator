@@ -1,0 +1,111 @@
+{
+  "name": "player-3",
+  "style": "tinfox",
+  "archetype": "hero-m",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 8,
+    "primary": 28,
+    "secondary": 49,
+    "accent": 5,
+    "leather": 7,
+    "metal": 51,
+    "dark": 54,
+    "special": 9
+  },
+  "parts": {
+    "head": "head-hero-grin",
+    "hair": "hair-short-hero",
+    "headwear": "headwear-beanie-hero",
+    "face": "face-beard-full-hero",
+    "torso": "torso-suit-hero",
+    "arms": "arms-sleeves-padded-hero",
+    "hands": "hands-mitten-hero",
+    "legs": "legs-trousers-stripe-hero",
+    "feet": "feet-boots-big-hero",
+    "accessory_waist": "accessory_waist-belt-buckle-hero"
+  },
+  "reference": "specs/player-3/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 69.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "extra_clips": [
+    "aim_1h",
+    "shoot_1h",
+    "aim_2h",
+    "shoot_2h",
+    "crouch",
+    "crouch_walk",
+    "crouch_aim_1h",
+    "crouch_shoot_1h",
+    "crouch_aim_2h",
+    "crouch_shoot_2h"
+  ],
+  "fit": {
+    "arms": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.197,
+        1.221,
+        1.271
+      ]
+    },
+    "hands": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.221,
+        1.246,
+        1.297
+      ]
+    },
+    "head": {
+      "u": [
+        0.923,
+        0.923,
+        0.852
+      ],
+      "v": [
+        0.98,
+        1.0,
+        0.961
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        0.98,
+        0.869
+      ],
+      "v": [
+        1.0,
+        1.02,
+        1.02
+      ]
+    },
+    "torso": {
+      "u": [
+        1.062,
+        1.041,
+        1.105
+      ],
+      "v": [
+        1.197,
+        1.221,
+        1.246
+      ]
+    }
+  }
+}

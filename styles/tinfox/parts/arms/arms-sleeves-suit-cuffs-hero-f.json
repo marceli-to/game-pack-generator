@@ -1,0 +1,33 @@
+{
+ "part": "arms-sleeves-suit-cuffs-hero-f",
+ "slot": "arms",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "1ff62132399d1bce542052a85833ad5d2c51197100595fd856616acd00f843d5",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 712,
+ "verts": 372,
+ "roles": [
+  "dark",
+  "primary",
+  "secondary",
+  "skin"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.72,
+   -0.0753,
+   1.1741
+  ],
+  [
+   0.72,
+   0.0753,
+   1.3247
+  ]
+ ],
+ "warnings": []
+}

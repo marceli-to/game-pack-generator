@@ -1,0 +1,30 @@
+{
+ "part": "headwear-beanie-hero",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "84c0abefe73b58319bf7c4881e27382242f95aab6cc2f457c5d31fe09837a4a7",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 286,
+ "verts": 145,
+ "roles": [
+  "primary"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.157,
+   -0.1701,
+   1.6358
+  ],
+  [
+   0.157,
+   0.1974,
+   1.8624
+  ]
+ ],
+ "warnings": []
+}

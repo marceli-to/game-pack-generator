@@ -1,0 +1,30 @@
+{
+ "part": "face-beard-full-hero",
+ "slot": "face",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "dbad355a5d1f18e0e76e61321391f1e4f0fa91236e0582feab41edebd38d57e5",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 372,
+ "verts": 190,
+ "roles": [
+  "accent"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.1458,
+   -0.172,
+   1.424
+  ],
+  [
+   0.1458,
+   0.066,
+   1.5966
+  ]
+ ],
+ "warnings": []
+}

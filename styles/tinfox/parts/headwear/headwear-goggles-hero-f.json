@@ -1,0 +1,32 @@
+{
+ "part": "headwear-goggles-hero-f",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "ae0065691f0e5b1e22be249e7f558a2dd0eb30984bef953cb775c0150c14b93c",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 308,
+ "verts": 168,
+ "roles": [
+  "dark",
+  "metal",
+  "special"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.1964,
+   -0.2312,
+   1.474
+  ],
+  [
+   0.1964,
+   0.2033,
+   1.725
+  ]
+ ],
+ "warnings": []
+}

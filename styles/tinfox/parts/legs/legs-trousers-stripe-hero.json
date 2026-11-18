@@ -1,0 +1,31 @@
+{
+ "part": "legs-trousers-stripe-hero",
+ "slot": "legs",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "336eddb5feb1e4db0d6ec8fcd8edaf5e07d1207d4ea9a970b1479ada6a2b515d",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 656,
+ "verts": 336,
+ "roles": [
+  "primary",
+  "secondary"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.2819,
+   -0.128,
+   0.3
+  ],
+  [
+   0.2819,
+   0.13,
+   0.95
+  ]
+ ],
+ "warnings": []
+}

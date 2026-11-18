@@ -1,0 +1,32 @@
+{
+ "part": "hair-curls-hero-f",
+ "slot": "hair",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "4bc9af2a9a14abb86080a79e4c6020688bc0326610db32962891ca8f525ab6f1",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 778,
+ "verts": 457,
+ "roles": [
+  "hair"
+ ],
+ "shells": 34,
+ "bbox": [
+  [
+   -0.1991,
+   -0.1844,
+   1.3959
+  ],
+  [
+   0.2082,
+   0.2047,
+   1.7764
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 395 of 457 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}
