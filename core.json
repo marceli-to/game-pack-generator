@@ -192,7 +192,9 @@
     "types": {
       "weapon": { "anchors": ["grip", "muzzle"], "origin": "grip", "budget": "weapon" },
       "thrown": { "anchors": ["grip"], "origin": "grip", "budget": "weapon" },
-      "pickup": { "anchors": [], "origin": "floor", "budget": "prop" }
+      "pickup": { "anchors": [], "origin": "floor", "budget": "prop" },
+      "world": { "anchors": [], "origin": "floor", "budget": "prop" },
+      "target": { "anchors": ["hinge", "board_centre"], "pieces": ["board"], "origin": "floor", "budget": "prop" }
     },
     "origin_tolerance": 0.001,
     "views": ["item_side", "item_top", "item_front", "item_three_quarter"]

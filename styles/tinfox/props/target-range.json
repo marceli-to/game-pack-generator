@@ -1,0 +1,46 @@
+{
+ "prop": "target-range",
+ "type": "target",
+ "style": "tinfox",
+ "script_sha256": "69645bde931aa373075ecc1d694b2744cbddfac7eb03e7110f10a6b03fd33052",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 992,
+ "verts": 546,
+ "roles": [
+  "accent",
+  "dark",
+  "hair",
+  "leather",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 25,
+ "bbox": [
+  [
+   -0.45,
+   -0.235,
+   0.0
+  ],
+  [
+   0.45,
+   0.235,
+   1.8
+  ]
+ ],
+ "anchors": {
+  "hinge": [
+   0.0,
+   0.03,
+   0.9
+  ],
+  "board_centre": [
+   0.0,
+   -0.07,
+   1.35
+  ]
+ },
+ "warnings": []
+}

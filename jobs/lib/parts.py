@@ -57,11 +57,46 @@ class PartBuilder:
         self.deform = self.bm.verts.layers.deform.verify()
         self.groups = {}
         self.covers = []   # features of other parts this part hides (core.json `part_covers`), e.g. ["ears"]
+        self.skirt = {}    # torso parts: overrides of core.json skinning.skirt (STYLE.md §9a), e.g. {"follow": 0.8}
         self.anchors = {}  # props (STYLE.md §9b): named points exported as empties, e.g. grip, muzzle
+        self.pieces = {}   # props: {piece: parent anchor or None}; faces carry `piece` (0 = the main mesh)
+        self._piece = None
+        self.anchor_pieces = {}  # {anchor: piece} for anchors that move with a piece
 
-    def anchor(self, name, point):
-        """Name a point of a prop (STYLE.md §9b: `grip`, `muzzle`); exported as an empty glTF node."""
+    def piece(self, name, parent=None):
+        """Props (STYLE.md §9b): faces built from here on belong to the separate mesh `name` (None: back to
+        the main mesh); exported as its own glTF node, a child of the anchor `parent` when given (a board
+        turning about its `hinge`)."""
+        if not self.pieces and name is not None:
+            self.pieces[str(name)] = parent   # register first, so faces built before stay the main mesh (0)
+            self._close_piece()
+        self._close_piece()
+        if name is not None:
+            self.pieces[str(name)] = parent
+            self._piece = str(name)
+        else:
+            self._piece = None
+
+    def _close_piece(self):
+        """Give the faces built since the last piece() call the current piece's index (1-based)."""
+        if not self.pieces:
+            return
+        if "piece" not in self.bm.faces.layers.int:
+            self.bm.faces.layers.int.new("piece")
+        lay = self.bm.faces.layers.int["piece"]
+        idx = 0 if self._piece is None else list(self.pieces).index(self._piece) + 1
+        tag = self.bm.faces.layers.int.get("_piece_done") or self.bm.faces.layers.int.new("_piece_done")
+        for f in self.bm.faces:
+            if not f[tag]:
+                f[tag] = 1
+                f[lay] = idx
+
+    def anchor(self, name, point, piece=None):
+        """Name a point of a prop (STYLE.md §9b: `grip`, `muzzle`); exported as an empty glTF node. With
+        `piece`, the node is a child of that piece and moves with it (`board_centre` on a tipping board)."""
         self.anchors[str(name)] = [float(x) for x in Vector(point)]
+        if piece is not None:
+            self.anchor_pieces[str(name)] = str(piece)
         return self.anchors[str(name)]
 
     # --- roles & bones -------------------------------------------------------------------
@@ -391,6 +426,9 @@ class PartBuilder:
     # --- output --------------------------------------------------------------------------
     def to_object(self, slot):
         bm = self.bm
+        self._close_piece()
+        if "_piece_done" in bm.faces.layers.int:
+            bm.faces.layers.int.remove(bm.faces.layers.int["_piece_done"])
         bmesh.ops.remove_doubles(bm, verts=bm.verts[:], dist=S.load()["topology"]["merge_distance"])
         bmesh.ops.recalc_face_normals(bm, faces=bm.faces[:])
         unset = sum(1 for f in bm.faces if not f[self._set])
@@ -504,7 +542,7 @@ def check_part(obj, slot, tpl, unset_roles):
     return hard, soft, st
 
 
-def check_prop(obj, ptype, unset_roles, anchors):
+def check_prop(obj, ptype, unset_roles, anchors, pieces=None, anchor_pieces=None):
     """Hard errors and warnings for a freshly built prop (STYLE.md §9b)."""
     style = S.load()
     types = style["props"]["types"]
@@ -524,6 +562,25 @@ def check_prop(obj, ptype, unset_roles, anchors):
         hard.append("muzzle must lie in front of the grip (+X: held items are modelled along +X, top +Z)")
     if obj.vertex_groups:
         hard.append("props carry no bone weights")
+    pieces = pieces or {}
+    for piece, parent in pieces.items():
+        if parent is not None and parent not in anchors:
+            hard.append(f"piece {piece!r}: parent anchor {parent!r} is not named (P.anchor)")
+    for a, piece in (anchor_pieces or {}).items():
+        if piece not in pieces:
+            hard.append(f"anchor {a!r} follows piece {piece!r}, which is not declared (P.piece)")
+    for piece in types[ptype].get("pieces", []):
+        if piece not in pieces:
+            hard.append(f"a {ptype} needs a separate piece {piece!r} (P.piece)")
+    if pieces:
+        lay = obj.data.attributes.get("piece")
+        counts = [0] * (len(pieces) + 1)
+        for v in (lay.data if lay else []):
+            counts[v.value] += 1
+        empty = [n for n, c in zip(["(main)", *pieces], counts) if c == 0]
+        if empty:
+            hard.append(f"pieces without faces: {empty}")
+        st["pieces"] = dict(zip(["(main)", *pieces], [c for c in counts]))
     st["anchors"] = {k: [round(x, 4) for x in v] for k, v in anchors.items()}
     return hard, soft, st
 

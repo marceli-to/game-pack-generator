@@ -9,6 +9,7 @@ import json
 
 import bpy
 import numpy as np
+from mathutils import Vector
 
 from lib import anim as A
 from lib import fit as FIT
@@ -36,14 +37,44 @@ def skirt_weights(obj, arm, cfg):
         if b not in obj.vertex_groups:
             obj.vertex_groups.new(name=b)
     groups = {g.name: g for g in obj.vertex_groups}
+    # small separate pieces (buttons, studs) take the weights of their centre, so they move as one and don't
+    # smear across the blend (bounding-box diagonal under 12 cm)
+    import bmesh
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bm.verts.ensure_lookup_table()
+    seen, small = set(), {}
+    for v0 in bm.verts:
+        if v0.index in seen:
+            continue
+        isl, stack = [], [v0]
+        seen.add(v0.index)
+        while stack:
+            v = stack.pop()
+            isl.append(v.index)
+            for e in v.link_edges:
+                w = e.other_vert(v)
+                if w.index not in seen:
+                    seen.add(w.index)
+                    stack.append(w)
+        pts = [co[i] for i in isl]
+        lo = Vector((min(p.x for p in pts), min(p.y for p in pts), min(p.z for p in pts)))
+        hi = Vector((max(p.x for p in pts), max(p.y for p in pts), max(p.z for p in pts)))
+        if (hi - lo).length < cfg.get("small_piece", 0.12):
+            c = (lo + hi) / 2
+            for i in isl:
+                small[i] = c
+    bm.free()
     n = 0
     for v, p in zip(obj.data.vertices, co):
+        p = small.get(v.index, p)
         if p.z >= hip_z:
             continue
         leg = cfg["follow"] * min(1.0, (hip_z - p.z) / ((hip_z - hem_z) * cfg["full_at"]))
         if leg < 1e-3:
             continue
-        a = min(1.0, max(0.0, 0.5 + p.x / (2 * cfg["centre_width"])))   # share of the left thigh
+        cw = cfg.get("centre_width_front", cfg["centre_width"]) if p.y < 0 else cfg["centre_width"]
+        a = min(1.0, max(0.0, 0.5 + p.x / (2 * cw)))   # share of the left thigh
         for g in obj.vertex_groups:
             g.remove([v.index])
         for name, w in (("hips", 1.0 - leg), ("upperleg.l", leg * a), ("upperleg.r", leg * (1 - a))):
@@ -136,6 +167,7 @@ def run(args):
         if pslot != slot:
             raise RuntimeError(f"spec.parts.{slot} = {part!r} belongs to slot {pslot!r}")
         meta_path = PT.part_path(part, ".json")
+        meta = {}
         if meta_path.exists():
             meta = json.loads(meta_path.read_text())
             if arch not in meta.get("archetypes", [arch]):
@@ -153,7 +185,7 @@ def run(args):
             PT.weight_nearest(obj, arm, part_bones[slot])
         blended.update(joint_blends(obj, arm, style["skinning"]["joint_blends"]))
         if slot == "torso":   # long robes and short tabards alike (STYLE.md §9a)
-            skirt[part] = skirt_weights(obj, arm, style["skinning"]["skirt"])
+            skirt[part] = skirt_weights(obj, arm, {**style["skinning"]["skirt"], **meta.get("skirt", {})})
         per_part[part] = sum(len(p.vertices) - 2 for p in mesh.polygons)
         objs.append(obj)
 

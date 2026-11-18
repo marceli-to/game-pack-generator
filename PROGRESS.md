@@ -3,10 +3,11 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-17 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard, rifle guard, officer in the game. **Weapons done:** prop mode (STYLE.md §9b); pistol (`PISTOL.md`) and the other six
-(silenced pistol, SMG, sniper, grenade, two ammo pickups; `WEAPONS.md`), GLBs in `~/Desktop/tinfox/weapons/glb/`.
-**Next:** Marcel's look at the six, the game's replies; then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+_Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+there). Guard, rifle guard, officer, all seven weapons and props 1 (barrel, surprise box, ammo crate, range target)
+are in the game and confirmed. Officer update 1 sent (coat split + half follow, brighter brass; waiting for the
+game's check). **Next:** the cover and depot kit (`COVER-AND-DEPOT.md`; sheet 07 cargo container is in, 05/06/08
+pending), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -35,14 +36,16 @@ there). Guard, rifle guard, officer in the game. **Weapons done:** prop mode (ST
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-1. **Weapons** (Marcel, 2026-11-17: before the worker). Done: prop mode + the pistol (see "Tinfox: weapons").
-   a. **Pistol OK'd** (Marcel, after removing the sight post and shrinking the trigger guard); `PISTOL.md` goes to
-      the game. Wait for its reply (grip in the mitten, muzzle flash at the ring, size, first
-      person; whether two-handed guns want a `grip_l` node).
-   b. **The other six built** (see "Tinfox: weapons"): **Marcel's look** at `~/Desktop/tinfox/weapons/glb/<name>-vs-sheet.png`
-      / `-preview.png` / `-in-hand.png`, then he hands `WEAPONS.md` to the game. Open for him: magazine look (guns
-      silver as drawn, pickups grey; one spec colour), sniper 1.32 m (longer than Kenney's 1.06 m).
-2. **Then the worker** (after weapons). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
+1. **Cover and depot kit** (`~/Desktop/tinfox/COVER-AND-DEPOT.md`; sheets in `props/sheets/`, prompts 05–20):
+   16 static `world` props, front +Z, origin floor centre, **exact box sizes** (the game stretches to its box),
+   budgets cover ≤ 400 tris, furniture ≤ 800, terminal/console ≤ 1,500, flat tops on crates/container. Order: cover
+   05–08 first, then 09 (locker sets the kit's look), 12, 13, 15, then 14, then the rest. Sheet 07 (cargo
+   container, 2.90 × 1.41 × 1.55, doors on the ±X ends) is in; 05/06/08 pending. Hand over per batch with a short
+   `.md` (file, sha256, size check, previews), as `PROPS.md` (now in `_archive/`). Workflow: as props 1
+   (`workspace/tinfox/props/run.py <name> --build --export`, see "Tinfox: props").
+   Weapons and props 1 are closed (game confirmed; see "Tinfox: game replies").
+   **Officer update 1** sent: wait for the game's check of the coat in `run` and his read at 7 m.
+2. **Then the worker** (after the cover kit, or between batches while sheets are pending). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
    (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
    narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
    `styles/tinfox/proportions/` (as `hero-m` from the guard sheet: metric grid, `make_template` + `make_mannequin`
@@ -841,6 +844,37 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   mitten; §9b rule for thrown items). Magazines: guns silver (role `leather`), pickups grey.
 - Handed over: `~/Desktop/tinfox/WEAPONS.md` + six GLBs and previews.
 
+## Tinfox: props (2026-11-17)
+
+- Sheets `~/Desktop/tinfox/props/sheets/01–04` → `specs/{barrel,surprise-box,ammo-crate,target}/reference/sheet.png`;
+  sizes from `props/README.txt`. Dev loop `workspace/tinfox/props/run.py <name> [--build] [--export]` (skips
+  compare without a reference); scripts `workspace/tinfox/props/<part>.py`.
+- Prop mode extended (STYLE.md §9b ↔ core.json): types `world` (level props, floor origin) and `target` (anchors
+  `hinge`, `board_centre`, piece `board`); **pieces** (`P.piece(name, parent=<anchor>)`, face attribute `piece`, one
+  mesh through assembly/validate, split by `export_glb`: piece = child node of its anchor, origin there;
+  `P.anchor(..., piece=)` follows a piece); view `item_back`; level props face −Y, sheet front = `item_side`.
+  Test `test_prop_pieces_export_as_child_nodes`. Palette cells for props: 16 red, 24 yellow, 42 gold, 38/37
+  purples, 13 cream, 35 navy (tinfox STYLE.md §4).
+- **Barrel** (`barrel-red`, world): 0.90 × 0.55 m, 1,260 tris, 5 colours, IoU 0.98/0.96/0.86 (top drawn smaller).
+  Flame's inner red is a blob vs the sheet. Game collider 0.72 × 0.62 across (Marcel: scale or shrink collider).
+- **Surprise box** (`box-surprise`, world): 0.80 × 0.80 × 0.83 m, 2,004 tris (soft: > 1,500), 5 colours, IoU
+  0.93/0.93/0.91. Recessed panels needed an inner vertex ring (vertex AO darkened them whole).
+- **Ammo crate** (`crate-ammo`, pickup): sheet proportions 0.75 × 0.45 × 0.35 m (prompt 0.28 high × 0.57 deep),
+  1,490 tris, 5 colours, IoU 0.96/0.95/0.89.
+- **Ammo crate v2** (Marcel: check the handles and locks): end handles = two mount blocks under the lid + a thick
+  square-section U hanging from them, leaning out (bar at 12.9 cm, ~4 cm past the lid; first try sloped 6 cm out
+  and read as thin diagonal legs from the long side); latches = hinge plate starting on the lid band + clasp with
+  chamfered bottom corners, ~2 cm proud of the lid (show from above as on the sheet). 1,578 tris (soft > 1,500),
+  IoU 0.93/0.92/0.85. Sheet `workspace/tinfox/props/ammo-crate-v2-compare.png`.
+- **Handed over (2026-11-18, Marcel OK'd):** `~/Desktop/tinfox/PROPS.md`, `props/glb/{barrel,surprise-box,
+  ammo-crate,target}.glb` (+ `-preview.png`, `-vs-sheet.png`). The ammo crate copy carries a 90° turn about +Y on its
+  root node (the game's box is long along Z); the others are the workspace exports. Brief covers modelFit (`scale` vs
+  `footprint`), the barrel's Kenney `colors` override (no effect), the target nodes (tip back `hinge.rotation.x = −π/2`,
+  small = board × 0.578, front +Z vs the game's −Z). Wait for `props/report/`.
+- **Range target** (`target-range`, target): board Ø 0.90 (16 sides, ring edges at 90/68/48/28 %), hinge on the
+  board's bottom back edge at 0.90 m, board 10 cm thick (prompt 5, sheet ~15); 992 tris, 8 colours, IoU 0.95 /
+  0.76 side / 0.92. GLB: `hinge` → `board` → `board_centre`; tipping −90° checked clear of the post.
+
 ## Tinfox: officer (2026-11-17)
 
 - Sheet `specs/officer/reference/turnaround.png` (Marcel's set), 2.043 mm/px, `add_reference` top_y 45 / floor 926,
@@ -900,6 +934,42 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   had it pulled in), villager 0.682 → 0.721, dwarf 0.679 → 0.724.
 - Tests `tests/test_fit.py` (units in a Blender subprocess: the server venv has no numpy; doc sync; guard
   end-to-end). 80 tests pass.
+
+## Tinfox: game replies (read 2026-11-18)
+
+- **Pistol** (`PISTOL-REPLY.md`): in the game (`ArtSet.weapons`); `grip` → hand origin (Tin Fox figures: `native`,
+  no transform), `muzzle` = flash position (0.0000 m off). First person converts our frame to Kenney's. Nothing to
+  do; its wish (an SD pistol) was already delivered with weapons 2.
+- **Weapons 2** (`WEAPONS-REPLY.md`): all six in, unchanged; guns sit right standing/crouched, flashes on the
+  rings, sniper stock clears the face. Pickups spin 0.45 m up and are scaled in the game (clips 1.6, grenade 2,
+  SD 0.8, SMG 0.9, sniper 0.75). `grip_l` not used (left hand lands 0.35 / 0.48 m from it; per-weapon 2H clips
+  possible, no priority). Magazine colours: fine as they are (closes that open point). Nothing to do.
+- **Officer** (`OFFICER-REPORT.md`, `characters/report/ofc-*`): firing standing/crouched fine. **Needs work: the
+  coat front in `run`** (and `crouch_walk`, low priority: the game never plays it): with skirt `follow` 1.0 the
+  front panels lift level with the thigh as a rigid plank, the other panel shows through it, and the thigh cuts
+  through the coat (diagonal tear across the buttons). Their suggestion: front panels follow the thigh about half
+  (vent opening, hem stays below the knee), coat surface pushed out over the thigh's widest point, panels never in
+  the same space. **Design call for Marcel:** at 7 m he reads as a guard variant (suggested: darker coat or cap
+  crown, brighter/larger brass, orange in collar or cap band). Note: the game scales every figure to 1.9 m by its
+  bounding box (officer 1.856 m with cap → drawn 2 % larger).
+
+- **Officer update 1 sent (2026-11-18, Marcel: fix the coat + what makes sense of the colour ideas):**
+  `torso-coat-hero` v2: closed body down to the belt, the skirt an open `P.shell` with a 1.2 cm front slit; new
+  `P.skirt` part override of `skinning.skirt` (+ `centre_width_front`, front vertices only) → coat
+  `{"follow": 0.6, "full_at": 1.0, "centre_width_front": 0.01}`: each front panel follows its own thigh, ramping to
+  0.6 at the hem. Skirt weights now treat small separate pieces (< 12 cm diagonal: buttons) as one (their centre's
+  weights); first try at 8 cm missed the buttons (8.6 cm) and they smeared. Lower buttons moved onto the left panel
+  (x 0.022). Colours: kept the sheet (coat/cap olive, black band): tinfox palette cell 10 → bright brass `#DAA645`
+  (sampled off the officer sheet's buttons), officer `metal` 43 → 10 (8 colours now), buttons r 0.026 → 0.03, cap
+  badge 15 % larger. 7,526 tris, IoU 0.84/0.86/0.84, 18 clips, export ok. `OFFICER-UPDATE-1.md` + GLB (sha
+  `d4ee1b26…`) + `officer-run.png`, `officer-crouch-walk.png`, `officer-preview.png`. Replies archived.
+
+- **Props 1 confirmed by the game (2026-11-18, `_archive/PROPS-REPLY.md`, `props/report/p1-*`):** all four in
+  (`ArtSet.props`, checksums match). Barrel and surprise box `scale` 1, crate `footprint` (× 0.87); the barrel's
+  collider was fitted to the model with `?art=tinfox` (0.56 × 0.90 × 0.56; Marcel's choice). Target: the game turns it
+  180°, moves `hinge` to the sim's height (0.89–0.90 m), scales `board` by radius / 0.45, tips it with
+  `hinge.rotation.x`; `board_centre` unused. Explosion, breaking, pop-back and tipping all fine. Nothing to change.
+  Next from the game: the cover and depot kit (`COVER-AND-DEPOT.md`) as Marcel's sheets 05–20 come in.
 
 ## Decisions (with reasons)
 
@@ -1030,6 +1100,16 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-18** — Game confirmed props 1 (nothing to change); replies archived.
+
+- **2026-11-18** — Officer coat split + half follow, brighter brass; `OFFICER-UPDATE-1.md` sent. 88 tests pass.
+
+- **2026-11-18** — Read the game's pistol/weapons replies (nothing to do) and the officer report (coat in run).
+
+- **2026-11-18** — Ammo crate handles + latches (Marcel: perfect); 4 props handed to the game (`PROPS.md`).
+
+- **2026-11-17** — Tinfox props: pieces/`world`/`target` in prop mode, barrel, surprise box, ammo crate, range
+  target built + exported. 88 tests pass. Awaiting Marcel's look.
 - **2026-11-17** — Grenade 1.3 × bigger (Marcel), re-sent.
 - **2026-11-17** — Silenced pistol, SMG, sniper, grenade, ammo pickups built, checked in the guard's hands,
   exported; `WEAPONS.md` + GLBs in `~/Desktop/tinfox`. Awaiting Marcel's look.

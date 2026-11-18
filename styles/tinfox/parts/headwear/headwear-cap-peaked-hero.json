@@ -5,8 +5,8 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "1f983dd489a96a43ee6459fffdc4e9fa03e223e41ce79d6c6012cac1125f80f0",
- "built": "2026-11-17",
+ "script_sha256": "c65b16afcce3055feecec41ad7ef88cc41b8bc37769ba1fb5f4015cc4c6d4cca",
+ "built": "2026-11-18",
  "blender": "5.2.4",
  "tris": 416,
  "verts": 218,

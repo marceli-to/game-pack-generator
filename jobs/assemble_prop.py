@@ -48,7 +48,7 @@ def run(args):
     off = origin_offset(obj, types[ptype]["origin"], anchors)
     obj.data.transform(Matrix.Translation(off))
     obj.data.update()
-    for k in ("anchors", "prop_type"):
+    for k in ("anchors", "prop_type"):   # `pieces` stays: export_glb splits the mesh by it
         if k in obj:
             del obj[k]
     obj.name = obj.data.name = spec["name"]
@@ -57,12 +57,17 @@ def run(args):
     used_idx, missing_roles = PAL.apply_roles(obj, spec.get("colors") or {})
     cfg = SH.ao_config()
     ao = SH.bake_ao(obj, distance=(cfg or {}).get("prop_distance"))
+    anchor_pieces = json.loads(obj.get("anchor_pieces", "{}"))
+    if "anchor_pieces" in obj:
+        del obj["anchor_pieces"]
     empties = {}
     for name, p in anchors.items():
         e = bpy.data.objects.new(name, None)
         e.empty_display_type = "ARROWS"
         e.empty_display_size = 0.03
         e.location = Vector(p) + off
+        if name in anchor_pieces:
+            e["piece"] = anchor_pieces[name]   # export_glb parents it to that piece
         bpy.context.scene.collection.objects.link(e)
         empties[name] = [round(x, 4) for x in e.location]
     SC.save(args["out"])
@@ -70,4 +75,5 @@ def run(args):
     tris = sum(len(p.vertices) - 2 for p in obj.data.polygons)
     return {"outputs": [args["out"]], "warnings": warnings,
             "stats": {"tris": tris, "palette_indices": used_idx, "anchors": empties, "origin_offset": [round(x, 4) for x in off],
-                      "ao": ao, "missing_roles": missing_roles}}
+                      "ao": ao, "missing_roles": missing_roles,
+                      "pieces": json.loads(obj.get("pieces", "{}"))}}

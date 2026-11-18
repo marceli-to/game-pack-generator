@@ -2,9 +2,12 @@
 
 args: { out: <path.glb> }
 """
+import json
 from pathlib import Path
 
+import bmesh
 import bpy
+from mathutils import Matrix
 
 from lib import glb as G
 from lib import scene as SC
@@ -32,6 +35,47 @@ WANTED = {
 }
 
 
+def split_pieces():
+    """Props (STYLE.md §9b): a mesh with `pieces` becomes one object per piece (face attribute `piece`, 0 = the
+    main mesh). A piece with a parent anchor has its origin at that anchor and is its child (local transform
+    identity), so turning the anchor node turns the piece; anchors marked with a `piece` become its children."""
+    made = {}
+    for obj in [o for o in bpy.context.scene.objects if o.type == "MESH" and "pieces" in o]:
+        pieces = json.loads(obj["pieces"])
+        del obj["pieces"]
+        objs = [obj]
+        for name in pieces:   # copies first: the main mesh loses the other pieces' faces below
+            o = obj.copy()
+            o.data = obj.data.copy()
+            o.name = o.data.name = name
+            bpy.context.scene.collection.objects.link(o)
+            objs.append(o)
+        for idx, ((name, parent), o) in enumerate(zip([(None, None), *pieces.items()], objs)):
+            bm = bmesh.new()
+            bm.from_mesh(o.data)
+            lay = bm.faces.layers.int["piece"]
+            bmesh.ops.delete(bm, geom=[f for f in bm.faces if f[lay] != idx], context="FACES")
+            bm.faces.layers.int.remove(lay)
+            bm.to_mesh(o.data)
+            bm.free()
+            if parent is not None:
+                e = bpy.data.objects[parent]
+                o.data.transform(Matrix.Translation(-e.matrix_world.translation))
+                o.parent = e
+                o.matrix_parent_inverse = Matrix.Identity(4)
+                o.matrix_basis = Matrix.Identity(4)
+            made[name or obj.name] = parent
+    bpy.context.view_layer.update()   # the pieces' world matrices, before anchors are parented to them
+    for e in [o for o in bpy.context.scene.objects if o.type == "EMPTY" and "piece" in o]:
+        target = bpy.data.objects[e["piece"]]
+        mw = e.matrix_world.copy()
+        e.parent = target
+        e.matrix_world = mw
+        del e["piece"]
+    bpy.context.view_layer.update()
+    return made
+
+
 def run(args):
     out = Path(args["out"])
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -52,6 +96,7 @@ def run(args):
                 o.matrix_world = mw
     for o in [o for o in bpy.context.scene.objects if o.type in ("CAMERA", "LIGHT")]:
         bpy.data.objects.remove(o, do_unlink=True)
+    pieces = split_pieces()
     props = bpy.ops.export_scene.gltf.get_rna_type().properties.keys()
     kwargs = {}
     for k, v in WANTED.items():
@@ -77,5 +122,5 @@ def run(args):
     return {"outputs": [str(out)], "stats": {"bytes": out.stat().st_size, "fps": S.load()["animations"]["fps"],
                                              "actions": sorted(a.name for a in bpy.data.actions),
                                              "arms_only_channels_removed": stripped,
-                                             "samplers_min_nearest": nearest},
+                                             "samplers_min_nearest": nearest, "pieces": pieces},
             "warnings": warnings}

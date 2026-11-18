@@ -55,6 +55,10 @@ def run(args):
     if bad:
         hard.append(f"P.covers: unknown {bad} (known: {sorted(style['part_covers'])})")
     st["covers"] = sorted(set(B.covers))
+    known = set(style["skinning"]["skirt"]) | {"centre_width_front"}
+    if B.skirt and (slot != "torso" or set(B.skirt) - known):
+        hard.append(f"P.skirt: torso parts only, keys {sorted(known)} (got {B.skirt} on {slot})")
+    st["skirt"] = dict(B.skirt)
 
     out_dir = Path(args["out_dir"])
     out_dir.mkdir(parents=True, exist_ok=True)

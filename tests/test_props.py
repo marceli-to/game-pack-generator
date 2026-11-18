@@ -79,3 +79,48 @@ def test_prop_end_to_end(tmp_path):
     assert all(s.get("minFilter") == 9728 for s in j.get("samplers", []))
     prims = [p for m in j["meshes"] for p in m["primitives"]]
     assert all("COLOR_0" in p["attributes"] for p in prims)
+
+
+# a toy target: post (main mesh), board as a separate piece hanging off the hinge, board_centre moving with it
+TARGET = """
+P.box((-0.03, -0.03, 0.0), (0.03, 0.03, 0.5), "primary")
+P.anchor("hinge", (0, 0, 0.5))
+P.piece("board", parent="hinge")
+P.box((-0.2, -0.04, 0.5), (0.2, -0.02, 0.9), "accent")
+P.anchor("board_centre", (0, -0.04, 0.7), piece="board")
+"""
+TSPEC = {"name": "toytarget", "kind": "prop", "type": "target", "style": "tinfox", "part": "toytarget",
+         "colors": {"primary": 52, "accent": 16}}
+
+
+@needs_blender
+@needs_node
+def test_prop_pieces_export_as_child_nodes(tmp_path):
+    from server import node
+    bad = run_job("build_prop", {"prop": "toytarget", "type": "target", "script": TARGET.replace('P.piece("board"', 'P.piece("plate"'),
+                                 "out_dir": str(tmp_path), "save": True}, style="tinfox")
+    assert not bad["ok"] and "'board'" in bad["error"]
+    r = run_job("build_prop", {"prop": "toytarget", "type": "target", "script": TARGET, "out_dir": str(tmp_path),
+                               "save": True}, style="tinfox")
+    assert r["ok"], r.get("error")
+    assert r["stats"]["pieces"] == {"(main)": 6, "board": 6}   # faces
+    blend = tmp_path / "prop.blend"
+    a = run_job("assemble_prop", {"spec": TSPEC, "part_blend": str(tmp_path / "toytarget.blend"), "out": str(blend)},
+                style="tinfox")
+    assert a["ok"], a.get("error")
+    v = run_job("validate", {"spec": TSPEC}, blend=blend, style="tinfox")
+    assert v["ok"] and v["valid"], v["hard"]   # still one mesh until export
+    glb = tmp_path / "prop-toytarget.glb"
+    e = run_job("export_glb", {"out": str(glb)}, blend=blend, style="tinfox")
+    assert e["ok"], e.get("error")
+    data = glb.read_bytes()
+    j = json.loads(data[20:20 + struct.unpack("<I", data[12:16])[0]])
+    nodes = {n["name"]: n for n in j["nodes"]}
+    names = [n["name"] for n in j["nodes"]]
+    assert {names[i] for i in j["scenes"][0]["nodes"]} == {"toytarget", "hinge"}
+    assert [names[i] for i in nodes["hinge"]["children"]] == ["board"]
+    assert [names[i] for i in nodes["board"]["children"]] == ["board_centre"]
+    assert nodes["hinge"]["translation"] == pytest.approx([0, 0.5, -0.005], abs=1e-5)   # footprint centred (floor origin)
+    assert "translation" not in nodes["board"]   # origin at the hinge: turning the hinge turns the board
+    assert nodes["board_centre"]["translation"] == pytest.approx([0, 0.2, 0.04], abs=1e-5)
+    assert node.gltf_validate(glb)["errors"] == 0

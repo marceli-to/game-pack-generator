@@ -12,7 +12,10 @@
       ],
       "heads": 5,
       "template": "styles/tinfox/proportions/hero-m.json",
-      "clip_stride": { "walk": 1.6, "run": 4.0 },
+      "clip_stride": {
+        "walk": 1.6,
+        "run": 4.0
+      },
       "targets": {
         "_comment": "Marcel's guard sheet (specs/guard/reference/turnaround.png) at 2.055 mm/px, 1.80 m to the skull top under the cap (STYLE.md §7a)",
         "hip_z": 0.86,
@@ -66,8 +69,14 @@
         "accessory_back"
       ]
     },
-    "weapon": { "target": 2500, "hard": 4000 },
-    "prop": { "target": 1500, "hard": 2500 }
+    "weapon": {
+      "target": 2500,
+      "hard": 4000
+    },
+    "prop": {
+      "target": 1500,
+      "hard": 2500
+    }
   },
   "shading": {
     "_comment": "STYLE.md §5: every face flat-shaded",
@@ -111,13 +120,13 @@
       "#6C6C6C",
       "#4A2C1B",
       "#2B2420",
-      "#E8C46A",
+      "#DAA645",
       "#B5482A",
       "#8E8E8E",
-      "#F2F0EA",
+      "#F2E5C0",
       "#5B8DEF",
       "#C25FD9",
-      "#E04040",
+      "#D8201C",
       "#8F3A2F",
       "#7A1E1E",
       "#FE7603",
@@ -125,7 +134,7 @@
       "#FFA26B",
       "#F28CA8",
       "#BE5F68",
-      "#FFD23F",
+      "#FFCE0A",
       "#8F7F2F",
       "#B7D84B",
       "#6FBF3B",
@@ -136,14 +145,14 @@
       "#5AA9F0",
       "#2F5F8F",
       "#1F428F",
-      "#16285C",
+      "#2A3A62",
       "#8F6BE0",
-      "#5A3473",
-      "#9A5BBA",
+      "#5A1E72",
+      "#8A2AAE",
       "#7FD6F0",
       "#8A8F99",
       "#C3CAD4",
-      "#F2C230",
+      "#FBB40C",
       "#B8883A",
       "#C9663B",
       "#A0673A",

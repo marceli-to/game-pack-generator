@@ -1,0 +1,23 @@
+{
+  "colors": {
+    "accent": 42,
+    "dark": 37,
+    "primary": 38,
+    "secondary": 49,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "surprise-box",
+  "part": "box-surprise",
+  "reference": {
+    "image": "specs/surprise-box/reference/sheet.png",
+    "length_m": 0.80,
+    "views": {
+      "item_side": [49, 332, 454, 754],
+      "item_front": [530, 332, 935, 754],
+      "item_top": [1005, 332, 1407, 743]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

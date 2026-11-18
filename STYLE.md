@@ -215,7 +215,7 @@ Clips only some games need (first: Tinfox, a shooter). A character gets them whe
 - Separate closed shells may overlap (helmet over head, belt over robe); hidden geometry still counts towards the budget.
 - **Covers:** a part that is meant to hide a feature of another part says so in its script, `P.covers = ["ears"]` (a helmet with cheek guards); stored in its `.json` as `covers`, checked by `validate` (§12, `covered_visible`). Known features: core.json `part_covers`.
 - **Weights:** rigid. A part may weight vertices to its slot's bones (`skeleton.part_bones`); `assemble_from_parts` gives every other vertex its nearest allowed bone. Headwear is weighted to `head`, hand accessories to `hand.l/r`: the deforming parents of the slot bones, because slot bones don't deform. A part may also set **blended weights** (`P.set_weights(verts, {bone: w})`) and then use the bones its slot lists in `skeleton.part_blend_bones` (`torso`: the upper arms; the rig has no clavicle, so shoulder pads on the torso share chest and upper arm and turn partway with the arm). Exceptions applied at assembly (core.json `skinning`):
-  - **Skirts:** a `torso` part reaching more than 5 cm below the hip joints (long robes with `legs` empty, short tabards over legs) blends `hips` with the thighs below the hips, from 0 at the hip joints to `follow` = 1.0 at `full_at` = 50 % of the way down to the hem (the lower robe moves with the thigh, so boot shafts stay under it); the leg share is split between both thighs across the centre line, linear over ±`centre_width` = 12 cm (centre vertices: hips + both thighs). Without it the legs swing out through a rigid robe in walk/run; with a hard fade to the hips at the centre line (first try) the hem sheared open at the front in `run`.
+  - **Skirts:** a `torso` part reaching more than 5 cm below the hip joints (long robes with `legs` empty, short tabards over legs) blends `hips` with the thighs below the hips, from 0 at the hip joints to `follow` = 1.0 at `full_at` = 50 % of the way down to the hem (the lower robe moves with the thigh, so boot shafts stay under it); the leg share is split between both thighs across the centre line, linear over ±`centre_width` = 12 cm (centre vertices: hips + both thighs). A part may override these (`P.skirt = {...}`, stored in its `.json`): e.g. the Tinfox officer's coat, split up the front below the belt, uses `follow` 0.6 ramping to the hem (`full_at` 1.0) and `centre_width_front` 0.01 (front vertices only), so each front panel follows its own thigh and bends instead of lifting as a plank. Small separate pieces (bounding-box diagonal under 12 cm: buttons) take the weights of their centre, so they move as one. Without it the legs swing out through a rigid robe in walk/run; with a hard fade to the hips at the centre line (first try) the hem sheared open at the front in `run`.
   - **Joint blends** (`joint_blends`): rigid parts that reach across a joint swing their inner end out of the body when the joint bends (Marcel saw the sleeve's inner end come out at the shoulder in `run`, the boot shafts at the ankle). Vertices on the body side of the joint go to the parent bone, blended linearly from the joint to `width` inside it: sleeves `upperarm` → `chest` along ±X (5 cm), boots `foot` → `lowerleg` above the ankle (4 cm) and `lowerleg` → `upperleg` above the knee (4 cm): boots under a long robe reach past the knee into the robe, so the part above the knee moves with the thigh and the robe, and a bent knee neither opens a gap at the hem nor swings the shaft top out over it. Only vertices fully on the child bone are changed.
   - **Upright grips:** the item is weighted 100 % to its slot bone (`handslot.l/r`), which then deforms (`validate` allows that for upright slots).
 - **Hand accessories** have a grip mode, set per character in `spec.grip` (`{slot: mode}`, default `weapon`):
@@ -254,11 +254,26 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
   0, 0, 0; the GLB's origin is the grip) or `floor` (pickups: the footprint's centre at x = y = 0, bottom at z = 0).
 - **Types:**
 
-| Type | Anchors | Origin | Budget (§3) |
-|---|---|---|---|
-| `weapon` | `grip`, `muzzle` | `grip` | `weapon` |
-| `thrown` | `grip` | `grip` | `weapon` |
-| `pickup` | — | `floor` | `prop` |
+| Type | Anchors | Pieces | Origin | Budget (§3) |
+|---|---|---|---|---|
+| `weapon` | `grip`, `muzzle` | — | `grip` | `weapon` |
+| `thrown` | `grip` | — | `grip` | `weapon` |
+| `pickup` | — | — | `floor` | `prop` |
+| `world` | — | — | `floor` | `prop` |
+| `target` | `hinge`, `board_centre` | `board` | `floor` | `prop` |
+
+  `world`: props that stand in the level (barrels, boxes). `target`: a board on a post that the game tips back
+  about `hinge` (on the board's bottom edge); `board_centre` is the centre of the board's face and moves with it.
+- **Pieces:** a prop is one mesh, unless the game moves part of it on its own. `P.piece(name, parent=<anchor>)`
+  puts the faces built after it into a separate piece (`P.piece(None)`: back to the main mesh); faces carry a
+  `piece` attribute through assembly (one object, so `validate` and `compare_reference` see the whole prop), and
+  `export` splits them: each piece is its own glTF mesh node, named after the piece, with its origin at the parent
+  anchor and as that anchor's child (identity local transform), so the game turns the anchor node to move the
+  piece. `P.anchor(name, point, piece=…)` makes an anchor a child of a piece (it moves with it). A type's
+  `pieces` must exist.
+- **Front:** props that stand in the level face −Y (Blender), like the characters: glTF +Z. Their sheet views map
+  to the item views by camera: front = `item_side` (camera at −Y, so `length_m` is the front view's width), side
+  = `item_front` (camera at +X, front to the left), back = `item_back` (camera at +Y), top = `item_top`.
 
 - **Assembly** (`assemble_from_parts` on a prop spec): the part, moved to its origin, one mesh object named after
   the spec, palette from `spec.colors`, the style's shading, AO baked like characters (§5) but over the style's

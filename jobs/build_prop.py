@@ -28,7 +28,7 @@ def run(args):
     exec(compile(args["script"], f"<prop {prop}>", "exec"), ns)  # noqa: S102 - agent-written prop script
     obj, unset = B.to_object(OBJECT)
     obj.name = obj.data.name = OBJECT
-    hard, soft, st = PT.check_prop(obj, ptype, unset, B.anchors)
+    hard, soft, st = PT.check_prop(obj, ptype, unset, B.anchors, B.pieces, B.anchor_pieces)
     st["type"] = ptype
 
     out_dir = Path(args["out_dir"])
@@ -49,6 +49,9 @@ def run(args):
             mesh.attributes.remove(mesh.attributes["sharp_edge"])
         obj["anchors"] = json.dumps(B.anchors)
         obj["prop_type"] = ptype
+        if B.pieces:
+            obj["pieces"] = json.dumps(B.pieces)
+            obj["anchor_pieces"] = json.dumps(B.anchor_pieces)
         for o in list(bpy.context.scene.objects):
             if o is not obj:
                 bpy.data.objects.remove(o, do_unlink=True)

@@ -1,0 +1,33 @@
+{
+ "prop": "barrel-red",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "68f77f390a48b1f3293dacad621b830e1a73092e939fc9269f1d488f21efe76d",
+ "built": "2026-11-17",
+ "blender": "5.2.4",
+ "tris": 1260,
+ "verts": 660,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 15,
+ "bbox": [
+  [
+   -0.2733,
+   -0.2828,
+   0.0
+  ],
+  [
+   0.2733,
+   0.2828,
+   0.896
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

@@ -1,0 +1,26 @@
+{
+  "colors": {
+    "accent": 16,
+    "dark": 54,
+    "hair": 53,
+    "leather": 19,
+    "metal": 51,
+    "primary": 52,
+    "secondary": 13,
+    "special": 35
+  },
+  "kind": "prop",
+  "name": "target",
+  "part": "target-range",
+  "reference": {
+    "image": "specs/target/reference/sheet.png",
+    "length_m": 0.9,
+    "views": {
+      "item_back": [984, 40, 1432, 974],
+      "item_front": [647, 38, 879, 974],
+      "item_side": [91, 38, 552, 974]
+    }
+  },
+  "style": "tinfox",
+  "type": "target"
+}

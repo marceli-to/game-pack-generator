@@ -129,7 +129,8 @@ def test_props_match():
     pr = S["props"]
     for name, ty in pr["types"].items():
         anchors = ", ".join(f"`{a}`" for a in ty["anchors"]) or "—"
-        assert f"| `{name}` | {anchors} | `{ty['origin']}` | `{ty['budget']}` |" in STYLE_MD, name
+        pieces = ", ".join(f"`{a}`" for a in ty.get("pieces", [])) or "—"
+        assert f"| `{name}` | {anchors} | {pieces} | `{ty['origin']}` | `{ty['budget']}` |" in STYLE_MD, name
     for v in pr["views"]:
         assert f"`{v}`" in STYLE_MD, v
     assert f"`props.origin_tolerance` = {round(pr['origin_tolerance'] * 1000)} mm" in STYLE_MD

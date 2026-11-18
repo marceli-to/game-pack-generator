@@ -70,8 +70,12 @@ Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to 
 - **palette.png:** 256 × 256 px, 8 × 8 grid → 64 cells of 32 × 32 px each, closest filtering, UVs collapsed to
   cell centres. Layout and colours of `lowpoly`, with cells taken from the Tinfox sheets (lit flat areas):
   1 skin `#F7AE7A`, 8 hair `#4A2C1B`, 19 orange `#FE7603`, 29 olive `#666B32` (guard uniform), 43 brass `#B8883A`,
+  10 bright brass `#DAA645` (the officer's buttons, badge and trim, sampled off his sheet),
   52 gun grey `#565656` (weapon bodies, from the pistol sheet), 53 dark grey `#383838` (belt), 54 black `#2B2B2B` (gloves, boots), 55 near-black `#1A1A1A` (cap peak); the four
-  player slot colours 33 blue `#2F5F8F`, 17 red `#8F3A2F`, 28 green `#3F7F3F`, 25 yellow `#8F7F2F`.
+  player slot colours 33 blue `#2F5F8F`, 17 red `#8F3A2F`, 28 green `#3F7F3F`, 25 yellow `#8F7F2F`; for the
+  props (sheets in `specs/<prop>/reference/`, 2026-11-17): 16 red `#D8201C` (barrel, target rings), 24 yellow
+  `#FFCE0A` (hazard stripes), 42 gold `#FBB40C` (surprise box frame), 38 purple `#8A2AAE`, 37 dark purple
+  `#5A1E72`, 13 cream `#F2E5C0` (target board), 35 navy `#2A3A62` (target rim).
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals

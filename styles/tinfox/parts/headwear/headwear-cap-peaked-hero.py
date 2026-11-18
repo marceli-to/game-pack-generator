@@ -24,5 +24,5 @@ P.shell([[peak_pt(t, 0.0, 1.68) for t in cols], [peak_pt(t, 0.045, 1.67) for t i
 # badge: brass disc on the crown's front, centred on the bulge above the band, leaning with it
 c = Vector((0.0, -0.19, 1.776))
 n = Vector((0, -1, -0.2)).normalized()   # follows the crown front, which leans forward
-P.cylinder(c - n * 0.01, c + n * 0.008, 0.042, n=12, role="metal")
-P.cylinder(c + n * 0.006, c + n * 0.013, 0.03, n=12, role="metal")
+P.cylinder(c - n * 0.01, c + n * 0.008, 0.048, n=12, role="metal")   # 15 % larger (game report: reads only near)
+P.cylinder(c + n * 0.006, c + n * 0.013, 0.035, n=12, role="metal")

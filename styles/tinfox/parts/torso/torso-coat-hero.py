@@ -10,11 +10,27 @@ body = [(1.51, 0.095, -0.1, 0.09, 0.05), (1.44, 0.105, -0.115, 0.1, 0.05), (1.43
         (1.19, 0.226, -0.18, 0.158, 0.085), (1.1, 0.2, -0.155, 0.145, 0.075), (1.0, 0.18, -0.138, 0.136, 0.068),
         (0.9, 0.198, -0.16, 0.16, 0.08), (0.8, 0.25, -0.185, 0.192, 0.09), (0.7, 0.275, -0.2, 0.214, 0.1),
         (0.62, 0.29, -0.21, 0.23, 0.105), (0.555, 0.3, -0.218, 0.242, 0.11)]
-# hem: a 1.5 cm thick lip, then the dark inside up into the coat
-inner = [(0.55, 0.285, -0.204, 0.228, 0.1), (0.62, 0.274, -0.195, 0.214, 0.095), (0.78, 0.225, -0.165, 0.175, 0.08)]
-rings = [ring(*b) for b in body] + [ring(*b) for b in inner]
-nb = len(rings) - 1
-P.loft(rings, ["primary"] * len(body) + ["primary"] * (len(inner) - 1), cap_roles=("dark", "primary"))
+# v2 (game report: the skirt front lifted as a rigid plank and the thigh tore through it): the closed body ends
+# under the belt; below it the skirt is an open sheet with a 1.2 cm slit up the front, so each front panel follows
+# its own thigh (`centre_width_front`) and the two never share space; the follow ramps from 0 at the hips to 0.6
+# at the hem (`full_at` 1.0), so the panel bends instead of swinging as one board. The back stays one piece.
+upper = [b for b in body if b[0] >= 0.9]
+P.loft([ring(*b) for b in upper], "primary", cap_roles=("dark", "primary"))
+P.skirt = {"follow": 0.6, "full_at": 1.0, "centre_width_front": 0.01}
+def dims(z):
+    for z0z, z1z in zip(body, body[1:]):
+        if z1z[0] <= z <= z0z[0]:
+            k = (z0z[0] - z) / (z0z[0] - z1z[0])
+            return [a + (c - a) * k for a, c in zip(z0z[1:], z1z[1:])]
+    return list(body[-1][1:])
+GAP = 0.006
+def skirt_row(z, out=0.003):
+    sx, f, b_, r = dims(z)
+    pts = ring(z, sx + out, f - out, b_ + out, r)        # 16 points, corner order (+,+) (-,+) (-,-) (+,-)
+    fy = pts[12].y
+    return ([Vector((GAP, fy, z))] + pts[12:16] + pts[0:12] + [Vector((-GAP, fy, z))])
+rows = [skirt_row(z) for z in (0.96, 0.9, 0.8, 0.7, 0.62, 0.555)]
+P.shell(rows, -0.015, "primary")
 # collar band (a step out at the top of the collar)
 P.loft([ring(1.44, 0.112, -0.122, 0.106, 0.05), ring(1.5, 0.108, -0.115, 0.1, 0.05)], "primary")
 # brass trim: along the collar's top edge, and a V down its front
@@ -31,9 +47,11 @@ def front_y(z):
             return f0 + (f1 - f0) * (z0 - z) / (z0 - z1)
     return zs[-1][1]
 for z in (1.31, 1.2, 1.09, 0.85, 0.73, 0.61):
-    y = front_y(z)
-    P.cylinder(Vector((0, y + 0.006, z)), Vector((0, y - 0.008, z)), 0.026, n=10, role="metal")
-    P.cylinder(Vector((0, y - 0.007, z)), Vector((0, y - 0.013, z)), 0.018, n=10, role="metal")
+    y = front_y(z) - (0.003 if z < 0.96 else 0.0)
+    x = 0.022 if z < 0.96 else 0.0      # below the belt: on the wearer's left panel, beside the slit
+    r = 0.03                            # 15 % larger than v1 (game report: buttons read only near)
+    P.cylinder(Vector((x, y + 0.006, z)), Vector((x, y - 0.008, z)), r, n=10, role="metal")
+    P.cylinder(Vector((x, y - 0.007, z)), Vector((x, y - 0.013, z)), r * 0.7, n=10, role="metal")
 # name patch on the wearer's left chest
 P.rbox((0.07, -0.228, 1.255), (0.17, -0.21, 1.285), "accent", r=0.004, bevel=0, seg=1, axis="y")
 # epaulettes: rings round an axis that leans out and down from the collar over the shoulder joint

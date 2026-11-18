@@ -1,0 +1,24 @@
+{
+  "colors": {
+    "accent": 24,
+    "dark": 54,
+    "metal": 53,
+    "primary": 16,
+    "secondary": 52,
+    "special": 24
+  },
+  "kind": "prop",
+  "name": "barrel",
+  "part": "barrel-red",
+  "reference": {
+    "image": "specs/barrel/reference/sheet.png",
+    "length_m": 0.545,
+    "views": {
+      "item_side": [55, 76, 533, 865],
+      "item_front": [624, 76, 1100, 865],
+      "item_top": [1186, 254, 1623, 718]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

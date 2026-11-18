@@ -58,6 +58,7 @@ def build_part(part: str, script: str, archetype: str | None = None, overwrite: 
         "built": dt.date.today().isoformat(), "blender": style["blender"]["version"],
         **{k: r["stats"][k] for k in ("tris", "verts", "roles", "shells", "bbox")},
         **({"covers": r["stats"]["covers"]} if r["stats"].get("covers") else {}),
+        **({"skirt": r["stats"]["skirt"]} if r["stats"].get("skirt") else {}),
         "warnings": r.get("soft", []),
     }
     (lib_dir / f"{part}.json").write_text(json.dumps(meta, indent=1) + "\n")

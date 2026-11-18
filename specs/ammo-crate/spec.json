@@ -1,0 +1,23 @@
+{
+  "colors": {
+    "accent": 19,
+    "dark": 53,
+    "primary": 52,
+    "secondary": 54,
+    "special": 39
+  },
+  "kind": "prop",
+  "name": "ammo-crate",
+  "part": "crate-ammo",
+  "reference": {
+    "image": "specs/ammo-crate/reference/sheet.png",
+    "length_m": 0.748,
+    "views": {
+      "item_side": [66, 246, 736, 560],
+      "item_front": [808, 246, 1206, 560],
+      "item_top": [1286, 162, 1990, 572]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}
