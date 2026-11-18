@@ -1,3 +1,5 @@
+# v2 (Marcel, 2026-11-18: grey vest, to tell him from the guard at a distance): vest, rolled collar, plates and
+# shoulder pads carry role `armor`; the jacket under it stays `primary`.
 # Armoured vest over the uniform jacket (tinfox, hero-m), for specs/rifle-guard/reference: the guard's jacket
 # (torso-jacket-hero, collar/placket/name patch dropped: the vest covers them) under a padded vest from the collar
 # to the belt, 3 cm proud of the jacket; a thick rolled collar round the neck; three rounded plates stacked on the
@@ -31,7 +33,7 @@ def vrow(z, sx, f, b, r):
     return (z, sx + OUT, f - OUT, b + OUT, r + OUT * 0.5)
 vrows = [vrow(*v) for v in vest_rows]
 vrows[0] = (1.445, 0.215, -0.17, 0.15, 0.08)
-P.loft([ring(*v) for v in vrows], "primary", cap_roles=("primary", "primary"))
+P.loft([ring(*v) for v in vrows], "armor", cap_roles=("armor", "armor"))
 def vest_y(x, z, side):
     """Surface y of the vest at (x, z) on the front (side -1) or back (+1)."""
     for a, b in zip(vrows, vrows[1:]):
@@ -53,9 +55,9 @@ def vest_y(x, z, side):
 # rising at the back to meet the helmet's neck guard (no skin between them from behind)
 cpath = [Vector((p.x, p.y, p.z + 0.06 * max(0.0, p.y) / 0.12)) for p in P.rrect((0, -0.005, 1.455), 0.13, 0.125, 0.07, seg=3)]
 cn = [Vector((p.x, p.y + 0.005, 0)).normalized() for p in cpath]
-P.sweep(cpath, P.strap_profile(0.055, 0.035, 0.014, inset=0.02), "primary", cn, cyclic=True)
+P.sweep(cpath, P.strap_profile(0.055, 0.035, 0.014, inset=0.02), "armor", cn, cyclic=True)
 # plates: rounded pillows following the vest surface (3 rows front and back)
-def plate(z0, z1, hw, side, role="primary"):
+def plate(z0, z1, hw, side, role="armor"):
     zs = [z0, z0 + 0.012, z1 - 0.012, z1]
     xs = [-hw, -hw + 0.015, hw - 0.015, hw]
     if side > 0:   # keep the outer side outward (the shell's normal is du x dv)
@@ -99,7 +101,7 @@ def pad_ring(t, ry, rw, n=16):
     return [c + u * (ry * math.cos(2 * math.pi * k / n)) + w * (rw * math.sin(2 * math.pi * k / n))
             for k in range(n)]
 pad = [(t, ry * 1.1, rw * 1.1) for t, ry, rw in [(0.0, 0.13, 0.08), (0.12, 0.168, 0.12), (0.55, 0.18, 0.135), (0.9, 0.164, 0.12), (1.05, 0.115, 0.08)]]
-pad_faces = P.loft([pad_ring(t, ry, rw) for t, ry, rw in pad], "primary")
+pad_faces = P.loft([pad_ring(t, ry, rw) for t, ry, rw in pad], "armor")
 faces = list(pad_faces)
 # stripe: across the pad from front to back, near the collar end
 t, ry, rw = 0.3, 0.175 * 1.1, 0.131 * 1.1

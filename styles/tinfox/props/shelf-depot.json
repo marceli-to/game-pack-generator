@@ -1,0 +1,33 @@
+{
+ "prop": "shelf-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "eb7275982c4e9c4cfca7bd5b49e785cbfae0d222fac22dbb0e8463703e8545e2",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 788,
+ "verts": 484,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 45,
+ "bbox": [
+  [
+   -0.515,
+   -0.205,
+   0.0
+  ],
+  [
+   0.515,
+   0.205,
+   2.0
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

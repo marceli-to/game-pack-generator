@@ -1,0 +1,5 @@
+{"colors": {"accent": 19, "leather": 54, "metal": 7, "primary": 6, "special": 55},
+ "kind": "prop", "name": "side-table", "part": "drawers-depot",
+ "reference": {"image": "specs/side-table/reference/sheet.png", "length_m": 0.71,
+   "views": {"item_side": [110, 215, 583, 734], "item_front": [697, 215, 1125, 734], "item_top": [1239, 245, 1665, 693]}},
+ "style": "tinfox", "type": "world"}

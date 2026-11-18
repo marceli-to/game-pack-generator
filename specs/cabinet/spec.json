@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "leather": 54, "metal": 7, "primary": 6, "special": 39},
+  "kind": "prop",
+  "name": "cabinet",
+  "part": "cabinet-depot",
+  "reference": {
+    "image": "specs/cabinet/reference/sheet.png",
+    "length_m": 1.48,
+    "views": {
+      "item_side": [102, 47, 696, 838],
+      "item_front": [811, 47, 1042, 838],
+      "item_top": [1171, 336, 1671, 566]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

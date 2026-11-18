@@ -4,7 +4,7 @@
   "default_style": "clean",
   "blender": { "version": "5.2.4" },
   "units": { "unit_m": 1.0, "forward_blender": "-Y", "up_blender": "+Z", "rest_pose": "T" },
-  "roles": ["skin", "hair", "primary", "secondary", "accent", "metal", "leather", "eyes", "dark", "special"],
+  "roles": ["skin", "hair", "primary", "secondary", "accent", "metal", "leather", "eyes", "dark", "special", "armor"],
   "slots": [
     "head", "hair", "headwear", "face", "torso", "arms", "hands", "legs", "feet", "accessory_back",
     "accessory_hand_l", "accessory_hand_r", "accessory_waist"

@@ -43,7 +43,7 @@ Defined by each style in `styles/<name>/STYLE.md` §3 (triangle budgets and the 
 How a role becomes a visible surface is the style's **surface mode** (`styles/<name>/STYLE.md` §4; e.g. `palette`: one flat colour per role). The roles themselves are shared:
 
 - **Colour roles:** every face of every part carries a **role**, never a colour. The character spec maps roles to surface values (palette indices in the `palette` mode).
-  - Roles (fixed enum, stored as integers): `0 skin`, `1 hair`, `2 primary`, `3 secondary`, `4 accent`, `5 metal`, `6 leather`, `7 eyes`, `8 dark` (mouth, inner sleeves, soles), `9 special` (glow, crystals)
+  - Roles (fixed enum, stored as integers): `0 skin`, `1 hair`, `2 primary`, `3 secondary`, `4 accent`, `5 metal`, `6 leather`, `7 eyes`, `8 dark` (mouth, inner sleeves, soles), `9 special` (glow, crystals), `10 armor` (armour worn over the clothes: vests, plates, pads; lets a vest differ from the uniform under it)
   - Stored as a face attribute on the mesh: `role`, domain FACE, type INT. Part authors (agents or humans) set it when building the part.
   - A part never contains colours, UVs or textures of its own; recolouring a character only means changing `spec.colors`.
   - A spec must define a colour for every role used by its parts (otherwise hard error).

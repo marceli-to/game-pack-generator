@@ -7,8 +7,10 @@ _Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tin
 there). Guard, rifle guard, officer, all seven weapons and props 1 (barrel, surprise box, ammo crate, range target)
 are in the game and confirmed. Officer update 1 confirmed by the game (coat reads as cloth in `run`; darker coat
 left to Marcel after playing). **Cover batch (05–08) and depot batch 2 (09 locker, 12 desk, 13 terminal, 15 bunk bed)
-built and handed over** (`COVER.md`, `DEPOT.md`); all 16 kit sheets are in. **Next:** 14 console (mission target),
-then the rest (10, 11, 16–20; see "Tinfox: cover kit"), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
+built and handed over** (`COVER.md`, `DEPOT.md`, now in `_archive/`), **console (14) handed over** (`CONSOLE.md`);
+officer darker coat + rifle guard grey vest sent (`COLOURS-UPDATE.md`). **Depot rest (10, 11, 16–20) handed over**
+(`DEPOT-REST.md`): the kit 05–20 is complete. **Next:** pickups/power-ups 21–31 when Marcel's sheets are in
+(`PICKUPS-AND-POWERUPS.md`), then `hero-f` + the worker. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -40,10 +42,12 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 1. **Cover and depot kit** (`~/Desktop/tinfox/COVER-AND-DEPOT.md`; sheets in `props/sheets/`, prompts 05–20):
    16 static `world` props, front +Z, origin floor centre, **exact box sizes** (the game stretches to its box),
    budgets cover ≤ 400 tris, furniture ≤ 800, terminal/console ≤ 1,500, flat tops on crates/container. Order: cover
-   05–08 (**done, `COVER.md`**), 09, 12, 13, 15 (**done, `DEPOT.md`**; wait for the game's reports), then **14 console**
-   (build it with the terminal's parts: `_depot.py` helpers, `on_desk` buttons, screen + graphics), then the rest.
+   05–08 (**done, `COVER.md`**), 09, 12, 13, 15 (**done, `DEPOT.md`**), 14 (**done, `CONSOLE.md`**; wait for the game's
+   reports), then the rest (10 shelf, 11 cabinet, 16–20: **done, `DEPOT-REST.md`**; wait for the game's report).
+   Next: batch 3, pickups/power-ups 21–31 + the practice dummy (`PICKUPS-AND-POWERUPS.md`, `MISSING.md`; Marcel makes
+   the sheets in ChatGPT). Box sizes per prop: `~/Desktop/tinfox/COVER-AND-DEPOT.md`.
    All sheets are in `specs/<name>/reference/sheet.png` (names: locker, shelf, cabinet, desk,
-   terminal, console, bunk-bed, mess-table, chair, office-chair, armchair, side-table); no specs yet for 10, 11, 14, 16–20. Hand over per batch with a short
+   terminal, console, bunk-bed, mess-table, chair, office-chair, armchair, side-table); all have specs now. Hand over per batch with a short
    `.md` (file, sha256, size check, previews), as `PROPS.md` (now in `_archive/`). Workflow: as props 1
    (`workspace/tinfox/props/run.py <name> --build --export`, see "Tinfox: props").
    Weapons and props 1 are closed (game confirmed; see "Tinfox: game replies").
@@ -54,14 +58,13 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    `styles/tinfox/proportions/` (as `hero-m` from the guard sheet: metric grid, `make_template` + `make_mannequin`
    jobs, STYLE.md ↔ style.json). Worker parts: overalls (torso + legs), utility belt with pouches, hard hat,
    ponytail, brown work gloves, brown boots (guard boots recoloured). Follow the workflow below.
-3. **Officer** in the game (update 1, sha `d4ee1b26…`, confirmed 2026-11-18). Open design call for Marcel after
-   playing: darker coat (at 7 m he still reads olive like the guard, though brass, moustache and epaulettes set him
-   apart). Possible polish: fringe more visible from the front, tris under 7,000.
+3. **Officer + rifle guard colours sent** (`COLOURS-UPDATE.md`, 2026-11-18; wait for the game's reply): officer
+   `primary` 29 → 30 dark olive (sha `ff2a94d7…`); rifle guard vest grey via the new role `armor` → cell 12
+   `#8E8E8E` (lighter than the gun grey 52, so held rifles still show; sha `18bf5348…`; 10 colours, soft).
+   Sheet `workspace/tinfox/colours/guard_officer_rifle.png`. Possible polish: fringe more visible from the front, tris under 7,000.
 4. **Game replied to update 3 + rifle guard** (`GUARD-UPDATE-3-REPLY.md`, 2026-11-17): both in the game; walk/run
    feet planted (game now has `groundSpeed` per profile, Tin Fox 1.6 / 4.0); rifle guard is a drop-in
-   (`PROFILES.tinfox.archetypes.guard_rifle`), crouch/firing clean. **Open design call for Marcel:** at 7 m the rifle
-   guard and the guard both read mostly olive; the game suggests a darker or grey vest. The vest's plates/collar
-   share `primary` with the jacket, so this needs a new role (e.g. `secondary`-like `armor`) on the vest pieces.
+   (`PROFILES.tinfox.archetypes.guard_rifle`), crouch/firing clean. Vest colour: done (grey, item 3).
    Possible later polish (not asked for): rounder shoulder pads, puffier plates.
 5. Still open from the guard rounds: a Tinfox "finished look" checklist in `styles/tinfox/STYLE.md` and a
    `validate` rule "face/detail islands must touch or enter their base shell".
@@ -85,7 +88,7 @@ skull); `add_reference(top_y = floor_y − 1.80 / m_per_px)`; new parts in `work
 `fit_to_reference` and **copy `fit` + `compare.arms_down_deg` from `workspace/<name>/spec.json` into
 `specs/<name>/spec.json`** (`run.py` re-inits from `specs/` and drops it otherwise); then `--anim --export`.
 
-**Lowpoly (waiting for Marcel):**
+**Lowpoly (parked; Marcel 2026-11-18: ignore the open looks below for now):**
 
 0. **Marcel's look at the rogue and villager after their detail pass** (viewer / Heerschar; GLBs in
    `workspace/<name>/export/`). Comparison sheets: `workspace/knight-lowpoly/detail/detail_<name>.png` (rows head /
@@ -978,6 +981,15 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   whole; crouch walk fine on our strip. At 7 m the brass reads as gold points, he reads as a different figure but
   still "an olive enemy" at a glance: darker coat left to Marcel after playing. No clipping vs pistol/arms/epaulettes.
 
+- **Console + colours confirmed (2026-11-18, `_archive/CONSOLE-AND-COLOURS-REPLY.md`, `props/report/b3-*`,
+  `characters/report/col-*`):** all three GLBs in (checksums match). Console `scale` 1 on its box; the game turned the
+  depot's console and the lab terminal 180° in the level (both faced the wall; Kenney's hid it); reads at 3.5 m,
+  destroyed = debris burst, no broken version needed. At 7 m guard / officer / rifle guard read as three enemies
+  (grey vest strongest; the two olives moderate but clear); at 3 m the guns still show on the grey vest. Nothing to
+  change; the game waits for 10, 11, 16–20. New on the Desktop (unread here yet): `MISSING.md` (what still uses
+  Kenney/code boxes, in the game's order) and `PICKUPS-AND-POWERUPS.md` (batch 3: pickups/power-ups 21–29 + the last
+  two depot props, sheets via prompts 21–31).
+
 ## Tinfox: cover kit (2026-11-18)
 
 - Sheets 05–20 copied to `specs/<name>/reference/sheet.png`. View boxes per sheet: scratch `boxes.py` idea (non-
@@ -1001,8 +1013,29 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   head end −Y = glTF +Z, ladder −X, frame shifted 2.75 cm +X so the ladder fits the 0.99 box; 0.66/0.86/0.71).
   Lower IoU than the cover: the sheets aren't drawn at the box proportions. Palette: 32 → screen blue `#47C3F1`,
   57 → screen highlight `#B1FAFD` (both unused). Handed over: `DEPOT.md` + GLBs, previews, vs-sheet.
+- **Console** (14, `console-depot`, 1,488 tris after trimming from 1,948: no screws, two-ring keys, 5-sided cables,
+  fewer ring segments): base with grooved panels, slanted desk across the full width (`on_desk` keys, levers,
+  big button), housing overhanging the desk's back edge (first try sat it at the desk's middle and hid the back
+  key row), radar screen in a striped hazard frame, side screens, corner caps, vents, antenna light, three cables
+  into a floor plate at +X. Terminal colours, no new cells. IoU 0.52/0.73/0.60 (sheet drawn taller than the box).
+  Measuring grids `workspace/tinfox/props/console/grid_*.png`. Handed over: `CONSOLE.md`.
+- **Depot rest** (10, 11, 16–20; parts `shelf-depot`, `cabinet-depot`, `chair-office-depot`, `chair-depot`,
+  `table-mess-depot`, `armchair-depot`, `drawers-depot`; specs `shelf`, `cabinet`, `office-chair`, `chair`,
+  `mess-table`, `armchair`, `side-table`): 788 / 564 / 644 / 616 / 780 / 536 / 664 tris, boxes exact, validator 0/0.
+  Palette cell 6 → cabinet grey `#A5A5A8` (sampled off sheet 11). Shelf: supplies on the shelves are part of the
+  mesh, bolts on the deck fronts only (the ends' bolts cost 240 tris). Office chair: five-star base, olive wings stand
+  forward of the black backrest core (front view wins over the side view, which draws them behind). Mess table: the
+  sheet is drawn ~1.0 m tall at 2.5 m, the box is 0.74 incl. the mug → top at 0.63 m (asked the game whether to drop
+  the mug and tray); its sheet's top view is turned 90°, so the spec compares only front and side. Sheet views here
+  are mostly not at box proportions: per-axis cm/px (across from the width, up from the height, deep from the side
+  view's width). Handed over: `DEPOT-REST.md` (game file names from `MISSING.md`, e.g. `storage-cabinet.glb`).
 
 ## Decisions (with reasons)
+
+- **New role `armor`** (2026-11-18, core.json ↔ STYLE.md §4): the rifle guard's vest needed its own colour, and every
+  existing role was taken on him (`secondary` is the black visor and knee pads). Appended as index 10, so stored
+  role values stay valid; parts that don't use it need no spec entry.
+- **Officer coat dark olive 30, rifle-guard vest grey 12** (Marcel, 2026-11-18): both read as the guard at 7 m.
 
 - **Weapon sizes = 1.2 × the sheet prompts** (2026-11-17): the pistol's factor (0.30 m = its Kenney size in the
   hand); one rule keeps the guns in proportion to each other. The sniper comes out longer than Kenney's.
@@ -1130,6 +1163,16 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-18** — Depot rest (shelf, storage cabinet, office chair, chair, mess table, armchair, drawer cabinet)
+  built, exported, handed over (`DEPOT-REST.md`); depot kit 05–20 complete.
+
+- **2026-11-18** — Game confirmed the console and the officer/rifle-guard colours (nothing to change); reply archived.
+
+- **2026-11-18** — Officer darker coat, rifle guard grey vest (role `armor`), console (14) built and handed over.
+
+- **2026-11-18** — Marcel: officer darker coat and rifle-guard darker/grey vest both wanted; lowpoly looks
+  parked. `COVER.md`/`DEPOT.md` moved to `~/Desktop/tinfox/_archive` (no game reply yet).
 
 - **2026-11-18** — Depot batch 2 (locker, desk, terminal, bunk bed) built, exported, handed over (`DEPOT.md`).
   88 tests pass.

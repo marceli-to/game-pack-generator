@@ -12,7 +12,8 @@
     "leather": 54,
     "metal": 43,
     "dark": 53,
-    "special": 45
+    "special": 45,
+    "armor": 12
   },
   "parts": {
     "head": "head-hero-square",

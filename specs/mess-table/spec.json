@@ -1,0 +1,5 @@
+{"colors": {"accent": 19, "dark": 52, "leather": 54, "metal": 7, "primary": 6, "secondary": 29, "special": 55},
+ "kind": "prop", "name": "mess-table", "part": "table-mess-depot",
+ "reference": {"image": "specs/mess-table/reference/sheet.png", "length_m": 1.28,
+   "views": {"item_side": [971, 217, 1341, 551], "item_front": [61, 217, 886, 551]}},
+ "style": "tinfox", "type": "world"}

@@ -1,0 +1,5 @@
+{"colors": {"accent": 19, "leather": 54, "metal": 7, "primary": 29},
+ "kind": "prop", "name": "armchair", "part": "armchair-depot",
+ "reference": {"image": "specs/armchair/reference/sheet.png", "length_m": 1.07,
+   "views": {"item_side": [68, 239, 608, 701], "item_front": [670, 228, 1107, 702], "item_top": [1213, 240, 1689, 668]}},
+ "style": "tinfox", "type": "world"}

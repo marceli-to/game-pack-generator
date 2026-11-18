@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 19, "dark": 55, "eyes": 39, "leather": 54, "metal": 7, "secondary": 50, "skin": 57, "special": 32},
+  "kind": "prop",
+  "name": "console",
+  "part": "console-depot",
+  "reference": {
+    "image": "specs/console/reference/sheet.png",
+    "length_m": 1.4,
+    "views": {
+      "item_side": [41, 52, 693, 821],
+      "item_front": [743, 52, 1192, 821],
+      "item_top": [1219, 185, 1705, 695]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

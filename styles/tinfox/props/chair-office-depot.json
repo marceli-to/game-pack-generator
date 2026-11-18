@@ -1,0 +1,31 @@
+{
+ "prop": "chair-office-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "787cfa161867db6dd10a00aa8290b070b009e0d74b56217c2336a3e46d8a2e8f",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 644,
+ "verts": 374,
+ "roles": [
+  "leather",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 26,
+ "bbox": [
+  [
+   -0.305,
+   -0.345,
+   0.0
+  ],
+  [
+   0.305,
+   0.3449,
+   0.96
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

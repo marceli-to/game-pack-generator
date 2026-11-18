@@ -1,0 +1,5 @@
+{"colors": {"accent": 19, "dark": 53, "leather": 54, "metal": 7, "primary": 6, "secondary": 29},
+ "kind": "prop", "name": "shelf", "part": "shelf-depot",
+ "reference": {"image": "specs/shelf/reference/sheet.png", "length_m": 1.03,
+   "views": {"item_side": [203, 41, 637, 846], "item_front": [807, 41, 1007, 846], "item_top": [1199, 339, 1583, 554]}},
+ "style": "tinfox", "type": "world"}

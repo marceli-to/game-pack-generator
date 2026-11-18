@@ -1,0 +1,32 @@
+{
+ "prop": "cabinet-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "fcc0014e404fc19eabc105b07fc3620380cf7af5e2a3f96d01c381938bfef387",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 564,
+ "verts": 320,
+ "roles": [
+  "accent",
+  "leather",
+  "metal",
+  "primary",
+  "special"
+ ],
+ "shells": 19,
+ "bbox": [
+  [
+   -0.74,
+   -0.205,
+   0.0
+  ],
+  [
+   0.74,
+   0.205,
+   2.0
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

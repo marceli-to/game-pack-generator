@@ -1,0 +1,30 @@
+{
+ "prop": "chair-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "253851e6bdc7cbaf24456d23c798eb2e71a8c2967f35c06ff5113907fe30a935",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 616,
+ "verts": 344,
+ "roles": [
+  "leather",
+  "metal",
+  "primary"
+ ],
+ "shells": 18,
+ "bbox": [
+  [
+   -0.215,
+   -0.27,
+   0.0
+  ],
+  [
+   0.215,
+   0.27,
+   0.91
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

@@ -5,13 +5,14 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "d13f7929efde88ba66084d3d2f9c059bf5cd9816a3cb17f66b062b0cc9d559da",
- "built": "2026-11-17",
+ "script_sha256": "7018736787b9435214c79e9e054f02d46173e0cb91312fad8d8bdfbdf4c521b6",
+ "built": "2026-11-18",
  "blender": "5.2.4",
  "tris": 1968,
  "verts": 1024,
  "roles": [
   "accent",
+  "armor",
   "dark",
   "primary"
  ],

@@ -1,0 +1,5 @@
+{"colors": {"leather": 55, "metal": 52, "primary": 54, "secondary": 29},
+ "kind": "prop", "name": "office-chair", "part": "chair-office-depot",
+ "reference": {"image": "specs/office-chair/reference/sheet.png", "length_m": 0.61,
+   "views": {"item_side": [134, 103, 567, 798], "item_front": [658, 100, 1082, 797], "item_top": [1226, 258, 1652, 695]}},
+ "style": "tinfox", "type": "world"}

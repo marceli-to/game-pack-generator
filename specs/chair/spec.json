@@ -1,0 +1,5 @@
+{"colors": {"leather": 55, "metal": 7, "primary": 29},
+ "kind": "prop", "name": "chair", "part": "chair-depot",
+ "reference": {"image": "specs/chair/reference/sheet.png", "length_m": 0.43,
+   "views": {"item_side": [178, 89, 568, 811], "item_front": [689, 88, 1092, 811], "item_top": [1251, 256, 1632, 711]}},
+ "style": "tinfox", "type": "world"}

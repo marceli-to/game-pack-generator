@@ -1,0 +1,31 @@
+{
+ "prop": "armchair-depot",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "1e452e8a552d3dbe560a3a1bfea77625f084e161ca91d515bead13ca7fec8ece",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 536,
+ "verts": 296,
+ "roles": [
+  "accent",
+  "leather",
+  "metal",
+  "primary"
+ ],
+ "shells": 14,
+ "bbox": [
+  [
+   -0.535,
+   -0.47,
+   0.0
+  ],
+  [
+   0.535,
+   0.4696,
+   0.88
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}
