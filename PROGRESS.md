@@ -1165,7 +1165,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 ## Log
 
 - **2026-11-18** — Depot rest (shelf, storage cabinet, office chair, chair, mess table, armchair, drawer cabinet)
-  built, exported, handed over (`DEPOT-REST.md`); depot kit 05–20 complete.
+  built, exported, handed over (`DEPOT-REST.md`); depot kit 05–20 complete. Committed + pushed `6eb129a`. Waiting for the
+  game's report and Marcel's sheets 21–31.
 
 - **2026-11-18** — Game confirmed the console and the officer/rifle-guard colours (nothing to change); reply archived.
 
