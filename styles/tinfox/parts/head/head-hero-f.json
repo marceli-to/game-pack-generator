@@ -1,0 +1,33 @@
+{
+ "part": "head-hero-f",
+ "slot": "head",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "f9baf1281621f283febafbf4f196d378c8994ef4c8ab7280f4be112ec1b277b9",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 1376,
+ "verts": 716,
+ "roles": [
+  "eyes",
+  "hair",
+  "skin",
+  "special"
+ ],
+ "shells": 14,
+ "bbox": [
+  [
+   -0.1588,
+   -0.1555,
+   1.28
+  ],
+  [
+   0.1588,
+   0.1482,
+   1.706
+  ]
+ ],
+ "warnings": []
+}

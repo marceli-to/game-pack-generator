@@ -7,8 +7,9 @@ _Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tin
 there). Guard, rifle guard, officer, all seven weapons, props 1 and the depot kit 05–20 are in the game and confirmed
 (depot rest reply archived; the game draws the depot furniture 1.2× under `?art=tinfox`, nothing changes in our
 files). **Batch 3 built and handed over** (`PICKUPS.md`): six power-ups, medkit, vest, red/blue keycards, chest,
-satellite dish; every prop sheet 01–31 now has a model. **Next:** game confirmed batch 3 (nothing to change); now `hero-f` +
-the worker, then the players. Lowpoly Phase 4 items below still wait for Marcel._
+satellite dish; every prop sheet 01–31 now has a model; game confirmed batch 3. **`hero-f` template + worker built,
+OK'd by Marcel and handed over** (`WORKER.md`, sha `f845866c…`); **alarm panel (32) handed over** (`ALARM-PANEL.md`).
+Wait for the game's reports. **Next:** the players. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -28,7 +29,7 @@ the worker, then the players. Lowpoly Phase 4 items below still wait for Marcel.
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
-| `tinfox` | draft; flat shading, ~5 heads (hero-m) | guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
+| `tinfox` | draft; flat shading, ~5 heads (hero-m, hero-f) | worker v1 (hero-f, awaiting Marcel), guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
 
 ## Next session: start here
 
@@ -41,12 +42,11 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    change; vest stays 0.16 deep, dish keeps the tall box; power-ups drawn 1.4×, `M_Bubble` at 40 %). Every prop and
    pickup under `?art=tinfox` is ours now; left in code: catwalks, stairs, railings, pillars, alarm panels. Workflow for props: `workspace/tinfox/props/run.py <name> --build --export`; hand over per batch
    with a short `.md` (file, sha256, size check from the GLB, `-preview.png`, `-vs-sheet.png`).
-2. **Then the worker** (after the cover kit, or between batches while sheets are pending). Sheet `~/Desktop/tinfox/characters/sheets/04-worker.png`
-   (`looks.worker`, NPC in depot and training). Needs the second body archetype first: **`hero-f`** (slimmer waist,
-   narrower shoulders; GENERATOR.md; also used by players 2 and 4) as a proportion template in
-   `styles/tinfox/proportions/` (as `hero-m` from the guard sheet: metric grid, `make_template` + `make_mannequin`
-   jobs, STYLE.md ↔ style.json). Worker parts: overalls (torso + legs), utility belt with pouches, hard hat,
-   ponytail, brown work gloves, brown boots (guard boots recoloured). Follow the workflow below.
+2. **Worker handed over** (Marcel: "looks good", 2026-11-18; see "Tinfox: hero-f + worker"):
+   `characters/glb/worker.glb` (sha `f845866c…`) + `WORKER.md` (asks: reads as a worker, height after the game's
+   1.9 m scaling, interact/hit/die); wait for the game's report. Open polish (only if asked): head group 2,362 tris (target 2,000), 9
+   colours, fringe reads a bit heavy over the right eye, pouches still 4–6 cm into the lifted thigh in walk/run.
+   Alarm panel (32) built and handed over (see "Tinfox: cover kit"); the practice dummy (09) still needs a sheet.
 3. **Officer + rifle guard colours sent** (`COLOURS-UPDATE.md`, 2026-11-18; wait for the game's reply): officer
    `primary` 29 → 30 dark olive (sha `ff2a94d7…`); rifle guard vest grey via the new role `armor` → cell 12
    `#8E8E8E` (lighter than the gun grey 52, so held rifles still show; sha `18bf5348…`; 10 colours, soft).
@@ -1019,6 +1019,12 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   are mostly not at box proportions: per-axis cm/px (across from the width, up from the height, deep from the side
   view's width). Handed over: `DEPOT-REST.md` (game file names from `MISSING.md`, e.g. `storage-cabinet.glb`).
 
+- **Alarm panel** (32, `panel-alarm`, spec `alarm-panel`, world): 0.50 × 0.70 × 0.16 m exact, 392 tris (limit 400).
+  Pieces without a parent anchor give the game's named nodes `button` and `lamp` (root nodes, origin at the prop
+  origin), `spec.materials` gives them `M_Button` / `M_Lamp`. The sheet's clear dome is left out (opaque it would hide
+  the flashing lamp; offered as `M_Dome`); beacon elliptical to fit the 16 cm depth; yellow = cell 42. Sheet drawn
+  2.4× deeper than the box (IoU front 0.79, side/top ~0.4). Handed over: `ALARM-PANEL.md`.
+
 ## Tinfox: pickups, power-ups, chest, dish (batch 3, 2026-11-18)
 
 - Sheets 21–31 → `specs/<name>/reference/sheet.png` (keycard sheet in `keycard-red`, shared by `keycard-blue`). Parts
@@ -1039,7 +1045,40 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   facets fold); a flat plate stuck out 2–3 cm at its ends. Concave shapes (hearts, stars, bursts) are two overlapping
   convex prisms or centre-fan caps; overlapping halves must not share a vertex (merge → non-manifold).
 
+## Tinfox: hero-f + worker (2026-11-18)
+
+- **`hero-f` template** (tinfox STYLE.md §2a/§7a ↔ style.json, `proportions/hero-f.json` + preview, via the
+  `make_template` + `make_mannequin` jobs): read off the worker sheet with `workspace/lib4/grid.py` (grids in
+  `workspace/tinfox/worker/`). Scale from the head: the worker's face is drawn as wide as the guard's, so the head
+  stays the guard's size and she comes out at 1.70 m to the skull (1.803 mm/px, top_y 105, floor 1048). Chin 1.37,
+  hips 0.84 (±0.14), shoulders ±0.22, arm 0.48, ankles 0.12, foot bone 0.24, head 0.28, torso 0.36 × 0.30. Height
+  range 1.55–1.85; same `clip_stride` as hero-m.
+- **Worker** (`specs/worker`, sheet copied to `specs/worker/reference/turnaround.png`), 9 new parts with suffix
+  `-hero-f` (scripts in `workspace/tinfox/parts/`): `head-hero-f` (guard head, softer face: narrower jaw, smaller
+  nose, thin arched brows, symmetric smile; built in hero-m coordinates and moved onto the hero-f head joint, 5 %
+  narrower), `hair-ponytail-hero-f` (same transform; hair cap, fringe sweeping over the right brow, locks in front of
+  the ears, grey band + ponytail), `headwear-hardhat-hero-f` (white dome + crest + wide brim, longer at the front),
+  `torso-overalls-hero-f` (shirt collar, placket, breast pocket with flap, name patch with a wrench),
+  `arms-sleeves-rolled-hero-f` (rolled cuff at the elbow, bare forearms), `hands-glove-work-hero-f` (bigger mitten,
+  flared gauntlet cuff), `legs-overalls-hero-f`, `feet-boots-big-hero-f` (guard boots, sole role `accent` → its own
+  brown-grey), `accessory_waist-belt-utility-hero-f` (square silver buckle, two pouches high on the belt at the
+  front corners; first placement hung to 0.845 m and cut 8 cm into the lifted thigh).
+- Colours: tinfox cell 58 (unused glow cyan) → overall teal `#1B8A85`; skin 1, eyes 9, hair 8 (+ mouth via
+  `special`), teal 58, white 49 (hat, patch), brown 46 (gloves, boots), soles 47, belt/pouches 53, metal 51 →
+  9 colours (soft, as the guard).
+- 5,630 tris (head group 2,362 > 2,000 target), validate 0 hard. IoU unfitted 0.75/0.76/0.75 → fitted
+  0.79/0.76/0.78 (score 0.620 → 0.648; torso 1.06–1.1 wider, sleeves/gloves bigger, thighs deeper, head 0.92 at
+  the top, arms_down 76°; `fit` copied into `specs/worker/spec.json`). 18 clips, floor/contact ok (walk 1.60–1.67
+  m/s planted); pose findings are the guard's seam categories plus pouch vs thigh 4–6 cm in walk/run. Export ok
+  (validator 0/0, three.js loads 18 clips, 1.0 MB).
+
 ## Decisions (with reasons)
+
+- **`hero-f` scaled from the head, not a fixed height** (2026-11-18): the sheets have no common scale; the guard's
+  and the worker's faces are drawn the same width, so one head size keeps heads interchangeable between the bodies
+  and makes her ~10 cm shorter than the guard (the game rescales figures anyway).
+- **hero-f heads/hair reuse the hero-m scripts with a transform** (2026-11-18): same head size, so the guard's head
+  geometry is moved down to the hero-f head joint instead of re-modelling it.
 
 - **Exact-size pickups are built to the game's box, not the drawing** (2026-11-18): the game loads them at scale 1;
   deviations (flat medkit, thin vest, tall dish) are named in the handoff for the game/Marcel to call.
@@ -1177,6 +1216,12 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-18** — Alarm panel (32) built (392 tris, nodes `button`/`lamp`, `M_Button`/`M_Lamp`), handed over.
+- **2026-11-18** — Marcel OK'd the worker; handed over (`WORKER.md`, GLB + preview + vs-sheet). Next: players.
+
+- **2026-11-18** — `hero-f` template (worker sheet) + worker v1 (9 new parts, teal cell 58, fitted, 18 clips,
+  exported). 88 tests pass. Awaiting Marcel's look before the handover.
 
 - **2026-11-18** — Game confirmed batch 3 (nothing to change); reply archived. Next: `hero-f`, worker, players.
 

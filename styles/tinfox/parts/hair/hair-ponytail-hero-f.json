@@ -1,0 +1,33 @@
+{
+ "part": "hair-ponytail-hero-f",
+ "slot": "hair",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "95a8006375312f0a39755e20fd1f3774c1816211d8dc2d272e336eb643b9a841",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 488,
+ "verts": 256,
+ "roles": [
+  "hair",
+  "metal"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.1463,
+   -0.1522,
+   1.305
+  ],
+  [
+   0.1463,
+   0.3104,
+   1.705
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 42 of 256 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

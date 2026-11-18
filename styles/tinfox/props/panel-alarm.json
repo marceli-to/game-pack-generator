@@ -1,0 +1,32 @@
+{
+ "prop": "panel-alarm",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "31d451aa2576b9d4bfbf77189c69fff0dd546ddc8edc69fc00c4f4c262e550a1",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 392,
+ "verts": 224,
+ "roles": [
+  "accent",
+  "dark",
+  "metal",
+  "primary",
+  "special"
+ ],
+ "shells": 14,
+ "bbox": [
+  [
+   -0.25,
+   -0.08,
+   0.0
+  ],
+  [
+   0.25,
+   0.08,
+   0.7
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

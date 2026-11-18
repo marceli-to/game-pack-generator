@@ -1,0 +1,30 @@
+{
+ "part": "hands-glove-work-hero-f",
+ "slot": "hands",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "c6c62ec902bc9eae5c6616d61c83ffa147e38b3bd584ccd73af3e7189194528d",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 584,
+ "verts": 304,
+ "roles": [
+  "leather"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.883,
+   -0.13,
+   1.1674
+  ],
+  [
+   0.883,
+   0.086,
+   1.3234
+  ]
+ ],
+ "warnings": []
+}

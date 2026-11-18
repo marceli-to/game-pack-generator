@@ -1,0 +1,31 @@
+{
+ "part": "feet-boots-big-hero-f",
+ "slot": "feet",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "b5e32143a1406c8d12ecc923e46190930d11323ee0d55770ccc3f0e0b40ec57a",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 840,
+ "verts": 432,
+ "roles": [
+  "accent",
+  "leather"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.2804,
+   -0.1982,
+   0.0
+  ],
+  [
+   0.2804,
+   0.1858,
+   0.335
+  ]
+ ],
+ "warnings": []
+}

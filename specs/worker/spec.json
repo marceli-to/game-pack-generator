@@ -1,0 +1,111 @@
+{
+  "name": "worker",
+  "style": "tinfox",
+  "archetype": "hero-f",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 8,
+    "primary": 58,
+    "secondary": 49,
+    "accent": 47,
+    "leather": 46,
+    "metal": 51,
+    "dark": 53,
+    "special": 8
+  },
+  "parts": {
+    "head": "head-hero-f",
+    "hair": "hair-ponytail-hero-f",
+    "headwear": "headwear-hardhat-hero-f",
+    "face": null,
+    "torso": "torso-overalls-hero-f",
+    "arms": "arms-sleeves-rolled-hero-f",
+    "hands": "hands-glove-work-hero-f",
+    "legs": "legs-overalls-hero-f",
+    "feet": "feet-boots-big-hero-f",
+    "accessory_waist": "accessory_waist-belt-utility-hero-f"
+  },
+  "reference": "specs/worker/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 76.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "extra_clips": [
+    "aim_1h",
+    "shoot_1h",
+    "aim_2h",
+    "shoot_2h",
+    "crouch",
+    "crouch_walk",
+    "crouch_aim_1h",
+    "crouch_shoot_1h",
+    "crouch_aim_2h",
+    "crouch_shoot_2h"
+  ],
+  "fit": {
+    "arms": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.02,
+        1.105,
+        1.174
+      ]
+    },
+    "hands": {
+      "u": [
+        1.041,
+        1.062,
+        1.062
+      ],
+      "v": [
+        1.041,
+        1.083,
+        1.105
+      ]
+    },
+    "head": {
+      "u": [
+        1.02,
+        1.0,
+        0.923
+      ],
+      "v": [
+        0.942,
+        0.923,
+        0.923
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        0.887,
+        0.835
+      ],
+      "v": [
+        1.0,
+        1.174,
+        1.271
+      ]
+    },
+    "torso": {
+      "u": [
+        1.083,
+        1.105,
+        1.062
+      ],
+      "v": [
+        1.041,
+        1.02,
+        0.923
+      ]
+    }
+  }
+}

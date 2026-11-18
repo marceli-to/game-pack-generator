@@ -1,0 +1,31 @@
+{
+ "part": "accessory_waist-belt-utility-hero-f",
+ "slot": "accessory_waist",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "e98d2ae941e0133a2c13322b66550a58de6ae5037272c9e14b234c51e7ffa280",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 316,
+ "verts": 176,
+ "roles": [
+  "dark",
+  "metal"
+ ],
+ "shells": 9,
+ "bbox": [
+  [
+   -0.2249,
+   -0.174,
+   0.88
+  ],
+  [
+   0.2249,
+   0.12,
+   0.998
+  ]
+ ],
+ "warnings": []
+}

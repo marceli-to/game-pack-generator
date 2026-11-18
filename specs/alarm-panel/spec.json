@@ -1,0 +1,18 @@
+{
+  "colors": {"accent": 16, "dark": 54, "metal": 7, "primary": 42, "special": 16},
+  "kind": "prop",
+  "materials": {"M_Button": ["accent"], "M_Lamp": ["special"]},
+  "name": "alarm-panel",
+  "part": "panel-alarm",
+  "reference": {
+    "image": "specs/alarm-panel/reference/sheet.png",
+    "length_m": 0.5,
+    "views": {
+      "item_side": [98, 52, 577, 876],
+      "item_front": [654, 52, 1009, 876],
+      "item_top": [1113, 345, 1584, 720]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

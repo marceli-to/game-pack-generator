@@ -33,8 +33,10 @@ facets are the shading.
 | Archetype | Body height | Heads tall (approx.) |
 |---|---|---|
 | `hero-m` (default) | 1.65–1.95 | 5 |
+| `hero-f` | 1.55–1.85 | 5 |
 
-`hero-f` (worker, players 2 and 4: slimmer waist, narrower shoulders) comes later, from the worker sheet.
+`hero-m`: guard, officer, rifle guard, players 1 and 3. `hero-f`: worker, players 2 and 4 (slimmer waist, narrower
+shoulders, a little shorter, same head size).
 Headwear may add at most 30 % of body height on top (caps, helmets, antennas).
 
 The game scales every figure to its gameplay height, so height differences disappear in game; characters are
@@ -76,7 +78,7 @@ Surface mode **`palette`**: every face resolves its role (root STYLE.md §4) to 
   props (sheets in `specs/<prop>/reference/`, 2026-11-17): 16 red `#D8201C` (barrel, target rings), 24 yellow
   `#FFCE0A` (hazard stripes), 42 gold `#FBB40C` (surprise box frame), 38 purple `#8A2AAE`, 37 dark purple
   `#5A1E72`, 13 cream `#F2E5C0` (target board), 35 navy `#2A3A62` (target rim); for the cover and depot kit (sheets 05–20, 2026-11-18): 30 dark olive `#4D5130` (recessed
-  panels), 7 kit dark grey `#464646` (corner caps, container walls, lids), 26 khaki `#78723A` (container frame), 32 screen blue `#47C3F1` (terminal and console screens; was an unused sky blue), 57 screen highlight `#B1FAFD` (graphics on the screens; was an unused near-white). Depot rest (sheets 10, 11, 16–20): 6 cabinet grey `#A5A5A8` (storage cabinet and shelf bodies, sampled off sheet 11; was an unused mid grey). Pickups and power-ups (sheets 21–29, 2026-11-18; all seven were unused): 11 keycard red `#D33A2C` and 14 keycard blue `#3A6BD3` (the game's key colours), 34 vest steel blue `#1E5E90`, 31 shield sky blue `#0EA6F2`, 27 power-up green `#74D20C`, 15 power-up purple `#A322D2`, 36 lilac `#DDB2F7` (sampled off the sheets).
+  panels), 7 kit dark grey `#464646` (corner caps, container walls, lids), 26 khaki `#78723A` (container frame), 32 screen blue `#47C3F1` (terminal and console screens; was an unused sky blue), 57 screen highlight `#B1FAFD` (graphics on the screens; was an unused near-white). Depot rest (sheets 10, 11, 16–20): 6 cabinet grey `#A5A5A8` (storage cabinet and shelf bodies, sampled off sheet 11; was an unused mid grey). Pickups and power-ups (sheets 21–29, 2026-11-18; all seven were unused): 11 keycard red `#D33A2C` and 14 keycard blue `#3A6BD3` (the game's key colours), 34 vest steel blue `#1E5E90`, 31 shield sky blue `#0EA6F2`, 27 power-up green `#74D20C`, 15 power-up purple `#A322D2`, 36 lilac `#DDB2F7` (sampled off the sheets). Worker (sheet 04, 2026-11-18): 58 overall teal `#1B8A85` (lit flat teal off the sheet; was an unused glow cyan).
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals
@@ -104,6 +106,14 @@ Templates live in `styles/tinfox/proportions/<archetype>.json` (+ `_preview.png`
   longer for the same reason), hips 0.86 m (x ±0.16: the guard stands with his legs apart, thighs centred at ≈ ±0.17, boots at ≈ ±0.22; the template legs are straight, so the boots sit 2.5 cm further out than the ankles; crotch ≈ 0.73), ankles 0.13 m, foot bone 0.26 m (the boot
   sole is ≈ 0.45 m long and 0.30 m wide, heel 0.16 m behind the ankle), head 0.30 × 0.30 m, torso 0.44 × 0.32 m
   without the pads.
+- **`hero-f` (draft):** read off the worker sheet (`specs/worker/reference/turnaround.png`) with the same metric grid
+  at 1.803 mm/px. Scale from the head: the worker's face is drawn the same width as the guard's (≈ 0.22 m between
+  the cheeks), so the head is the same size and the body comes out shorter: skull top under the hard hat 1.70 m
+  (sheet y 105, floor y 1048). Chin (head joint) 1.37 m, crotch ≈ 0.74 → hips 0.84 m (x ±0.14: thighs at ≈ ±0.14,
+  boots at ≈ ±0.17), ankles 0.12 m, foot bone 0.24 m (boot sole ≈ 0.41 m long, heel 0.16 m behind the ankle),
+  head 0.28 × 0.28 m, torso 0.36 × 0.30 m at the chest (waist ≈ 0.34 × 0.26). Shoulders x ±0.22 (joint, under the
+  rolled sleeves; the sleeves reach ≈ ±0.32), arm 0.48 m shoulder to wrist (≈ 0.43 read off the sheet, longer for
+  two-handed aiming like `hero-m`). Stride: `hero-f` re-plants `walk` for 1.6 m/s and `run` for 4.0 m/s, as `hero-m`.
 - **Stride (`clip_stride`):** `hero-m` re-plants `walk` for 1.6 m/s and `run` for 4.0 m/s (Tinfox's guards walk
   1.5–1.8 m/s and run 3.8–4.0 m/s). KayKit's clips on these legs (1.95× KayKit's) came out at 1.5 m/s for `walk`, but
   the stance foot slid at 2.5 m/s after heel strike and 1.1 m/s before toe-off (moonwalking, Marcel), and at

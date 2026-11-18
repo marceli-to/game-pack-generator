@@ -1,0 +1,30 @@
+{
+ "part": "legs-overalls-hero-f",
+ "slot": "legs",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "7d0173cd46d588f0c1325b2577cb50790b0ad3ceddea50e04df733a3fe660d2d",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 376,
+ "verts": 192,
+ "roles": [
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.2578,
+   -0.1222,
+   0.3
+  ],
+  [
+   0.2578,
+   0.1223,
+   0.93
+  ]
+ ],
+ "warnings": []
+}

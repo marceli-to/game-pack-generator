@@ -34,6 +34,36 @@
         "foot_height": 0.14,
         "foot_heel": 0.16
       }
+    },
+    "hero-f": {
+      "height": [
+        1.55,
+        1.85
+      ],
+      "heads": 5,
+      "template": "styles/tinfox/proportions/hero-f.json",
+      "clip_stride": {
+        "walk": 1.6,
+        "run": 4.0
+      },
+      "targets": {
+        "_comment": "Marcel's worker sheet (specs/worker/reference/turnaround.png) at 1.803 mm/px, 1.70 m to the skull top under the hard hat, head the guard's size (STYLE.md §7a)",
+        "hip_z": 0.84,
+        "head_base_z": 1.37,
+        "head_top_z": 1.7,
+        "arm_length": 0.48,
+        "shoulder_x": 0.22,
+        "hip_x": 0.14,
+        "ankle_z": 0.12,
+        "foot_length": 0.24,
+        "head_width": 0.28,
+        "head_depth": 0.28,
+        "torso_width": 0.36,
+        "torso_depth": 0.3,
+        "foot_width": 0.28,
+        "foot_height": 0.13,
+        "foot_heel": 0.16
+      }
     }
   },
   "budget": {
@@ -168,7 +198,7 @@
       "#1A1A1A",
       "#1C1C24",
       "#B1FAFD",
-      "#5CFFE6",
+      "#1B8A85",
       "#FFE45C",
       "#FF5CD6",
       "#7CFF5C",

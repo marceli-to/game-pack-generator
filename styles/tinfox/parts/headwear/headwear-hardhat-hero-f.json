@@ -1,0 +1,30 @@
+{
+ "part": "headwear-hardhat-hero-f",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "26ed0c170880cae0bc653c331051dc077c40b7595a4e468e15ca1f4a811f55a4",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 498,
+ "verts": 255,
+ "roles": [
+  "secondary"
+ ],
+ "shells": 3,
+ "bbox": [
+  [
+   -0.196,
+   -0.224,
+   1.585
+  ],
+  [
+   0.196,
+   0.2,
+   1.858
+  ]
+ ],
+ "warnings": []
+}

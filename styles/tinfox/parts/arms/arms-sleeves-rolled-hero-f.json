@@ -1,0 +1,32 @@
+{
+ "part": "arms-sleeves-rolled-hero-f",
+ "slot": "arms",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-f"
+ ],
+ "script_sha256": "396dd099a5681d4944147541b7cf36458bdb6063fb4e95a273dedbac757ca40b",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 520,
+ "verts": 272,
+ "roles": [
+  "dark",
+  "primary",
+  "skin"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.72,
+   -0.0831,
+   1.1663
+  ],
+  [
+   0.72,
+   0.0831,
+   1.3325
+  ]
+ ],
+ "warnings": []
+}
