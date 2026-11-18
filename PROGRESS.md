@@ -3,13 +3,11 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-18 — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
-there). Guard, rifle guard, officer, all seven weapons, props 1 and the depot kit 05–20 are in the game and confirmed
-(depot rest reply archived; the game draws the depot furniture 1.2× under `?art=tinfox`, nothing changes in our
-files). **Batch 3 built and handed over** (`PICKUPS.md`): six power-ups, medkit, vest, red/blue keycards, chest,
-satellite dish; every prop sheet 01–31 now has a model; game confirmed batch 3. **`hero-f` template + worker built,
-OK'd by Marcel and handed over** (`WORKER.md`, sha `f845866c…`); **alarm panel (32) handed over** (`ALARM-PANEL.md`).
-**All four players OK'd and handed over** (`PLAYERS.md`; yellow suit = cell 42, Marcel). Wait for the game's report. Lowpoly Phase 4 items below still wait for Marcel._
+_Last updated: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
+weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
+(`DUMMY.md`, `characters/glb/practice-dummy.glb`). Not yet looked at by Marcel; wait for his look and the game's
+report. Lowpoly Phase 4 items below still wait for Marcel._
 
 ---
 
@@ -29,7 +27,7 @@ OK'd by Marcel and handed over** (`WORKER.md`, sha `f845866c…`); **alarm panel
 | `clean` | in use | mage (approved 2026-11-15) |
 | `painted` | draft; `auto` / `projection` / `ai` paint | knight v3 head, wizard head test |
 | `lowpoly` | draft; flat shading, chibi; Phase 4 library | wizard (approved 2026-11-16), knight-lowpoly, rogue, villager (Marcel: "look alright"), dwarf, ranger, farmer, paladin (test mixes, not reviewed) |
-| `tinfox` | draft; flat shading, ~5 heads (hero-m, hero-f) | player-1..4 (handed over), worker (handed over), guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
+| `tinfox` | draft; flat shading, ~5 heads (hero-m, hero-f) | practice-dummy (handed over, not reviewed), player-1..4 (handed over), worker (handed over), guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
 
 ## Next session: start here
 
@@ -38,6 +36,8 @@ OK'd by Marcel and handed over** (`WORKER.md`, sha `f845866c…`); **alarm panel
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
+0. **Snowfort kit + practice dummy handed over (2026-11-18, not reviewed by Marcel):** wait for Marcel's look and the
+   game's report (`props/report/`, `characters/report/`). See "Tinfox: Snowfort kit + practice dummy".
 1. **Props done (01–31), all confirmed by the game** (`_archive/PICKUPS-REPLY.md`, `props/report/b5-*`: nothing to
    change; vest stays 0.16 deep, dish keeps the tall box; power-ups drawn 1.4×, `M_Bubble` at 40 %). Every prop and
    pickup under `?art=tinfox` is ours now; left in code: catwalks, stairs, railings, pillars, alarm panels. Workflow for props: `workspace/tinfox/props/run.py <name> --build --export`; hand over per batch
@@ -1160,7 +1160,36 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   suit top's hip rings tucked in (front −0.096/−0.088, back 0.124/0.11). Legs/torso overlap up to 7.7 cm in `run`
   (one colour, reads as one suit, like the guard's 10 cm). Both re-exported and re-copied.
 
+## Tinfox: Snowfort kit + practice dummy (2026-11-18)
+
+- Marcel left for the day ("build, commit and push"): built without his look, handed over to the game directly.
+  The Desktop folder isn't synced, so the batch (GLBs, previews, both `.md`) is also in the repo: `packs/tinfox/`
+  (same layout as `~/Desktop/tinfox`, README lists the batches).
+- **Palette:** ten unused tinfox cells → 41 snow, 62 pine green, 60 dark green, 61 mid green, 40 granite, 59 straw,
+  0 pale wood, 2 growth rings, 56 window glass, 3 dummy sand (STYLE.md §4 ↔ style.json, palette.png regenerated).
+- **Props** (built by three parallel sub-agents; scripts `workspace/tinfox/props/`, specs `specs/<name>/`, measuring
+  scripts `workspace/tinfox/snow/boxes.py` (view boxes), `cols.py` (sheet colours)): `pine-tree` (`tree-pine-snow`,
+  398 tris), `snowy-bush` (`bush-snowy`, 292), `snowy-rocks` (`rocks-snowy`, 276), `log-pile` (`logs-pile-snow`, 592;
+  logs along Y so their ends face the front, flat snow slab), `watchtower` (`tower-watch-snow`, 796; wider than drawn to
+  fill the 2.4 m collider), `banner` (`banner-drone`, 200; end caps instead of a round pole in 5 cm), `snow-tractor`
+  (`tractor-snow`, 980, blade at +X; 9 colours, soft). All boxes exact from the GLB, validator 0/0. IoU is low for
+  snowy props: white snow drops out of the sheet mask against the light grey background (judge by the images).
+  Sub-agent tips: big faces meeting a ledge go dark under vertex AO → an extra vertex ring ~3 cm from the edge;
+  lofts with rings at the same position merge into non-manifold → offset ≥ 1 mm.
+- **Practice dummy** (`specs/practice-dummy`, hero-m, guard rig and 18 clips): new parts `head-dummy-hero` (round
+  canvas head, dot eyes, smile), `headwear-cap-hero` (guard cap without antenna, 12 % wider), `torso-dummy-padded-hero`
+  (guard body, roll collar dark inside, guard shoulder pads, chest/back pads with stepped target discs, all 100 %
+  `chest`; belly cushion), `arms-sleeves-dummy-hero` (elbow pads half/half), `legs-trousers-dummy-hero` (knee pads),
+  `accessory_waist-belt-plain-hero`; guard mittens and boots. Suit uses role `armor` (the cap keeps `primary` olive).
+  `add_reference` top_y 70 / floor 987 (belt centre 0.962 m at y 497), views 286/757/1247 **with x_range** (without it
+  the crops overlap: IoU 0.51/0.21). Fitted (score 0.730 → 0.753, IoU ~0.82/0.85/0.82), 4,912 tris, 8 colours,
+  validate clean, pose test = the guard's seam categories, pistol sits in the mitten. First head was a "can": collar
+  as wide as the head → head bottom rounder, collar lower and narrower.
+
 ## Decisions (with reasons)
+
+- **Snowfort props built to the game's boxes and `SNOWFORT.md`, not the drawings** (2026-11-18): pine's lowest tier at
+  1.0 m, a wider tower, the tractor's blade at +X; named in `SNOWFORT-KIT.md`.
 
 - **`hero-f` scaled from the head, not a fixed height** (2026-11-18): the sheets have no common scale; the guard's
   and the worker's faces are drawn the same width, so one head size keeps heads interchangeable between the bodies
@@ -1312,6 +1341,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-18** — Snowfort kit 33–39 and the practice dummy built, exported, handed over (`SNOWFORT-KIT.md`,
+  `DUMMY.md`); ten palette cells. 88 tests pass.
 - **2026-11-18** — Red/yellow hip fix (thighs angle in at the top), re-sent.
 - **2026-11-18** — Player 4 OK'd (suit cell 42); all four players handed over (`PLAYERS.md`).
 - **2026-11-18** — Player 2 OK'd. Player 4 v1 (suit variant, curls, goggles), fitted, 18 clips, exported; colour question.

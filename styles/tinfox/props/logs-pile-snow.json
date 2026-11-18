@@ -1,0 +1,32 @@
+{
+ "prop": "logs-pile-snow",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "a2fde36c0b8c4d11b1526278451658eba0086ff7647ee83a6e10545e94a1d067",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 592,
+ "verts": 344,
+ "roles": [
+  "dark",
+  "leather",
+  "primary",
+  "secondary",
+  "special"
+ ],
+ "shells": 24,
+ "bbox": [
+  [
+   -1.45,
+   -0.775,
+   0.0
+  ],
+  [
+   1.45,
+   0.775,
+   1.41
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

@@ -1,0 +1,31 @@
+{
+ "part": "arms-sleeves-dummy-hero",
+ "slot": "arms",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "6acd9d7b38bb8934c12fb287fdc5f7337b2014184892fee890ca5b57cf364e43",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 448,
+ "verts": 232,
+ "roles": [
+  "armor",
+  "dark"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.76,
+   -0.109,
+   1.2313
+  ],
+  [
+   0.76,
+   0.109,
+   1.4407
+  ]
+ ],
+ "warnings": []
+}

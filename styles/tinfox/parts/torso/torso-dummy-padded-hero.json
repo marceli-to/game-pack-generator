@@ -1,0 +1,33 @@
+{
+ "part": "torso-dummy-padded-hero",
+ "slot": "torso",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "09b3fceb2c326e255b7daaafc0b84cc4c86cf63d8103a92c581f9bbdf2baa401",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 1508,
+ "verts": 780,
+ "roles": [
+  "accent",
+  "armor",
+  "dark",
+  "special"
+ ],
+ "shells": 13,
+ "bbox": [
+  [
+   -0.4646,
+   -0.254,
+   0.6701
+  ],
+  [
+   0.4646,
+   0.216,
+   1.495
+  ]
+ ],
+ "warnings": []
+}

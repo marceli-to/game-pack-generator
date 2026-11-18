@@ -1,0 +1,17 @@
+{
+  "colors": {"leather": 5, "primary": 62, "secondary": 41},
+  "kind": "prop",
+  "name": "pine-tree",
+  "part": "tree-pine-snow",
+  "reference": {
+    "image": "specs/pine-tree/reference/sheet.png",
+    "length_m": 2.2,
+    "views": {
+      "item_side": [60, 68, 551, 819],
+      "item_front": [648, 68, 1137, 819],
+      "item_top": [1217, 184, 1707, 669]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

@@ -1,0 +1,17 @@
+{
+  "colors": {"primary": 4, "secondary": 0, "leather": 46, "dark": 47, "special": 41},
+  "kind": "prop",
+  "name": "log-pile",
+  "part": "logs-pile-snow",
+  "reference": {
+    "image": "specs/log-pile/reference/sheet.png",
+    "length_m": 2.9,
+    "views": {
+      "item_side": [111, 151, 867, 566],
+      "item_front": [971, 151, 1356, 574],
+      "item_top": [1441, 195, 2083, 534]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

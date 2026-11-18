@@ -1,0 +1,18 @@
+{
+  "colors": {"primary": 50, "secondary": 52, "accent": 19, "dark": 53, "special": 56, "leather": 29,
+             "metal": 12, "skin": 13, "hair": 41},
+  "kind": "prop",
+  "name": "snow-tractor",
+  "part": "tractor-snow",
+  "reference": {
+    "image": "specs/snow-tractor/reference/sheet.png",
+    "length_m": 2.6,
+    "views": {
+      "item_side": [642, 90, 1388, 656],
+      "item_front": [68, 91, 568, 655],
+      "item_top": [1494, 155, 2113, 617]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

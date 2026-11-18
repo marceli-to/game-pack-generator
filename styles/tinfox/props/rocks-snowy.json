@@ -1,0 +1,31 @@
+{
+ "prop": "rocks-snowy",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "b8090ec03be50c19ce16bc3fad263420c714fed69815b78c43cfe4e657222455",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 276,
+ "verts": 156,
+ "roles": [
+  "accent",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 9,
+ "bbox": [
+  [
+   -0.35,
+   -0.3,
+   0.0
+  ],
+  [
+   0.35,
+   0.3,
+   0.4
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

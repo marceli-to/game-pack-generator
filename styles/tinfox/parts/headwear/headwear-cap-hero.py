@@ -1,0 +1,17 @@
+# Field cap (tinfox, hero-m): the guard's cap (headwear-cap-antenna-hero) without the earpiece and antenna: an olive
+# band round the head and a soft crown sloping down to the back, a near-black peak. For the practice dummy: 12 % wider, 8 % deeper (its round head).
+SX, SY = 1.12, 1.08   # the dummy's head is wider and rounder than the guard's
+def rr(z, sx, f, b, r):
+    return P.rrect((0, (f + b) / 2 * SY, z), sx * SX, (b - f) / 2 * SY, r * SX, seg=3)
+crown = [(1.69, 1.68, 0.128, -0.158, 0.168, 0.06), (1.735, 1.725, 0.132, -0.162, 0.172, 0.065),
+         (1.74, 1.73, 0.138, -0.168, 0.178, 0.07), (1.81, 1.78, 0.142, -0.168, 0.18, 0.075),
+         (1.85, 1.81, 0.12, -0.14, 0.15, 0.06), (1.862, 1.828, 0.07, -0.085, 0.09, 0.035)]
+def tilted(zf, zb, sx, f, b, r):
+    pts = rr(0.0, sx, f, b, r)
+    return [Vector((p.x, p.y, zf + (zb - zf) * (p.y - f * SY) / ((b - f) * SY))) for p in pts]
+P.loft([tilted(*c) for c in crown], "primary", cap_roles=("dark", "primary"))
+cols = [math.radians(a) for a in (-62, -40, -20, 0, 20, 40, 62)]
+def peak_pt(t, reach, z):
+    return Vector((0.135 * SX * math.sin(t) * (1 - 0.15 * reach), -0.155 * SY * math.cos(t) - reach * math.cos(t) ** 0.5, z))
+P.shell([[peak_pt(t, 0.0, 1.705) for t in cols], [peak_pt(t, 0.05, 1.7) for t in cols],
+         [peak_pt(t, 0.095, 1.688) for t in cols]], 0.012, "secondary")

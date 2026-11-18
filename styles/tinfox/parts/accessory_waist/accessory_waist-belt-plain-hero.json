@@ -1,0 +1,30 @@
+{
+ "part": "accessory_waist-belt-plain-hero",
+ "slot": "accessory_waist",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "fd75b27ed6f80b024e53d08f037ccc8aeddb5b375268f192ecddc8549beba033",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 92,
+ "verts": 48,
+ "roles": [
+  "leather"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.207,
+   -0.158,
+   0.925
+  ],
+  [
+   0.207,
+   0.157,
+   1.0
+  ]
+ ],
+ "warnings": []
+}

@@ -1,0 +1,31 @@
+{
+ "prop": "banner-drone",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "3afd8a4c6c7a022db66a0a49631f63d197f924d33a46867fff9b0ac500a3cbe5",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 200,
+ "verts": 126,
+ "roles": [
+  "accent",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 13,
+ "bbox": [
+  [
+   -0.375,
+   -0.025,
+   0.0
+  ],
+  [
+   0.375,
+   0.025,
+   2.6
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

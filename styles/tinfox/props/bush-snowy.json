@@ -1,0 +1,30 @@
+{
+ "prop": "bush-snowy",
+ "type": "world",
+ "style": "tinfox",
+ "script_sha256": "2ddd4e5a10760aedafdbfa23ed9baf33e60e312089db2345aac25ec6c5712fb8",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 292,
+ "verts": 156,
+ "roles": [
+  "accent",
+  "primary",
+  "secondary"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.45,
+   -0.425,
+   0.0
+  ],
+  [
+   0.45,
+   0.425,
+   0.6
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

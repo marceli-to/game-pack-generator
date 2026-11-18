@@ -1,0 +1,32 @@
+{
+ "part": "headwear-cap-hero",
+ "slot": "headwear",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "35e99c3a7b7f9d436b8b41ec0496c749fb92f7590d1896c7d1ee3a032d378e1a",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 268,
+ "verts": 138,
+ "roles": [
+  "dark",
+  "primary",
+  "secondary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.159,
+   -0.2655,
+   1.68
+  ],
+  [
+   0.159,
+   0.1944,
+   1.862
+  ]
+ ],
+ "warnings": []
+}

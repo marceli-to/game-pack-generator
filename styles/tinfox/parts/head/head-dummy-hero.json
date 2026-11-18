@@ -1,0 +1,31 @@
+{
+ "part": "head-dummy-hero",
+ "slot": "head",
+ "style": "tinfox",
+ "archetypes": [
+  "hero-m"
+ ],
+ "script_sha256": "ec984dc3a2b719ad2eb22e35c08de98b38ad79ae418dbd9b8fc0ad5d169a571d",
+ "built": "2026-11-18",
+ "blender": "5.2.4",
+ "tris": 524,
+ "verts": 272,
+ "roles": [
+  "eyes",
+  "skin"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.1471,
+   -0.1402,
+   1.38
+  ],
+  [
+   0.1471,
+   0.1442,
+   1.8
+  ]
+ ],
+ "warnings": []
+}

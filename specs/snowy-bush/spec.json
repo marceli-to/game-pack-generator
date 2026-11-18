@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 60, "primary": 61, "secondary": 41},
+  "kind": "prop",
+  "name": "snowy-bush",
+  "part": "bush-snowy",
+  "reference": {
+    "image": "specs/snowy-bush/reference/sheet.png",
+    "length_m": 0.9,
+    "views": {
+      "item_side": [84, 169, 659, 602],
+      "item_front": [800, 169, 1369, 602],
+      "item_top": [1491, 105, 2072, 635]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

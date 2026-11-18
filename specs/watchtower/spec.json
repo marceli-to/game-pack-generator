@@ -1,0 +1,17 @@
+{
+  "colors": {"primary": 51, "secondary": 29, "accent": 19, "special": 56, "dark": 53, "metal": 52, "leather": 41},
+  "kind": "prop",
+  "name": "watchtower",
+  "part": "tower-watch-snow",
+  "reference": {
+    "image": "specs/watchtower/reference/sheet.png",
+    "length_m": 2.4,
+    "views": {
+      "item_side": [156, 22, 547, 861],
+      "item_front": [684, 22, 1068, 861],
+      "item_top": [1260, 281, 1601, 625]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

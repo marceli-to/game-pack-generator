@@ -1,0 +1,17 @@
+{
+  "colors": {"accent": 59, "metal": 51, "primary": 40, "secondary": 41},
+  "kind": "prop",
+  "name": "snowy-rocks",
+  "part": "rocks-snowy",
+  "reference": {
+    "image": "specs/snowy-rocks/reference/sheet.png",
+    "length_m": 0.7,
+    "views": {
+      "item_side": [82, 177, 724, 561],
+      "item_front": [846, 177, 1389, 562],
+      "item_top": [1527, 148, 2072, 589]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}

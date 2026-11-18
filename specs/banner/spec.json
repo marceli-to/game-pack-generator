@@ -1,0 +1,17 @@
+{
+  "colors": {"primary": 29, "secondary": 48, "accent": 19, "metal": 52},
+  "kind": "prop",
+  "name": "banner",
+  "part": "banner-drone",
+  "reference": {
+    "image": "specs/banner/reference/sheet.png",
+    "length_m": 0.75,
+    "views": {
+      "item_side": [240, 29, 642, 849],
+      "item_front": [855, 29, 918, 851],
+      "item_top": [1146, 383, 1547, 451]
+    }
+  },
+  "style": "tinfox",
+  "type": "world"
+}
