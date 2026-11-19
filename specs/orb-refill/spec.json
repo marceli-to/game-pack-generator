@@ -1,0 +1,23 @@
+{
+  "colors": {
+    "accent": 19,
+    "armor": 29,
+    "metal": 51,
+    "primary": 52,
+    "secondary": 54
+  },
+  "kind": "prop",
+  "name": "orb-refill",
+  "part": "ammo-orb-pack",
+  "reference": {
+    "image": "specs/orb-refill/reference/sheet.png",
+    "length_m": 0.27,
+    "views": {
+      "item_front": [129, 209, 468, 524],
+      "item_side": [1408, 210, 2093, 525],
+      "item_top": [594, 207, 1276, 513]
+    }
+  },
+  "style": "tinfox",
+  "type": "pickup"
+}
