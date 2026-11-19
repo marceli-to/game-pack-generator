@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette; wait for the game's report (`characters/report/fc-*`).** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-19 — **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -37,9 +37,13 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-0000. **Facet rebuild done, handed over** (2026-11-19, see "Tinfox: facet rebuild"); wait for the game's report
-   (`characters/report/fc-*`: back faces, back of bent knees, readability at 7 m) and the reply to
-   `FIGURE-LIGHTING.md`. Old plan, for reference (Marcel 2026-11-19, after the guard-8 test): (1) tinfox STYLE.md §3 ↔ style.json segment guide first
+0000. **Facet rebuild confirmed by the game** (2026-11-19, `_archive/FIGURES-FACETS-REPLY.md`, `characters/report/fc-*`):
+   all nine in, no code change; nothing see-through single-sided (coat skirt, collars, beard), bent knees fine at game
+   distance, three enemies and four slot colours still read at 7 m. Worker and dummy not looked at on screen (same
+   kind of change). **Figure lighting done game-side** (`_archive/FIGURE-LIGHTING-REPLY.md`): a shadow floor in the
+   figures' material (`FIGURE_LIGHT = { color: 0.75, floor: 0.22 }` in `tin-wolf/src/render/modelCharacter.ts`), guard
+   olive darkest/brightest 26–30 % → 62–69 % (sheet ~75 %); **no lower AO needed from us**. First-person sleeves keep
+   their own light rig. Next: nothing open from the game; REVIEW.md A5/A4/A6 or whatever Marcel picks. Old plan, for reference (Marcel 2026-11-19, after the guard-8 test): (1) tinfox STYLE.md §3 ↔ style.json segment guide first
    (limbs/torso chamfered rectangles `rrect seg=1`, heads 12 points with a flat front face, single chamfers);
    (2) hero-m body parts: heads square/grin/dummy, torsos jacket/suit/vest/coat/dummy, sleeves padded/dummy,
    trousers ×5, boots big/tall; (3) hero-f: heads f/f-grin, torsos suit/stripe/overalls, sleeves ×3, legs ×3, boots;
@@ -1462,6 +1466,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-19** — Game confirmed the facet rebuild and did the figure lighting (shadow floor, no AO change); replies archived.
 
 - **2026-11-19** — Facet rebuild of all nine Tinfox figures (29 parts, segment guide §3 ↔ `segments`), refit,
   animated, exported, handed over (`FIGURES-FACETS.md`); B2/B3 (single-sided, palette reload, export fails on hard
