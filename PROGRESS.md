@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+_Last updated: 2026-11-19 — **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
 (`DUMMY.md`, `characters/glb/practice-dummy.glb`). Not yet looked at by Marcel; wait for his look and the game's
@@ -36,15 +36,10 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-000. **Smaller figure GLBs handed over (2026-11-19, `~/Desktop/tinfox/FILE-SIZE.md`):** all nine figures re-exported
-   (9.80 → 5.76 MB): tinfox `export_clips` (the 13 clips the game plays; `jump`/`attack`/`hit`/`interact`/`crouch_walk`
-   left out) + `export.prune_static_channels` (lossless, checked channel by channel) + `export.pack_vertex_data`
-   (skinned meshes: weights/AO bytes, UVs shorts). Wait for the game's report. Offered, not done: shared animation
-   file per body type (needs game code), `KHR_mesh_quantization` for positions/normals (~0.1 MB more each). See "Export: smaller GLBs".
-00. **Grenade launcher + refill handed over (2026-11-19, not reviewed by Marcel):** `~/Desktop/tinfox/ORB-BLASTER.md`
-   (+ copy in `packs/tinfox/`), `weapons/glb/grenade-launcher.glb` (sha `d51d47c0…`), `ammo-grenade-launcher.glb`
-   (`7e3f0587…`). Wait for Marcel's look and the game's report; open asks: tris (3,344 > 2,500 target), a separate
-   orb mesh for the projectile, shoulder rest vs face. See "Tinfox: orb blaster + orb refill".
+000. **Smaller figures + grenade launcher confirmed by the game (2026-11-19, `_archive/FILE-SIZE-REPLY.md`,
+   `_archive/ORB-BLASTER-REPLY.md`, screenshots `weapons/report/p1-*`):** nothing to change. Figures 5.5 MB in the
+   game, unused clips stay out, shared animation file / `KHR_mesh_quantization` not needed. Pelican: 3,344 tris fine,
+   first person shifted on the game's side, no orb mesh (code-built). `MISSING.md`: nothing missing right now.
 0. **Snowfort kit + practice dummy in the game** (game's `art/MISSING.md`, reply `_archive/SNOWFORT-KIT-REPLY.md`):
    nothing in the game uses Kenney props or figures any more. `~/Desktop/tinfox` cleaned up (2026-11-19): only
    `README.md`, `MISSING.md` (copy of the game's) and open handoffs at the top; finished briefs/handoffs in `_archive/`.
@@ -1396,6 +1391,7 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-19** — Game confirmed smaller figures + Pelican (nothing to change); `~/Desktop/tinfox` handoffs and replies archived, `MISSING.md` all done.
 - **2026-11-19** — Figure GLBs 41 % smaller (5 unused clips out, static channels pruned, vertex data packed); all
   nine re-exported and sent (`FILE-SIZE.md`). 94 tests pass.
 
