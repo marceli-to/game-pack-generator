@@ -40,8 +40,9 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    (+ copy in `packs/tinfox/`), `weapons/glb/grenade-launcher.glb` (sha `d51d47c0…`), `ammo-grenade-launcher.glb`
    (`7e3f0587…`). Wait for Marcel's look and the game's report; open asks: tris (3,344 > 2,500 target), a separate
    orb mesh for the projectile, shoulder rest vs face. See "Tinfox: orb blaster + orb refill".
-0. **Snowfort kit + practice dummy handed over (2026-11-18, not reviewed by Marcel):** wait for Marcel's look and the
-   game's report (`props/report/`, `characters/report/`). See "Tinfox: Snowfort kit + practice dummy".
+0. **Snowfort kit + practice dummy in the game** (game's `art/MISSING.md`, reply `_archive/SNOWFORT-KIT-REPLY.md`):
+   nothing in the game uses Kenney props or figures any more. `~/Desktop/tinfox` cleaned up (2026-11-19): only
+   `README.md`, `MISSING.md` (copy of the game's) and open handoffs at the top; finished briefs/handoffs in `_archive/`.
 1. **Props done (01–31), all confirmed by the game** (`_archive/PICKUPS-REPLY.md`, `props/report/b5-*`: nothing to
    change; vest stays 0.16 deep, dish keeps the tall box; power-ups drawn 1.4×, `M_Bubble` at 40 %). Every prop and
    pickup under `?art=tinfox` is ours now; left in code: catwalks, stairs, railings, pillars, alarm panels. Workflow for props: `workspace/tinfox/props/run.py <name> --build --export`; hand over per batch
@@ -1369,6 +1370,7 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-19** — `~/Desktop/tinfox` md files tidied (finished ones to `_archive/`); Snowfort kit confirmed in the game.
 - **2026-11-19** — Grenade launcher "Pelican" (0.90 m, 3,344 tris) + refill (0.19 m) built, exported, handed over
   (`ORB-BLASTER.md`). Players and dummy in the game; no first-person arms (Marcel). 88 tests pass.
 - **2026-11-19** — Game confirmed the worker (no changes; heights per body shape, not 1.9 m for all); reply archived.
