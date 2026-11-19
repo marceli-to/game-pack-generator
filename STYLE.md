@@ -304,7 +304,7 @@ Target is **three.js only**; the only format is **GLB**.
 
 - +Y up, apply modifiers, the style's texture embedded (palette.png or the baked paint), one UV set, animations as separate actions, no cameras/lights, Draco off
 - Material and texture sampler depend on the surface mode (styles/<name>/STYLE.md §4):
-  - `palette`: nearest filter, `magFilter` and `minFilter` both `NEAREST` (9728; Blender writes `NEAREST_MIPMAP_NEAREST` for the minification, `export` rewrites it: a palette texture must never be mipmapped), material exported as `MeshStandardMaterial` (roughness 1, metallic 0)
+  - `palette`: nearest filter, `magFilter` and `minFilter` both `NEAREST` (9728; Blender writes `NEAREST_MIPMAP_NEAREST` for the minification, `export` rewrites it: a palette texture must never be mipmapped), material exported as `MeshStandardMaterial` (roughness 1, metallic 0), **single-sided** (`doubleSided: false`: every part is a closed shell, §9a), with the style's current palette.png (`export` reloads it; a `.blend` packs the palette as it was when assembled)
   - `painted`: linear filter; unlit (`KHR_materials_unlit` → `MeshBasicMaterial` in three.js) when the style sets `paint.unlit`, else `MeshStandardMaterial`; `export` fails if an unlit style's GLB has no `KHR_materials_unlit`. Blender writes the extension for a texture → **Background** shader → output (not for an Emission shader).
 - Vertex colours: `COLOR_0` only when the style bakes AO (`shading.ao`, §5); `export` fails if such a style's GLB
   has no `COLOR_0`.
@@ -323,6 +323,8 @@ Target is **three.js only**; the only format is **GLB**.
 
 - For export the mesh is unparented from the armature (skinning stays via the armature modifier/skin), because glTF wants skinned meshes at the scene root (validator: `NODE_SKINNED_MESH_NON_ROOT`).
 - Every GLB must pass the Khronos glTF validator with no errors.
+- `export` fails (the GLB is still written) when `validate` finds hard style violations (§12); `allow_hard=True`
+  turns them into warnings, e.g. for a quick look at a work in progress.
 - Test load: headless Chromium via Playwright opens `viewer.html` with the GLB; it must load without console errors, play `idle`, and produce a screenshot. (Plain Node + GLTFLoader fails on embedded textures without image polyfills, so it is not used.)
 
 ## 11. Preview renders → per style

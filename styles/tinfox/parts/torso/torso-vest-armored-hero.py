@@ -6,7 +6,7 @@
 # front and on the back, an orange tab on the top plate front and back, vertical orange straps beside the plates;
 # shoulder pads as on the guard, 10 % bigger.
 def ring(z, sx, f, b, r):
-    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=3)   # v4: 16 sides
+    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=1)   # facet pass: 8 sides (v4 had 16)
 # v3 (Marcel: more V-shaped, bulky): broad deep chest and shoulders tapering to a narrow waist under the belt;
 # the chest's front-outer corners well rounded, so arms aiming forward pass in front of them, not through
 body = [(1.51, 0.095, -0.1, 0.09, 0.05), (1.44, 0.105, -0.115, 0.1, 0.05), (1.43, 0.2, -0.16, 0.14, 0.07),
@@ -53,7 +53,7 @@ def vest_y(x, z, side):
     return best
 # rolled collar round the neck
 # rising at the back to meet the helmet's neck guard (no skin between them from behind)
-cpath = [Vector((p.x, p.y, p.z + 0.06 * max(0.0, p.y) / 0.12)) for p in P.rrect((0, -0.005, 1.455), 0.13, 0.125, 0.07, seg=3)]
+cpath = [Vector((p.x, p.y, p.z + 0.06 * max(0.0, p.y) / 0.12)) for p in P.rrect((0, -0.005, 1.455), 0.13, 0.125, 0.07, seg=1)]   # facet pass
 cn = [Vector((p.x, p.y + 0.005, 0)).normalized() for p in cpath]
 P.sweep(cpath, P.strap_profile(0.055, 0.035, 0.014, inset=0.02), "armor", cn, cyclic=True)
 # plates: rounded pillows following the vest surface (3 rows front and back)
@@ -96,7 +96,7 @@ def pad_frame(t):
     u = Vector((0, 1, 0))
     w = d.cross(u)            # outward-up normal of the pad
     return c, u, w
-def pad_ring(t, ry, rw, n=16):
+def pad_ring(t, ry, rw, n=8):   # facet pass (was 16)
     c, u, w = pad_frame(t)
     return [c + u * (ry * math.cos(2 * math.pi * k / n)) + w * (rw * math.sin(2 * math.pi * k / n))
             for k in range(n)]
@@ -106,8 +106,12 @@ faces = list(pad_faces)
 # stripe: across the pad from front to back, near the collar end
 t, ry, rw = 0.3, 0.175 * 1.1, 0.131 * 1.1
 c, u, w = pad_frame(t)
-angs = [math.radians(a) for a in range(-80, 261, 20)]
-path = [c + u * ((ry + 0.003) * math.cos(a)) + w * ((rw + 0.003) * math.sin(a)) for a in angs]
+angs = [math.radians(a) for a in (-13, 0, 45, 90, 135, 180, 193)]   # facet pass: on the 8-sided pad's facets
+def _poly(a, n=8):
+    step = 2 * math.pi / n
+    da = (a % step) - step / 2
+    return math.cos(step / 2) / math.cos(da)
+path = [c + (u * (ry * math.cos(a)) + w * (rw * math.sin(a))) * _poly(a) + (u * (math.cos(a) / ry) + w * (math.sin(a) / rw)).normalized() * 0.003 for a in angs]
 nrm = [(u * (math.cos(a) / ry) + w * (math.sin(a) / rw)).normalized() for a in angs]
 keep = [k for k, a in enumerate(angs) if rw * math.sin(a) > -0.03]
 faces += P.sweep([path[k] for k in keep], P.strap_profile(0.075, 0.004, 0.0015), "accent", [nrm[k] for k in keep])

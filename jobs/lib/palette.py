@@ -8,6 +8,12 @@ def palette_image():
     path = S.repo_path(S.load()["palette"]["file"])
     for img in bpy.data.images:
         if img.filepath and bpy.path.abspath(img.filepath) == str(path):
+            # a .blend packs the palette as it was when assembled: reload it from the style, so a palette
+            # change reaches every re-assembled or exported character (REVIEW.md B3)
+            if img.packed_file is not None:
+                img.unpack(method="REMOVE")
+            img.reload()
+            img.pack()
             return img
     img = bpy.data.images.load(str(path))
     img.name = "palette.png"
@@ -19,8 +25,10 @@ def palette_material():
     name = S.load()["palette"]["material"]
     mat = bpy.data.materials.get(name)
     if mat is not None:
+        refresh_palette_material(mat)
         return mat
     mat = bpy.data.materials.new(name)
+    mat.use_backface_culling = True   # every part is a closed shell: export single-sided (STYLE.md §10)
     mat.use_nodes = True
     nt = mat.node_tree
     bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
@@ -32,6 +40,23 @@ def palette_material():
     tex.location = (-350, 200)
     nt.links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     return mat
+
+
+def refresh_palette_material(mat):
+    """Current palette image + single-sided, on a palette material from an older .blend (REVIEW.md B2/B3)."""
+    mat.use_backface_culling = True
+    if mat.node_tree:
+        for n in mat.node_tree.nodes:
+            if n.type == "TEX_IMAGE" and n.image is not None and n.image.name.startswith("palette"):
+                n.image = palette_image()
+
+
+def refresh_all():
+    """Every material that samples the palette (incl. split copies such as M_Bubble)."""
+    img = palette_image()
+    for mat in bpy.data.materials:
+        if mat.node_tree and any(n.type == "TEX_IMAGE" and n.image is img for n in mat.node_tree.nodes):
+            mat.use_backface_culling = True
 
 
 def apply_roles(obj, colors):

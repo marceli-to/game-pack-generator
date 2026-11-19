@@ -1,9 +1,9 @@
 # Practice dummy head (tinfox, hero-m), for specs/practice-dummy/reference: a round canvas mannequin head (an egg,
-# 16 sides) on a short neck, with a painted friendly face as geometry: two dot eyes and a small smile, both in
+# 12 sides) on a short neck, with a painted friendly face as geometry: two dot eyes and a small smile, both in
 # dark brown and a few millimetres proud. No hair, ears or nose. Same size and joint as the guard's head, so the
 # game's head hit zone fits.
 z1 = lm["head_top"].z
-N = 16
+N = 12   # facet pass (2026-11-19): 12 like the other heads
 P.loft([P.ring((0, 0.01, 1.38), 0.075, 0.07, n=10), P.ring((0, 0.01, 1.48), 0.078, 0.074, n=10)], "skin")
 # (z, half width, half depth, centre y)
 prof = [(1.47, 0.06, 0.06, 0.004), (1.49, 0.088, 0.086, 0.002), (1.52, 0.115, 0.112, 0.0), (1.56, 0.138, 0.134, 0.0),
@@ -12,7 +12,7 @@ prof = [(1.47, 0.06, 0.06, 0.004), (1.49, 0.088, 0.086, 0.002), (1.52, 0.115, 0.
 P.loft([[Vector((0, 0.005, 1.462))]] + [P.ring((0, cy, z), rx, ry, n=N) for z, rx, ry, cy in prof]
        + [[Vector((0, 0.006, z1))]], "skin")
 def front(x, z):
-    """Front surface y of the faceted head at (x, z): the ellipse, pulled in to the 16-gon's flats."""
+    """Front surface y of the faceted head at (x, z): the ellipse, pulled in to the 12-gon's flats."""
     for a, b in zip(prof, prof[1:]):
         if a[0] <= z <= b[0]:
             t = (z - a[0]) / (b[0] - a[0])

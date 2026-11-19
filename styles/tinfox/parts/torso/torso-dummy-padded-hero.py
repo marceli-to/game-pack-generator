@@ -4,7 +4,7 @@
 # bullseye, 16-sided discs stepped 5 mm apart so they never z-fight), and a cushion over the belt buckle.
 # Pads and targets are rigid on the chest bone, so they stay flat on the chest whatever the arms do.
 def ring(z, sx, f, b, r):
-    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=3)
+    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=1)   # facet pass: 8 sides
 body = [(1.47, 0.09, -0.095, 0.085, 0.045), (1.44, 0.105, -0.115, 0.1, 0.05), (1.43, 0.2, -0.16, 0.14, 0.07),
         (1.38, 0.272, -0.2, 0.17, 0.15), (1.3, 0.28, -0.22, 0.178, 0.16), (1.22, 0.258, -0.21, 0.168, 0.13),
         (1.19, 0.226, -0.18, 0.158, 0.085), (1.1, 0.2, -0.155, 0.145, 0.075), (1.0, 0.18, -0.138, 0.136, 0.068),
@@ -21,23 +21,23 @@ P.loft([ring(*c) for c in coll], ["armor"] * 4 + ["dark"], cap_roles=("armor", "
 # chest and back pads: rounded slabs from inside the body out to a flat face, with a bevelled edge
 def slab(y_in, y_out, zc, hx, hz, r, bev=0.012):
     s = 1 if y_out > y_in else -1
-    return P.loft([P.rrect((0, y_in, zc), hx, hz, r, seg=2, axis="y"),
-                   P.rrect((0, y_out - s * bev, zc), hx, hz, r, seg=2, axis="y"),
-                   P.rrect((0, y_out, zc), hx - bev, hz - bev, r - bev * 0.6, seg=2, axis="y")], "armor")
+    return P.loft([P.rrect((0, y_in, zc), hx, hz, r, seg=1, axis="y"),
+                   P.rrect((0, y_out - s * bev, zc), hx, hz, r, seg=1, axis="y"),
+                   P.rrect((0, y_out, zc), hx - bev, hz - bev, r - bev * 0.6, seg=1, axis="y")], "armor")
 ZT = 1.25                                # target centre
 chest = slab(-0.13, -0.238, ZT, 0.215, 0.155, 0.075)
 back = slab(0.1, 0.2, ZT - 0.02, 0.21, 0.15, 0.075)
 def target(y, s, zc):
     out = []
     for r, role, d in ((0.15, "accent", 0.006), (0.104, "special", 0.011), (0.05, "accent", 0.016)):
-        out += P.cylinder(Vector((0, y - s * 0.004, zc)), Vector((0, y + s * d, zc)), r, n=16, role=role)
+        out += P.cylinder(Vector((0, y - s * 0.004, zc)), Vector((0, y + s * d, zc)), r, n=12, role=role)   # target discs: 12 (reads as a round target)
     return out
 tf = target(-0.238, -1, ZT) + target(0.2, 1, ZT - 0.02)
 P.set_weights(chest + back + tf, {"chest": 1.0})
 # belly cushion over the belt buckle
-P.loft([P.rrect((0, -0.13, 0.965), 0.11, 0.065, 0.035, seg=2, axis="y"),
-        P.rrect((0, -0.192, 0.965), 0.115, 0.07, 0.038, seg=2, axis="y"),
-        P.rrect((0, -0.204, 0.965), 0.103, 0.058, 0.03, seg=2, axis="y")], "armor")
+P.loft([P.rrect((0, -0.13, 0.965), 0.11, 0.065, 0.035, seg=1, axis="y"),
+        P.rrect((0, -0.192, 0.965), 0.115, 0.07, 0.038, seg=1, axis="y"),
+        P.rrect((0, -0.204, 0.965), 0.103, 0.058, 0.03, seg=1, axis="y")], "armor")
 # shoulder pads (the guard's): rings round an axis leaning out and down from the collar over the shoulder joint
 sh = lm["shoulder.l"]
 def pad_frame(t):
@@ -46,7 +46,7 @@ def pad_frame(t):
     d = (a1 - a0).normalized()
     u = Vector((0, 1, 0))
     return c, u, d.cross(u)
-def pad_ring(t, ry, rw, n=16):
+def pad_ring(t, ry, rw, n=8):   # facet pass (was 16)
     c, u, w = pad_frame(t)
     return [c + u * (ry * math.cos(2 * math.pi * k / n)) + w * (rw * math.sin(2 * math.pi * k / n)) for k in range(n)]
 pad = [(0.0, 0.13, 0.08), (0.12, 0.172, 0.124), (0.55, 0.186, 0.142), (0.9, 0.17, 0.126), (1.05, 0.12, 0.084)]

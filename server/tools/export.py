@@ -36,7 +36,7 @@ def glb_nodes(glb: Path) -> dict:
     return {nd.get("name"): nd.get("translation", [0, 0, 0]) for nd in j.get("nodes", [])}
 
 
-def export(name: str) -> dict:
+def export(name: str, allow_hard: bool = False) -> dict:
     blend = C.require(name)
     st = C.style_of(name)
     out_dir = character_dir(name) / "export"
@@ -60,6 +60,8 @@ def export(name: str) -> dict:
         if not summary["materials"] or not all(m["unlit"] for m in summary["materials"]):
             problems.append("painted style exports unlit, but the GLB material has no KHR_materials_unlit "
                             "(run paint_surface)")
+    if style.get("surface") == "palette" and any(m["double_sided"] for m in summary["materials"]):
+        problems.append("palette material exported double-sided (STYLE.md §10: single-sided; re-export)")
     if style["shading"].get("ao") and not summary["vertex_colors"]:
         problems.append("the style bakes AO (shading.ao) but the GLB has no COLOR_0 (re-assemble)")
     if gv["errors"] > style["export"]["max_validator_errors"]:
@@ -74,6 +76,13 @@ def export(name: str) -> dict:
         lost = [a for a in need if a not in summary["nodes"]]
         if lost:
             problems.append(f"anchor nodes missing in the GLB: {lost}")
+    if check.get("hard"):
+        msg = (f"{len(check['hard'])} hard style violations (see report.style_hard): "
+               + "; ".join(h.get("code", str(h)) if isinstance(h, dict) else str(h) for h in check["hard"][:5]))
+        if allow_hard:
+            r["warnings"].append(msg + "; the GLB was written but is not approvable")
+        else:   # REVIEW.md B3: a GLB with hard violations is not a finished export
+            problems.append(msg)
     report = {
         "glb": str(glb),
         "valid_style": check.get("valid"),
@@ -93,7 +102,4 @@ def export(name: str) -> dict:
     })
     if problems:
         r["error"] = "; ".join(problems)
-    if check.get("hard"):
-        r["warnings"].append(f"{len(check['hard'])} hard style violations (see report.style_hard); "
-                             "the GLB was written but is not approvable")
     return r

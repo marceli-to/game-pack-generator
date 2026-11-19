@@ -99,11 +99,12 @@ def validate(name: str) -> dict:
 
 @mcp.tool()
 @_safe
-def export(name: str) -> dict:
+def export(name: str, allow_hard: bool = False) -> dict:
     """Export workspace/<name>/export/character-<name>.glb per STYLE.md §10, run the Khronos glTF
     validator and a headless three.js test load (plays 'idle', screenshot). ok=false if the
-    validator reports errors or the test load fails. Style violations are reported, not blocking."""
-    return T_export.export(name)
+    validator reports errors, the test load fails, or `validate` finds hard style violations
+    (the GLB is still written; allow_hard=True reports them as warnings instead). Soft ones are reported."""
+    return T_export.export(name, allow_hard=allow_hard)
 
 
 @mcp.tool()

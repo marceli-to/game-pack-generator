@@ -10,6 +10,7 @@ import bpy
 from mathutils import Matrix
 
 from lib import glb as G
+from lib import palette as PAL
 from lib import scene as SC
 from lib import style as S
 
@@ -96,6 +97,8 @@ def run(args):
                 o.matrix_world = mw
     for o in [o for o in bpy.context.scene.objects if o.type in ("CAMERA", "LIGHT")]:
         bpy.data.objects.remove(o, do_unlink=True)
+    if S.load().get("surface") == "palette":
+        PAL.refresh_all()   # current palette.png, single-sided (REVIEW.md B2/B3; STYLE.md §10)
     pieces = split_pieces()
     props = bpy.ops.export_scene.gltf.get_rna_type().properties.keys()
     kwargs = {}

@@ -3,11 +3,11 @@
 # coordinates (same head size: the worker's face is drawn as wide as the guard's) and moved down onto the hero-f head
 # joint at the end, 5 % narrower and shallower (head 0.28 m).
 z1 = 1.80   # built in hero-m coordinates, moved onto hero-f at the end
-N = 20   # v6: more points round the face for the chin and jaw
+N = 12   # facet pass (2026-11-19): 12 points, few broad planes like the sheet (v6 had 20)
 def ring(z, sx, fy, by, bump, n=3.2):
     pts = []
     for k in range(N):
-        t = 2 * math.pi * k / N
+        t = 2 * math.pi * (k + 0.5) / N   # a flat face at the front, not a centre ridge
         s, c = math.sin(t), -math.cos(t)          # t = 0: front (-Y)
         x = sx * math.copysign(abs(s) ** (2 / n), s)
         r = fy if c < 0 else by
@@ -23,13 +23,20 @@ prof = [(1.443, 0.06, 0.098, 0.05, 0.0), (1.455, 0.075, 0.112, 0.07, 0.016), (1.
         (z1, 0.08, 0.085, 0.112, 0.0)]
 P.loft([[Vector((0, 0.0, 1.44))]] + [ring(*p) for p in prof] + [[Vector((0, 0.012, z1 + 0.006))]], "skin")
 def face_y(x, z, out=0.0):
-    """Front surface y at (x, z), from the ring profile (approximate, for placing features)."""
+    """Front surface y at (x, z) on the actual facets (polygon incl. the centre-front bump, not the analytic
+    superellipse), so features sit on the planes."""
+    def on_ring(p):
+        pts = sorted((q for q in ring(*p) if q.y < 0), key=lambda q: q.x)
+        ax = abs(x)
+        for a, b in zip(pts, pts[1:]):
+            if a.x <= ax <= b.x or a.x <= -ax <= b.x:
+                xx = ax if a.x <= ax <= b.x else -ax
+                return a.y + (b.y - a.y) * (xx - a.x) / max(1e-9, b.x - a.x)
+        return pts[len(pts) // 2].y
     for a, b in zip(prof, prof[1:]):
         if a[0] <= z <= b[0]:
-            t = (z - a[0]) / (b[0] - a[0])
-            sx, fy = a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t
-            u = min(0.999, abs(x) / sx)
-            return -fy * (1 - u ** 3.2) ** (1 / 3.2) - out
+            s = (z - a[0]) / (b[0] - a[0])
+            return on_ring(a) + (on_ring(b) - on_ring(a)) * s - out
     return -0.1
 eye = P.loft([P.ring((0.05, face_y(0.05, 1.615) + 0.004, 1.615), 0.016, 0.027, n=10, axis="y"),
               P.ring((0.05, face_y(0.05, 1.615) - 0.007, 1.615), 0.015, 0.026, n=10, axis="y")], "eyes")

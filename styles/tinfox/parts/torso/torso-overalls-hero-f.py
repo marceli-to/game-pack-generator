@@ -3,7 +3,7 @@
 # upside-down V at the crotch (the legs are legs-overalls-hero-f); a raised placket, a big breast pocket with a flap
 # in the middle of the chest, a white name patch with a teal wrench on the wearer's left.
 def ring(z, sx, f, b, r):
-    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=3)
+    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=1)   # facet pass: 8 sides
 body = [(1.4, 0.06, -0.065, 0.058, 0.03), (1.33, 0.068, -0.072, 0.066, 0.033), (1.31, 0.16, -0.125, 0.115, 0.06),
         (1.28, 0.23, -0.165, 0.132, 0.1), (1.2, 0.222, -0.18, 0.138, 0.11), (1.12, 0.188, -0.165, 0.126, 0.08),
         (1.02, 0.162, -0.146, 0.106, 0.068), (0.93, 0.172, -0.14, 0.112, 0.07), (0.83, 0.198, -0.136, 0.134, 0.075),

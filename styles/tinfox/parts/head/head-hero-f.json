@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-f"
  ],
- "script_sha256": "f9baf1281621f283febafbf4f196d378c8994ef4c8ab7280f4be112ec1b277b9",
- "built": "2026-11-18",
+ "script_sha256": "10b4a8c68a04fac9eb1605b8e8997f22da218eeda823e445c7a66824bd074cca",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 1376,
- "verts": 716,
+ "tris": 1184,
+ "verts": 620,
  "roles": [
   "eyes",
   "hair",
@@ -20,12 +20,12 @@
  "bbox": [
   [
    -0.1588,
-   -0.1555,
+   -0.1578,
    1.28
   ],
   [
    0.1588,
-   0.1482,
+   0.145,
    1.706
   ]
  ],

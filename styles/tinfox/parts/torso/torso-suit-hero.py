@@ -5,7 +5,7 @@
 # Shoulder pads: big rounded caps over the shoulder joints, on the torso (rigid on the chest: the rig has no
 # clavicle), so the arm hangs under them as on the sheet; an orange stripe across each pad from the collar out.
 def ring(z, sx, f, b, r):
-    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=3)   # v4: 16 sides
+    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=1)   # facet pass: 8 sides (v4 had 16)
 # v3 (Marcel: more V-shaped, bulky): broad deep chest and shoulders tapering to a narrow waist under the belt;
 # the chest's front-outer corners well rounded, so arms aiming forward pass in front of them, not through
 body = [(1.455, 0.115, -0.1, 0.11, 0.05), (1.43, 0.2, -0.16, 0.14, 0.07),
@@ -49,7 +49,7 @@ def pad_frame(t):
     u = Vector((0, 1, 0))
     w = d.cross(u)            # outward-up normal of the pad
     return c, u, w
-def pad_ring(t, ry, rw, n=16):
+def pad_ring(t, ry, rw, n=8):   # facet pass (was 16)
     c, u, w = pad_frame(t)
     return [c + u * (ry * math.cos(2 * math.pi * k / n)) + w * (rw * math.sin(2 * math.pi * k / n))
             for k in range(n)]
@@ -59,8 +59,12 @@ faces = list(pad_faces)
 # stripe: across the pad from front to back, near the collar end
 t, ry, rw = 0.3, 0.175, 0.131
 c, u, w = pad_frame(t)
-angs = [math.radians(a) for a in range(-80, 261, 20)]
-path = [c + u * ((ry + 0.003) * math.cos(a)) + w * ((rw + 0.003) * math.sin(a)) for a in angs]
+angs = [math.radians(a) for a in (-13, 0, 45, 90, 135, 180, 193)]   # facet pass: on the 8-sided pad's facets
+def _poly(a, n=8):
+    step = 2 * math.pi / n
+    da = (a % step) - step / 2
+    return math.cos(step / 2) / math.cos(da)
+path = [c + (u * (ry * math.cos(a)) + w * (rw * math.sin(a))) * _poly(a) + (u * (math.cos(a) / ry) + w * (math.sin(a) / rw)).normalized() * 0.003 for a in angs]
 nrm = [(u * (math.cos(a) / ry) + w * (math.sin(a) / rw)).normalized() for a in angs]
 keep = [k for k, a in enumerate(angs) if rw * math.sin(a) > -0.03]
 faces += P.sweep([path[k] for k in keep], P.strap_profile(0.06, 0.004, 0.0015), "secondary", [nrm[k] for k in keep])
@@ -91,7 +95,7 @@ def surf_y(x, z, side):
             y = f if side < 0 else bk
             dx = abs(x) - (sx - r)
             if dx > 0:
-                y -= side * (r - math.sqrt(max(0.0, r * r - dx * dx)))
+                y -= side * min(dx, r)   # facet pass: a 45 deg chamfer, not a round corner
             return y
     return 0.0
 for side in (-1, 1):

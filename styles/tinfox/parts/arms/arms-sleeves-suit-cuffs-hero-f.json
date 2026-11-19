@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-f"
  ],
- "script_sha256": "1ff62132399d1bce542052a85833ad5d2c51197100595fd856616acd00f843d5",
- "built": "2026-11-18",
+ "script_sha256": "e6d544e40ecb657432f9e43ef3bc7aa57baeaa46693e8bfb4926dc8d8f2961e6",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 712,
- "verts": 372,
+ "tris": 480,
+ "verts": 256,
  "roles": [
   "dark",
   "primary",
@@ -20,13 +20,13 @@
  "bbox": [
   [
    -0.72,
-   -0.0753,
-   1.1741
+   -0.078,
+   1.1714
   ],
   [
    0.72,
-   0.0753,
-   1.3247
+   0.078,
+   1.3274
   ]
  ],
  "warnings": []

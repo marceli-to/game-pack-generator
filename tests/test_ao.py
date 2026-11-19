@@ -25,7 +25,7 @@ def test_guard_bakes_ao_and_exports_vertex_colours(workspace):
     r = T_assemble.assemble_from_parts("guard")
     assert r["ok"], r.get("error")
     ao, cfg = r["stats"]["ao"], load_style("tinfox")["shading"]["ao"]
-    assert ao and ao["corners"] > 10000
+    assert ao and ao["corners"] > 6000   # guard after the facet pass: ~8,600 corners
     assert ao["p5"] >= cfg["floor"] - 1e-6 and ao["p95"] > 0.95   # open surfaces stay at full brightness
     assert ao["p50"] < 0.9                                        # ...but creases get darker
 
@@ -38,3 +38,4 @@ def test_guard_bakes_ao_and_exports_vertex_colours(workspace):
     g = e["report"]["gltf"]
     assert g["vertex_colors"] and g["texcoords"] == 1
     assert not any(m["unlit"] for m in g["materials"])            # lit: the game's lights still apply
+    assert not any(m["double_sided"] for m in g["materials"])     # closed shells: single-sided (REVIEW.md B2)

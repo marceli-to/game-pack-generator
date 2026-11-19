@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "09b3fceb2c326e255b7daaafc0b84cc4c86cf63d8103a92c581f9bbdf2baa401",
- "built": "2026-11-18",
+ "script_sha256": "a9340a506ebacfaae8825b1512338b0f06fda2c9a834fb18ba71e08ba338b0d3",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 1508,
- "verts": 780,
+ "tris": 860,
+ "verts": 456,
  "roles": [
   "accent",
   "armor",

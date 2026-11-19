@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "9960aa77e57568e4a32609f016c3efa37d39eb6b762acc6cefedfe8caa30789c",
- "built": "2026-11-18",
+ "script_sha256": "3c33b7700d89ee99dc811764c9077a727a4016eb64d224c6f8d12bfb177a8f8d",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 1608,
- "verts": 834,
+ "tris": 1416,
+ "verts": 738,
  "roles": [
   "eyes",
   "hair",
@@ -25,7 +25,7 @@
   ],
   [
    0.1672,
-   0.156,
+   0.1527,
    1.806
   ]
  ],

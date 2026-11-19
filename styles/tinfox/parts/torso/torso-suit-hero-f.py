@@ -5,7 +5,7 @@
 # rounded shoulder pads on the torso (blended chest / upper arm, pre-tilted for the hanging arms, as the guard's)
 # with a white stripe across each. Suit colour = `primary` (the player's slot colour).
 def ring(z, sx, f, b, r):
-    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=3)
+    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=1)   # facet pass: 8 sides
 body = [(1.325, 0.08, -0.075, 0.085, 0.04), (1.3, 0.15, -0.115, 0.11, 0.06), (1.25, 0.178, -0.148, 0.12, 0.09),
         (1.17, 0.168, -0.165, 0.115, 0.09), (1.1, 0.14, -0.142, 0.105, 0.075), (1.0, 0.12, -0.112, 0.09, 0.06),
         (0.93, 0.132, -0.11, 0.1, 0.06), (0.85, 0.165, -0.096, 0.124, 0.08), (0.78, 0.145, -0.088, 0.11, 0.07)]
@@ -39,15 +39,19 @@ def pad_frame(t):
     d = (a1 - a0).normalized()
     u = Vector((0, 1, 0))
     return c, u, d.cross(u)
-def pad_ring(t, ry, rw, n=16):
+def pad_ring(t, ry, rw, n=8):   # facet pass (was 16)
     c, u, w = pad_frame(t)
     return [c + u * (ry * math.cos(2 * math.pi * k / n)) + w * (rw * math.sin(2 * math.pi * k / n)) for k in range(n)]
 pad = [(0.0, 0.1, 0.06), (0.12, 0.128, 0.09), (0.55, 0.136, 0.1), (0.9, 0.124, 0.09), (1.05, 0.086, 0.06)]
 faces = list(P.loft([pad_ring(t, ry, rw) for t, ry, rw in pad], "primary"))
 t, ry, rw = 0.3, 0.133, 0.098
 c, u, w = pad_frame(t)
-angs = [math.radians(a) for a in range(-80, 261, 20)]
-path = [c + u * ((ry + 0.003) * math.cos(a)) + w * ((rw + 0.003) * math.sin(a)) for a in angs]
+angs = [math.radians(a) for a in (-13, 0, 45, 90, 135, 180, 193)]   # facet pass: on the 8-sided pad's facets
+def _poly(a, n=8):
+    step = 2 * math.pi / n
+    da = (a % step) - step / 2
+    return math.cos(step / 2) / math.cos(da)
+path = [c + (u * (ry * math.cos(a)) + w * (rw * math.sin(a))) * _poly(a) + (u * (math.cos(a) / ry) + w * (math.sin(a) / rw)).normalized() * 0.003 for a in angs]
 nrm = [(u * (math.cos(a) / ry) + w * (math.sin(a) / rw)).normalized() for a in angs]
 keep = [k for k, a in enumerate(angs) if rw * math.sin(a) > -0.025]
 faces += P.sweep([path[k] for k in keep], P.strap_profile(0.05, 0.004, 0.0015), "secondary", [nrm[k] for k in keep])

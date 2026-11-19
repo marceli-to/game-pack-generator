@@ -4,7 +4,7 @@
 # dark. Epaulettes: the guard's shoulder caps in orange with a pleated fringe hanging round their outer end and a
 # brass button by the collar (blended chest/upper-arm weights, pre-tilted, as the guard's pads).
 def ring(z, sx, f, b, r):
-    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=3)
+    return P.rrect((0, (f + b) / 2, z), sx, (b - f) / 2, r, seg=1)   # facet pass: 8 sides
 body = [(1.51, 0.095, -0.1, 0.09, 0.05), (1.44, 0.105, -0.115, 0.1, 0.05), (1.43, 0.2, -0.16, 0.14, 0.07),
         (1.38, 0.272, -0.2, 0.17, 0.15), (1.3, 0.28, -0.22, 0.178, 0.16), (1.22, 0.258, -0.21, 0.168, 0.13),
         (1.19, 0.226, -0.18, 0.158, 0.085), (1.1, 0.2, -0.155, 0.145, 0.075), (1.0, 0.18, -0.138, 0.136, 0.068),
@@ -26,9 +26,10 @@ def dims(z):
 GAP = 0.006
 def skirt_row(z, out=0.003):
     sx, f, b_, r = dims(z)
-    pts = ring(z, sx + out, f - out, b_ + out, r)        # 16 points, corner order (+,+) (-,+) (-,-) (+,-)
-    fy = pts[12].y
-    return ([Vector((GAP, fy, z))] + pts[12:16] + pts[0:12] + [Vector((-GAP, fy, z))])
+    pts = ring(z, sx + out, f - out, b_ + out, r)        # corner order (+,+) (-,+) (-,-) (+,-)
+    q = 3 * len(pts) // 4                                # first point of the (+,-) corner: front, right of the slit
+    fy = pts[q].y
+    return ([Vector((GAP, fy, z))] + pts[q:] + pts[:q] + [Vector((-GAP, fy, z))])
 rows = [skirt_row(z) for z in (0.96, 0.9, 0.8, 0.7, 0.62, 0.555)]
 P.shell(rows, -0.015, "primary")
 # collar band (a step out at the top of the collar)
@@ -50,8 +51,8 @@ for z in (1.31, 1.2, 1.09, 0.85, 0.73, 0.61):
     y = front_y(z) - (0.003 if z < 0.96 else 0.0)
     x = 0.022 if z < 0.96 else 0.0      # below the belt: on the wearer's left panel, beside the slit
     r = 0.03                            # 15 % larger than v1 (game report: buttons read only near)
-    P.cylinder(Vector((x, y + 0.006, z)), Vector((x, y - 0.008, z)), r, n=10, role="metal")
-    P.cylinder(Vector((x, y - 0.007, z)), Vector((x, y - 0.013, z)), r * 0.7, n=10, role="metal")
+    P.cylinder(Vector((x, y + 0.006, z)), Vector((x, y - 0.008, z)), r, n=6, role="metal")
+    P.cylinder(Vector((x, y - 0.007, z)), Vector((x, y - 0.013, z)), r * 0.7, n=6, role="metal")
 # name patch on the wearer's left chest
 P.rbox((0.07, -0.228, 1.255), (0.17, -0.21, 1.285), "accent", r=0.004, bevel=0, seg=1, axis="y")
 # epaulettes: rings round an axis that leans out and down from the collar over the shoulder joint
@@ -63,7 +64,7 @@ def pad_frame(t):
     u = Vector((0, 1, 0))
     w = d.cross(u)            # outward-up normal of the pad
     return c, u, w
-def pad_ring(t, ry, rw, n=16):
+def pad_ring(t, ry, rw, n=8):   # facet pass (was 16)
     c, u, w = pad_frame(t)
     return [c + u * (ry * math.cos(2 * math.pi * k / n)) + w * (rw * math.sin(2 * math.pi * k / n))
             for k in range(n)]
@@ -100,7 +101,7 @@ faces += P.shell([[hang(k, p, 0.0, 0.0) for k, p in enumerate(rim)],
                   [hang(k, p, 0.05, 0.006) for k, p in enumerate(rim)],
                   [hang(k, p, 0.095, 0.016) for k, p in enumerate(rim)]], 0.01, "accent")
 # brass button near the collar end
-faces += P.dome(on_pad(0.14, 0.0, 0.016), pad_frame(0.14)[2], 0.022, 0.012, n=10, role="metal")
+faces += P.dome(on_pad(0.14, 0.0, 0.016), pad_frame(0.14)[2], 0.022, 0.012, n=6, role="metal")
 follow = 0.6
 a0, a1 = pad_frame(0.0)[0], pad_frame(1.0)[0]
 axis = a1 - a0

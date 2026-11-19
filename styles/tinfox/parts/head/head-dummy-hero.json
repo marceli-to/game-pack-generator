@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "ec984dc3a2b719ad2eb22e35c08de98b38ad79ae418dbd9b8fc0ad5d169a571d",
- "built": "2026-11-18",
+ "script_sha256": "dd7bef44069d3926d04781af9bf20063dba75520ce67bbf150fb734d6a138c01",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 524,
- "verts": 272,
+ "tris": 444,
+ "verts": 232,
  "roles": [
   "eyes",
   "skin"
@@ -17,13 +17,13 @@
  "shells": 5,
  "bbox": [
   [
-   -0.1471,
-   -0.1402,
+   -0.1449,
+   -0.1381,
    1.38
   ],
   [
-   0.1471,
-   0.1442,
+   0.1449,
+   0.1421,
    1.8
   ]
  ],

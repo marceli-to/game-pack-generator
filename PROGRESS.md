@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-19 — **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette; wait for the game's report (`characters/report/fc-*`).** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -37,8 +37,9 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-0000. **Facet rebuild of all nine Tinfox figures** (Marcel 2026-11-19, after the guard-8 test; test parts in
-   `workspace/tinfox/guard8/temp/parts/` show the edits): (1) tinfox STYLE.md §3 ↔ style.json segment guide first
+0000. **Facet rebuild done, handed over** (2026-11-19, see "Tinfox: facet rebuild"); wait for the game's report
+   (`characters/report/fc-*`: back faces, back of bent knees, readability at 7 m) and the reply to
+   `FIGURE-LIGHTING.md`. Old plan, for reference (Marcel 2026-11-19, after the guard-8 test): (1) tinfox STYLE.md §3 ↔ style.json segment guide first
    (limbs/torso chamfered rectangles `rrect seg=1`, heads 12 points with a flat front face, single chamfers);
    (2) hero-m body parts: heads square/grin/dummy, torsos jacket/suit/vest/coat/dummy, sleeves padded/dummy,
    trousers ×5, boots big/tall; (3) hero-f: heads f/f-grin, torsos suit/stripe/overalls, sleeves ×3, legs ×3, boots;
@@ -1245,6 +1246,9 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 
 ## Decisions (with reasons)
 
+- **`export` fails on hard style violations** (2026-11-19, REVIEW.md B3): a GLB with them isn't finished;
+  `allow_hard=True` for imported models and quick looks.
+
 - **Tinfox figures get fewer, broader facets** (Marcel, 2026-11-19): the guard-8 test matched the sheet as well or
   better with 24 % fewer triangles; the sheet is drawn with few large planes.
 - **Figure shading is the game's light, not our AO** (Marcel, 2026-11-19): halving the AO barely moved the dark end;
@@ -1398,7 +1402,7 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (94, ~105 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (95, ~100 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -1435,7 +1439,33 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   ~75 %); options: own figure light rig, emissive shadow floor, or Lambert. Wait for `characters/report/light-*`.
 - **Next: the facet rebuild** (plan in the start-here list).
 
+## Tinfox: facet rebuild (2026-11-19)
+
+- **Segment guide** in tinfox STYLE.md §3 ↔ style.json `segments` (test `test_segment_guide_matches`): limbs and torsos
+  `P.rrect(..., seg=1)` sections (corner 0.38 × the smaller half-size on limbs), heads 12 points with a flat front face
+  and features on the real facets, pads 8, small round things 6, boxy shapes one chamfer.
+- **29 part scripts** (old versions in `workspace/tinfox/parts_v7/`): heads square/grin/dummy/f/f-grin, torsos
+  jacket/suit/vest/coat/dummy/overalls-f/suit-f/stripe-f, sleeves padded/dummy/rolled/suit/suit-cuffs, trousers
+  ×5 + hero-f legs ×3, boots big/tall/big-f. Guard parts = the guard-8 test copies. Thigh stripes now run down the
+  front-outer chamfer facet; the suit's line helper uses a straight chamfer. Fixes on the way: the coat's slit skirt
+  indexed 16-point rings (now `3 * len // 4`); the grin's dark plate went inside-out at its thin ends on the flat face
+  (thickness 1.6 → 1.0 cm). Hair, headwear, hands, belts unchanged: nothing floats in the close-ups
+  (`workspace/knight-lowpoly/detail/detail_<name>.png`).
+- **Refit** all nine (`fit` + `arms_down_deg` copied into `specs/`), 18 clips, pose test clean (no floor findings),
+  export ok. Tris: guard 4,310, rifle guard 5,522, officer 5,750, player-1 4,854, player-3 5,272, dummy 3,472, worker
+  4,638, player-2 4,762, player-4 5,346 (−23 % on average); GLBs −19 %. IoU fitted e.g. guard 0.80/0.79/0.79.
+- **REVIEW.md B2/B3** in the same pass: palette material `use_backface_culling` (→ `doubleSided: false`; `export`
+  fails on a double-sided palette GLB); `palette_image()` reloads the packed palette from the style, `export_glb`
+  refreshes it; `export` now fails on hard style violations (`allow_hard=True` to override; used by the
+  import-GLB and painted-dummy tests). Root STYLE.md §10.
+- Handed over: `~/Desktop/tinfox/FIGURES-FACETS.md` + nine GLBs, `-preview.png`, `-vs-sheet.png`; previous GLBs in
+  `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
+
 ## Log
+
+- **2026-11-19** — Facet rebuild of all nine Tinfox figures (29 parts, segment guide §3 ↔ `segments`), refit,
+  animated, exported, handed over (`FIGURES-FACETS.md`); B2/B3 (single-sided, palette reload, export fails on hard
+  violations). 95 tests pass.
 
 - **2026-11-19** — Guard-8 test (REVIEW.md step 1): 8-sided parts −24 % tris, fit unchanged-to-better; softer AO
   barely visible, contrast comes from the light. Awaiting Marcel's look. 94 tests pass.

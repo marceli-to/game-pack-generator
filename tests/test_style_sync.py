@@ -151,3 +151,15 @@ def test_export_clips_match(name):
     known = {c["name"] for c in json.loads(CORE_JSON.read_text())["animations"]["clips"]} | {
         c["name"] for c in json.loads(CORE_JSON.read_text())["animations"]["extra_clips"]}
     assert set(clips) <= known, set(clips) - known
+
+
+@pytest.mark.parametrize("name", [n for n in STYLES_ALL if "segments" in load_style(n)])
+def test_segment_guide_matches(name):
+    """styles/<name>/STYLE.md §3 segment guide ↔ style.json `segments` (tinfox, 2026-11-19)."""
+    g, STYLE_MD = load_style(name)["segments"], style_md(name)
+    assert f"`P.{g['limb_torso_section']}(..., seg={g['limb_torso_seg']})`" in STYLE_MD
+    assert f"**Heads:** {g['head_ring_points']} points per ring" in STYLE_MD
+    assert ("**flat front face**" in STYLE_MD) == (g["head_front"] == "flat")
+    assert f"**Pads and round caps:** {g['pad_sides']} sides" in STYLE_MD
+    assert f"**Small round things** (buttons, antennas, rivets): {g['small_round_sides']}" in STYLE_MD
+    assert f"single 45° chamfer (`seg={g['chamfer_seg']}`)" in STYLE_MD

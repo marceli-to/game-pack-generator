@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "e70932fa05d735b215537ccd5337523b088cdeb0de93cc2678f6cf2072063604",
- "built": "2026-11-17",
+ "script_sha256": "6176125329a1d2f9fd8c0b9418c6eeb29e417d210a41c51f92cfc60b0a514a6b",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 840,
- "verts": 432,
+ "tris": 552,
+ "verts": 288,
  "roles": [
   "dark",
   "leather"

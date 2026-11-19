@@ -5,24 +5,24 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "a43538249b8e881efdd09c72ed9ed9fcf27d9f9fa2423dc05f2fb2579a6ee41f",
- "built": "2026-11-17",
+ "script_sha256": "75eee96a7e64ac7921490ca379d55a09cdf9c7865f0e6be1efdf72e9b7d32d34",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 496,
- "verts": 252,
+ "tris": 280,
+ "verts": 144,
  "roles": [
   "primary"
  ],
  "shells": 2,
  "bbox": [
   [
-   -0.2819,
-   -0.128,
+   -0.294,
+   -0.127,
    0.3
   ],
   [
-   0.2819,
-   0.13,
+   0.294,
+   0.136,
    0.95
   ]
  ],

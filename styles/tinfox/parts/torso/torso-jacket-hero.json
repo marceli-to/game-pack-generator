@@ -5,11 +5,11 @@
  "archetypes": [
   "hero-m"
  ],
- "script_sha256": "a9ad6cb5bdcb816e997b125255a382d4f1065c3b5fb66e724bdfb9f236c42804",
- "built": "2026-11-17",
+ "script_sha256": "ccba34afea226ff3f04aa9453bbcbcfdf1c6d8c38cf1ad7a2b776f944a5c6299",
+ "built": "2026-11-19",
  "blender": "5.2.4",
- "tris": 1120,
- "verts": 576,
+ "tris": 632,
+ "verts": 332,
  "roles": [
   "accent",
   "dark",
@@ -24,11 +24,11 @@
   ],
   [
    0.4631,
-   0.1819,
+   0.1818,
    1.51
   ]
  ],
  "warnings": [
-  "asymmetric: 16 of 576 vertices have no X-mirror partner (base parts are symmetric)"
+  "asymmetric: 16 of 332 vertices have no X-mirror partner (base parts are symmetric)"
  ]
 }

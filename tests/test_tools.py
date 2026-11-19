@@ -69,7 +69,7 @@ def test_import_any_glb_check_render_export(workspace, mannequin, tmp_path):
     p = T_qa.render_preview("external")
     assert p["ok"] and p["previews"]
 
-    e = T_export.export("external")
+    e = T_export.export("external", allow_hard=True)   # imported GLBs always fail no_role
     assert e["ok"], e.get("error")
     assert e["report"]["valid_style"] is False
 
@@ -103,7 +103,7 @@ def test_painted_character_paints_validates_and_exports_unlit(workspace, mannequ
     assert not codes & surface, codes & surface
     assert v["stats"]["uv_layers"] == ["Paint"] and v["stats"]["unlit"] is True
 
-    e = T_export.export("painted-dummy")
+    e = T_export.export("painted-dummy", allow_hard=True)   # a test mannequin: height is not the point here
     assert e["ok"], e.get("error")
     g = e["report"]["gltf"]
     assert "KHR_materials_unlit" in g["extensions_used"]

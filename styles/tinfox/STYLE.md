@@ -61,8 +61,16 @@ larger budget: the player's gun is always on screen in first person, close up (2
 
 **Hands:** a mitten with a separate thumb first (Marcel, 2026-11-17); fingers only if the guard reads wrong in game.
 
-**Segment & bevel guide:** as `lowpoly`, one size up: heads, limbs, torsos 8–12 sides; small round things 6;
-boxy shapes (boots, belts, pouches, gloves) one 45° chamfer (`P.rbox(..., seg=1)`).
+**Segment & bevel guide** (`segments` in style.json; Marcel, 2026-11-19, after the guard-8 test: the sheets are drawn
+with few, large planes, and 8 sides matched them as well as 14–20 with ~24 % fewer triangles):
+- **Limbs and torsos:** cross-sections are chamfered rectangles, `P.rrect(..., seg=1)` (4 broad faces + 4 narrow
+  45° chamfers = 8 sides), not round rings. Corner radius ~0.38 × the smaller half-size on limbs. Shape comes from
+  the sections along the limb (knee break, elbow kink, cuff step), not from more sides.
+- **Heads:** 12 points per ring, offset half a step so the face is one **flat front face** (no ridge down the
+  middle); eyes, nose, mouth and ears are placed on the actual facets, not on an analytic surface.
+- **Pads and round caps:** 8 sides. **Small round things** (buttons, antennas, rivets): 6.
+- **Boxy shapes** (boots, belts, pouches, gloves, soles): a single 45° chamfer (`seg=1`).
+- Watch: the back of a bent knee shows a coarser wedge with 8 sides than with 14; add a section there instead of sides.
 
 ## 4. Surface: palette → style.json
 
