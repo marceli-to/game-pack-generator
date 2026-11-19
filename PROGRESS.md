@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-19 — **Heerschar healer v1 built (lowpoly, from `~/Desktop/heerschar-characters`): awaiting Marcel's look; then the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -31,6 +31,14 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 | `tinfox` | draft; flat shading, ~5 heads (hero-m, hero-f) | practice-dummy (handed over, not reviewed), player-1..4 (handed over), worker (handed over), guard (Marcel's viewer rounds, not formally approved), rifle-guard v1 (in the game), officer (Marcel OK'd 2026-11-17, handed over) |
 
 ## Next session: start here
+
+**Heerschar characters** (Marcel, 2026-11-19: build the missing cast from `~/Desktop/heerschar-characters`, sheets
+01–13 + README with the game's conventions). **Healer v1 done** (see "Heerschar: healer"): awaiting Marcel's look
+(round 1 on hair + ears done; `workspace/healer/renders/compare/compare_sheet.png`, `workspace/knight-lowpoly/detail/head_healer.png`,
+`workspace/healer/renders/pose_test/pose_test.png`, GLB `workspace/healer/export/character-healer.glb`). Next by the
+README's priority: **archer** (01, crossbow on `handslot` along +Y, 2H ranged clips), then shieldbearer / berserker /
+shaman (enemy blue), bosses, skeletons. Not handed to the game yet (brief for the Heerschar agent once Marcel OKs).
+
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
 `~/Desktop/tinfox/GENERATOR.md`). Done: shooter clips (+ crouch-aim clips), style `tinfox` + `hero-m`, the
@@ -1248,7 +1256,52 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - `workspace/player-3/character.blend` had been left un-animated (Nov 18 16:58): rebuilt with `run.py player-3 --anim`
   (mesh identical; palette image now the current one, only the unused Snowfort cells differ).
 
+## Heerschar: healer (2026-11-19)
+
+- Sheet `~/Desktop/heerschar-characters/sheets/02-healer.png` → `specs/healer/reference/turnaround.png` (same
+  generator set as the wizard; Marcel's). Same pixel scale as the wizard sheet (boots 97 px, floor 920) but the
+  figure is drawn ~15 % taller above the boots (chin at 0.93 m vs ~0.80) → **scaled from the head**: chin → chibi
+  head joint 0.79 m, 1.853 mm/px, `add_reference` top_y 272 / floor 920 / 1.2 m, views 268 / 668 / 1076 with x ranges.
+- Reused: `head-chibi-block`, `arms-sleeves-chibi` (wizard sleeves, gold cuff), `hands-mitten-block`,
+  `feet-boots-chibi`. New (scripts `workspace/lib4/parts/`): `torso-robe-healer-chibi` (12 facets with a flat
+  front facet, gold hem band, gold V; stole as two `P.shell` strips lying on the facets via a `surf(th, z, out)`
+  helper, pointed ends with a gold band and gold crosses; hood as a shell over the shoulders and upper back; rope
+  belt with knot and two ends; 980 tris), `hair-bob-block` (closed loft like the villager's bun hair, opening behind
+  the ears from 0.925 to 0.995 so they show; swept fringe locks; temple locks over the head's front corners; 412),
+  `accessory_waist-herb-pouch-block` (pouch with a gold leaf, round purple potion with a cream cork; 184).
+- Palette (lowpoly STYLE.md §4 ↔ style.json): cell 12 → cream `#EFE3C8` (robe), cell 17 → **team red `#A8322A`**
+  (the stole, role `secondary`): reserved for team-coloured areas so Heerschar can swap one cell (enemy `#35557D`).
+  Colours (8): skin 1, eyes 9, hair 3, cream 12 (also `dark`), team red 17, gold 25, leather 46, potion 36. The leaf
+  is gold, not green as drawn (keeps 8 colours).
+- 3,012 tris, validate 0 hard (soft: asymmetry from the fringe). IoU 0.81/0.88/0.80 → fitted 0.86/0.90/0.86 (feet
+  excluded; arms_down 73°, sleeves slimmer, robe narrower to the hem; `fit` copied into the spec). 8 clips; pose-test
+  findings are the robe category (boots through the robe back when a leg kicks back in walk/run/jump, 7–9 cm, as on
+  the wizard/villager), pouch vs robe 3.2 cm. Export ok (363 KB, three.js loads 8 clips).
+- **Round 1 (Marcel: hair and ears closer to the sheet):** new head `head-chibi-small-ears` (head-chibi-block with
+  smaller round ears, lower at z 0.93 between eye and mouth, an 8-sided disc with a shallow bowl, tilted 24° forward;
+  the shared head stays as it is for the approved wizard). `hair-bob-block` v2: the hair covers the side of the head
+  and the ear pokes through it (on the ear rows the hair's front-most side point hugs the head at 0.84, full width
+  again at th 104), so the ear reads against brown hair as on the sheet; the middle rows share their back points
+  (one band of big flat facets; staggering them looked knitted); rounder, tucked-under bottom; the fringe is one
+  thick `P.shell` coming out of the mass with a zigzag edge of pointed locks + the big swept lock; narrow sideburn
+  plates on the head's front corners, wider at the temple. Head group 948 tris, healer 3,304; IoU 0.86/0.90/0.86.
+  Round 2 (Marcel: ears stand out way too much, just a hint): ear 2.2 cm deep past the head side (was 4.4), a
+  little smaller, the hair hugs at 0.8 so it still shows from the side. Marcel: rest good.
+  Round 3 (Marcel's sheet crops: "more like this"): the ear is a flat rounded D-shaped plate lying against the head
+  side (y −0.03..+0.05, z 0.89–0.98, 3.5 cm thick, bevelled face with a shallow fold, tilted back 10°), its back edge
+  against the hair; the hair opening at the ear rows reaches just behind it (a0 100–102, lip at (0.185, 0.055), so
+  the hair wall behind is shallow). From the front only its edge shows; from the side a full ear before the hair.
+  Round 4 (Marcel: side has a big gap): the hair is thin at its edge round the ear and bulges only behind it (front-most
+  point of the rows 0.87–1.07 at 0.73–0.9 of the radius, full width again at th 112–114, behind the ear); the opening
+  edge runs diagonally from the forehead (a0 36 at 1.065) to the ear (a0 72 / 90 / 78 at 0.985 / 0.94 / 0.905), so
+  the temple is hair and only a cheek wedge shows in front of the ear; ear 20 % bigger, 1 cm proud of the hair.
+
 ## Decisions (with reasons)
+
+- **Heerschar team colour = lowpoly cell 17 `#A8322A`** (2026-11-19): the README asks for team areas on a fixed
+  cell so one model serves both sides; only cell 17 holds it.
+- **Heerschar sheets scaled from the head** (2026-11-19): the healer is drawn taller than the wizard at the same
+  pixel scale; one chibi template and head keep the cast consistent and the rig shared.
 
 - **`export` fails on hard style violations** (2026-11-19, REVIEW.md B3): a GLB with them isn't finished;
   `allow_hard=True` for imported models and quick looks.
@@ -1466,6 +1519,11 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-19** — Healer round 1: hair covers the head side with the ears poking through, fringe as one zigzag sheet, new head `head-chibi-small-ears`. 95 tests pass.
+
+- **2026-11-19** — Heerschar healer v1 (robe + team-red stole, bob, herb pouch; 3,012 tris, IoU ~0.87 fitted, 8
+  clips, exported); lowpoly cells 12 cream / 17 team red. 95 tests pass. Awaiting Marcel's look.
 
 - **2026-11-19** — Game confirmed the facet rebuild and did the figure lighting (shadow floor, no AO change); replies archived.
 

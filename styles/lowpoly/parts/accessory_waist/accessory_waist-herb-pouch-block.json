@@ -1,0 +1,33 @@
+{
+ "part": "accessory_waist-herb-pouch-block",
+ "slot": "accessory_waist",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "2c43310ab908301fbc7821d549cf2ee76b2ce822b50e5f4b0da307a99507ed15",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 184,
+ "verts": 106,
+ "roles": [
+  "accent",
+  "leather",
+  "primary",
+  "special"
+ ],
+ "shells": 7,
+ "bbox": [
+  [
+   -0.004,
+   -0.222,
+   0.388
+  ],
+  [
+   0.1785,
+   -0.1335,
+   0.5341
+  ]
+ ],
+ "warnings": []
+}

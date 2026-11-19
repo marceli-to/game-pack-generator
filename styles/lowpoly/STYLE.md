@@ -83,7 +83,10 @@ Surface mode **`palette`**, as in `clean`: every face resolves its role (root ST
   hat; lighter than `painted`'s `#8A45AC`, so the lit GLB matches the sheet) instead of a deep indigo, and cell 37: its
   dark shade `#5A3473` (inside of robes and sleeves, role `dark`) instead of a blue violet, and cell 29: an olive
   `#566539` (the rogue's tunic, from his sheet) instead of a dark green, and cell 23: a dusty rose `#BE5F68` (the
-  villager's dress, from her sheet) instead of a raspberry.
+  villager's dress, from her sheet) instead of a raspberry, and cell 12: a cream `#EFE3C8` (the healer's robe) instead
+  of a mid grey, and cell 17: the Heerschar **team red** `#A8322A` (exactly the game's player-team colour) instead of
+  a dark red. Cell 17 is reserved for team-coloured areas (e.g. the healer's stole), so the game can swap that one
+  cell per team (enemy blue `#35557D`).
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals

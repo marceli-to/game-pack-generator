@@ -1,0 +1,32 @@
+{
+ "part": "hair-bob-block",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "cc18fde3c5a8a9cc1534ef018d4c211a911f982da226f3875a0f9900e4869a4a",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 636,
+ "verts": 328,
+ "roles": [
+  "hair"
+ ],
+ "shells": 5,
+ "bbox": [
+  [
+   -0.2799,
+   -0.2397,
+   0.793
+  ],
+  [
+   0.2799,
+   0.29,
+   1.283
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 69 of 328 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}
