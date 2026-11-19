@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-19 — **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -1338,8 +1338,12 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   excluded; head a little wider at the bottom, torso shallower towards the top, arms_down 68°; `fit` in the spec).
   8 clips; pose-test findings are the robe/tunic categories (boots through the tunic back in walk/run/jump 5–7 cm,
   hood vs cape in `die` 5 cm). Export ok (399 KB; crossbow 24 KB).
-- Not handed to the game yet (brief for the Heerschar agent once Marcel OKs: the crossbow axis, the idle floor
-  clip, team red on cell 17 incl. the hood inside).
+- **Handed over with the healer** (2026-11-19): `~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`
+  (three GLBs, previews, vs-sheet). Checked in three.js the game's way (Heerschar's `Knight.glb` Adventurers clips,
+  `gpgClips` filtering, crossbow GLB on `handslot.r`): level and forward in `2H_Ranged_Aiming`/`Shoot`, idle bolt tip
+  4 cm below the floor. **Heerschar's `GPG_PROP_AXIS`** (turns `handslot.r` −90° about X in every gpg clip, for the
+  wizard's in-mesh staff) rolls the crossbow onto its side: the brief asks to apply it to the wizard only. Also
+  noted: `recolor.ts` assumes KayKit's 8 × 4 atlas; the gpg palette's cell 17 is `[1, 2]` with 8 rows.
 
 ## Decisions (with reasons)
 
@@ -1569,6 +1573,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-19** — Healer + archer handed to the Heerschar agent (`HEALER-AND-ARCHER.md`); crossbow checked in three.js
+  with the game's clips.
 - **2026-11-19** — Heerschar archer v1: 5 new parts (round hood, fringe, jerkin + capelet, cuffed sleeves, quiver),
   crossbow as its own prop GLB (slot +X like KayKit's; round 1: held further towards the bow; round 2: hood covers half the ears), lowpoly cell 26 moss green, `weapon` budget. Fitted IoU
   ~0.88, 8 clips, exported. 95 tests pass. Rounds: grip further towards the bow, hood covers half the ears.
