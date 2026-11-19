@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Heerschar healer v1 built (lowpoly, from `~/Desktop/heerschar-characters`): awaiting Marcel's look; then the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-19 — **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -33,11 +33,12 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 ## Next session: start here
 
 **Heerschar characters** (Marcel, 2026-11-19: build the missing cast from `~/Desktop/heerschar-characters`, sheets
-01–13 + README with the game's conventions). **Healer v1 done** (see "Heerschar: healer"): awaiting Marcel's look
-(round 1 on hair + ears done; `workspace/healer/renders/compare/compare_sheet.png`, `workspace/knight-lowpoly/detail/head_healer.png`,
-`workspace/healer/renders/pose_test/pose_test.png`, GLB `workspace/healer/export/character-healer.glb`). Next by the
-README's priority: **archer** (01, crossbow on `handslot` along +Y, 2H ranged clips), then shieldbearer / berserker /
-shaman (enemy blue), bosses, skeletons. Not handed to the game yet (brief for the Heerschar agent once Marcel OKs).
+01–13 + README with the game's conventions). **Healer done** (see "Heerschar: healer"; Marcel OK'd after four
+hair/ear rounds, GLB `workspace/healer/export/character-healer.glb`). Next by the README's priority: **archer** (01:
+crossbow along the hand slot's +Y, tip up, ideally its own node; red hood + cape on team cell 17; tunic, trousers,
+quiver, pouch; game uses KayKit 2H ranged aim/shoot). Lessons from the healer for hair/ears: hair thin at its edge
+round the face and bulging only behind the ears; ears as flat plates against the head, a hint from the front. Then
+shieldbearer / berserker / shaman (enemy blue), bosses, skeletons. Not handed to the game yet (brief for the Heerschar agent once Marcel OKs).
 
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
@@ -1519,6 +1520,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-19** — Healer OK'd by Marcel (side gap closed: thin hair edge, diagonal hairline, flush ears); committed `fff234a`. Next: archer.
 
 - **2026-11-19** — Healer round 1: hair covers the head side with the ears poking through, fringe as one zigzag sheet, new head `head-chibi-small-ears`. 95 tests pass.
 
