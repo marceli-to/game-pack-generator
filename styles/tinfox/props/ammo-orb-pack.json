@@ -1,0 +1,32 @@
+{
+ "prop": "ammo-orb-pack",
+ "type": "pickup",
+ "style": "tinfox",
+ "script_sha256": "8eda9006e0a5467d2286e02f63ed0a4c9e2773f1996d5a4996aeb7a06e73d918",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 990,
+ "verts": 531,
+ "roles": [
+  "accent",
+  "armor",
+  "metal",
+  "primary",
+  "secondary"
+ ],
+ "shells": 18,
+ "bbox": [
+  [
+   -0.095,
+   -0.0445,
+   0.0
+  ],
+  [
+   0.095,
+   0.0475,
+   0.0872
+  ]
+ ],
+ "anchors": {},
+ "warnings": []
+}

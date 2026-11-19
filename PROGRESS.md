@@ -3,8 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Next to build (on the office machine, not this one): orb blaster (07) + orb refill (08)**,
-sheets and draft specs committed (see "Tinfox: orb blaster + orb refill"). Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+_Last updated: 2026-11-19 — **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
 (`DUMMY.md`, `characters/glb/practice-dummy.glb`). Not yet looked at by Marcel; wait for his look and the game's
@@ -37,20 +36,21 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
-00. **Build the orb blaster (07) and the orb refill (08)** (Marcel, 2026-11-19; to be built on the office machine,
-   which has `workspace/` and `ai/.venv`). Sheets + draft specs are in the repo (`specs/orb-blaster/`,
-   `specs/orb-refill/`); details and open points in "Tinfox: orb blaster + orb refill". Use the "new Tinfox weapon"
-   workflow below, check the blaster in the guard's hands (`aim_2h`), hand over as `ORB-BLASTER.md` (GLBs, sha256,
-   previews, vs-sheet).
+00. **Grenade launcher + refill handed over (2026-11-19, not reviewed by Marcel):** `~/Desktop/tinfox/ORB-BLASTER.md`
+   (+ copy in `packs/tinfox/`), `weapons/glb/grenade-launcher.glb` (sha `d51d47c0…`), `ammo-grenade-launcher.glb`
+   (`7e3f0587…`). Wait for Marcel's look and the game's report; open asks: tris (3,344 > 2,500 target), a separate
+   orb mesh for the projectile, shoulder rest vs face. See "Tinfox: orb blaster + orb refill".
 0. **Snowfort kit + practice dummy handed over (2026-11-18, not reviewed by Marcel):** wait for Marcel's look and the
    game's report (`props/report/`, `characters/report/`). See "Tinfox: Snowfort kit + practice dummy".
 1. **Props done (01–31), all confirmed by the game** (`_archive/PICKUPS-REPLY.md`, `props/report/b5-*`: nothing to
    change; vest stays 0.16 deep, dish keeps the tall box; power-ups drawn 1.4×, `M_Bubble` at 40 %). Every prop and
    pickup under `?art=tinfox` is ours now; left in code: catwalks, stairs, railings, pillars, alarm panels. Workflow for props: `workspace/tinfox/props/run.py <name> --build --export`; hand over per batch
    with a short `.md` (file, sha256, size check from the GLB, `-preview.png`, `-vs-sheet.png`).
-2. **Worker handed over** (Marcel: "looks good", 2026-11-18; see "Tinfox: hero-f + worker"):
-   `characters/glb/worker.glb` (sha `f845866c…`) + `WORKER.md` (asks: reads as a worker, height after the game's
-   1.9 m scaling, interact/hit/die); wait for the game's report. Open polish (only if asked): head group 2,362 tris (target 2,000), 9
+2. **Worker confirmed by the game** (`_archive/WORKER-REPLY.md`, `characters/report/wk1-*`): in as `looks.worker`,
+   reads as a worker, nothing pokes through (the game uses idle/walk/run/aim/shoot/die, not interact/hit). **The game
+   does not scale every figure to 1.9 m:** each body shape has its own height; new shape `tinfox_f` at 1.86 m (her
+   bbox), head zone from the head bone (0.737 of her height). Next wanted by the game: players (+ first-person arms)
+   and the practice dummy. Open polish (only if asked): head group 2,362 tris (target 2,000), 9
    colours, fringe reads a bit heavy over the right eye, pouches still 4–6 cm into the lifted thigh in walk/run.
    Alarm panel (32) built and handed over (see "Tinfox: cover kit"); the practice dummy (09) still needs a sheet.
 3. **Officer + rifle guard colours sent** (`COLOURS-UPDATE.md`, 2026-11-18; wait for the game's reply): officer
@@ -963,7 +963,7 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   (vent opening, hem stays below the knee), coat surface pushed out over the thigh's widest point, panels never in
   the same space. **Design call for Marcel:** at 7 m he reads as a guard variant (suggested: darker coat or cap
   crown, brighter/larger brass, orange in collar or cap band). Note: the game scales every figure to 1.9 m by its
-  bounding box (officer 1.856 m with cap → drawn 2 % larger).
+  bounding box (officer 1.856 m with cap → drawn 2 % larger). Corrected by the worker reply (2026-11-19): heights are per body shape.
 
 - **Officer update 1 sent (2026-11-18, Marcel: fix the coat + what makes sense of the colour ideas):**
   `torso-coat-hero` v2: closed body down to the belt, the skirt an open `P.shell` with a 1.2 cm front slit; new
@@ -1192,30 +1192,27 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   validate clean, pose test = the guard's seam categories, pistol sits in the mitten. First head was a "can": collar
   as wide as the head → head bottom rounder, collar lower and narrower.
 
-## Tinfox: orb blaster + orb refill (queued 2026-11-19, not built)
+## Tinfox: orb blaster + orb refill (2026-11-19)
 
-- Sheets from Marcel: `07-orb-blaster.png` → `specs/orb-blaster/reference/sheet.png` (1916 × 821), `08-orb-refill.png`
-  → `specs/orb-refill/reference/sheet.png` (2172 × 724). No size prompt came with them on this machine: look for
-  the prompt / the game's brief in `~/Desktop/tinfox` on the office machine and apply the weapon rule (1.2 × the
-  prompt). Until then the specs carry estimates: blaster **0.65 m** (2H launcher, between the SMG 0.60 and the
-  sniper), refill **0.27 m** (its orbs then match the blaster's chambers, ~6.5–7 cm).
-- View boxes (measured with a Blender/numpy column scan, background `#E6E6E5`):
-  blaster side [44, 129, 774, 672], top [843, 238, 1536, 542] (drawn ~5 % shorter than the side view), front
-  [1579, 129, 1889, 673]; refill end [129, 209, 468, 524] (as `item_front`, includes the orange latch tab), top
-  [594, 207, 1276, 513], side [1408, 210, 2093, 525].
-- **Orb blaster** (`type: weapon`, part `launcher-orb`): grey body, black butt pad on an orange-rimmed stock with two
-  grey rods, orange `//` stripes, cyan window (39), revolving drum = grey disc with six olive orbs (orange band
-  across each) round a silver hub, and the drum ring showing orbs top/bottom/sides in the top/front views; flared
-  orange muzzle ring with a dark bore (55); pistol grip + trigger (black, ribbed) and a ribbed black front grip
-  under the drum → anchors `grip`, `grip_l`, `muzzle` (bore centre). Folding silver sight on top (ring + hinge),
-  silver side plates, a latch on the left side (top view). Draft colours: primary 52, secondary 54, accent 19,
-  metal 51, special 39, dark 55, armor 29 (orbs). Budget: weapon 2,500 / 4,000.
-- **Orb refill** (`type: pickup`, part `ammo-orb-pack`): chamfered dark tray (octagonal plan), three orbs in dark
-  sockets, each orb = olive dome + orange band + silver collar, orange `//` on the long side, orange latch tab on
-  one long side, small feet. Draft colours: primary 52 (or the tray's darker grey: sample the sheet), secondary 54,
-  accent 19, metal 51, armor 29. Pickup ≤ 600 tris like batch 3.
-- Check: the orbs should be the same object at the same size in both (the game may reuse the refill's orb as the
-  projectile; ask in the handoff whether it wants an `orb` node/piece).
+- Sizes from the game repo's prompts (`tin-wolf/art/weapons/prompts/07-orb-blaster.txt`, `08-orb-refill.txt`; the
+  Desktop has only 01–06): "Pelican" ~75 cm → **0.90 m**, refill ~16 cm → **0.19 m** (1.2 × rule). The game calls it
+  the grenade launcher: files `grenade-launcher.glb`, `ammo-grenade-launcher.glb` (`tin-wolf/art/MISSING.md` §6).
+- Measured with `grid.py` (blaster side 1.233 mm/px, top 1.299 (drawn ~5 % shorter); refill 0.277 mm/px).
+- **`launcher-orb`** (spec `orb-blaster`, weapon, scripts `workspace/tinfox/weapons/launcher-orb.py`): shoulder rest
+  (orange plate, black pad, two silver rods), boxy body with `//` stripes, window, silver plate, black base + hinge +
+  flip-up sight frame, **drum turning about Y** (the sheet's side view: six orbs in black sockets per side, silver
+  hub, silver plates over its top; the sheet's front view disagrees, drawing the orbs round the nozzle), grey neck,
+  wide orange nozzle (Ø 0.30) with a stepped dark bore, raked rear grip with ribs, trigger guard + orange trigger,
+  front handle on a silver bracket. Anchors `grip` (rear handle), `grip_l` (front handle), `muzzle` (nozzle face).
+  3,344 tris (soft > 2,500), 7 colours, IoU 0.82 / 0.87 / 0.85. In the guard's hand (`aim_2h`): grip in the mitten,
+  shoulder rest just in front of the chin. Gotchas: touching sockets (adjacent orb discs at exactly 2 r) and
+  coincident box corners merge into non-manifold edges; scratch finder `nm2.py` idea (run the script through
+  `PartBuilder.to_object`, list edges with ≠ 2 faces).
+- **`ammo-orb-pack`** (spec `orb-refill`, pickup, `workspace/tinfox/props/ammo-orb-pack.py`): octagonal tray with
+  chamfered edges, black feet, three capsule orbs (silver collar, orange band, olive dome) in black sockets, `//`
+  stripes on the front (−y), latch tab on the back. 930 tris, 5 colours, IoU 0.96 / 0.93 / 0.95.
+- The two sheets draw different orbs (ball Ø 9.4 cm in the drum, capsule Ø 5.3 cm in the tray); asked the game
+  whether it wants a separate projectile mesh.
 
 ## Decisions (with reasons)
 
@@ -1372,6 +1369,9 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
 
 ## Log
 
+- **2026-11-19** — Grenade launcher "Pelican" (0.90 m, 3,344 tris) + refill (0.19 m) built, exported, handed over
+  (`ORB-BLASTER.md`). Players and dummy in the game; no first-person arms (Marcel). 88 tests pass.
+- **2026-11-19** — Game confirmed the worker (no changes; heights per body shape, not 1.9 m for all); reply archived.
 - **2026-11-19** — Orb blaster (07) + orb refill (08) queued: sheets + draft specs (view boxes, estimated sizes) in
   the repo; to be built on the office machine.
 - **2026-11-18** — Snowfort kit + dummy copied from `packs/tinfox/` to `~/Desktop/tinfox` on this machine (+ `palette/tinfox-palette.png`, same as the one in the GLBs) with `HANDOFF.md` for the game agent.
