@@ -3,7 +3,8 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+_Last updated: 2026-11-19 — **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+`workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
 (`DUMMY.md`, `characters/glb/practice-dummy.glb`). Not yet looked at by Marcel; wait for his look and the game's
@@ -36,6 +37,15 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
+0000. **Facet rebuild of all nine Tinfox figures** (Marcel 2026-11-19, after the guard-8 test; test parts in
+   `workspace/tinfox/guard8/temp/parts/` show the edits): (1) tinfox STYLE.md §3 ↔ style.json segment guide first
+   (limbs/torso chamfered rectangles `rrect seg=1`, heads 12 points with a flat front face, single chamfers);
+   (2) hero-m body parts: heads square/grin/dummy, torsos jacket/suit/vest/coat/dummy, sleeves padded/dummy,
+   trousers ×5, boots big/tall; (3) hero-f: heads f/f-grin, torsos suit/stripe/overalls, sleeves ×3, legs ×3, boots;
+   hair/headwear/hands/belts only where they float over the new facets; (4) refit + anim + pose test + export each,
+   with REVIEW.md B2 (single-sided palette material) and B3 (palette reloaded at export) in the same pass;
+   (5) one handoff `FIGURES-FACETS.md`. Watch the back of bent knees (8 sides show a jagged wedge). Lighting brief
+   `FIGURE-LIGHTING.md` is out; its reply may ask for lower AO in the same pass.
 000. **Smaller figures + grenade launcher confirmed by the game (2026-11-19, `_archive/FILE-SIZE-REPLY.md`,
    `_archive/ORB-BLASTER-REPLY.md`, screenshots `weapons/report/p1-*`):** nothing to change. Figures 5.5 MB in the
    game, unused clips stay out, shared animation file / `KHR_mesh_quantization` not needed. Pelican: 3,344 tris fine,
@@ -1235,6 +1245,11 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 
 ## Decisions (with reasons)
 
+- **Tinfox figures get fewer, broader facets** (Marcel, 2026-11-19): the guard-8 test matched the sheet as well or
+  better with 24 % fewer triangles; the sheet is drawn with few large planes.
+- **Figure shading is the game's light, not our AO** (Marcel, 2026-11-19): halving the AO barely moved the dark end;
+  the game gets a brief (`FIGURE-LIGHTING.md`).
+
 - **Leave unplayed clips out of a style's GLBs** (2026-11-19, game's report point 6): the game plays 13 of 18; the
   other clips are still built (pose test, viewer). Static channels pruned for every style: lossless, ~10 % of a figure.
 
@@ -1368,6 +1383,11 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   `specs/<name>/spec.json`, so copy `fit` + `compare.arms_down_deg` there or the next rebuild drops them.
 - **AO bake on objects loaded from a library:** `bpy.ops.object.bake` fails with "No valid selected objects" until
   `view_layer.update()` (now in `SH.bake_ao`).
+- **`run.py <name> --build` with no part names rebuilds every spec part that has a workspace script**, shared ones
+  included, and rewrites their committed `.blend/.json/.png` (same script, different bytes). For a test figure, name
+  the parts: `--build part-a part-b`.
+- **Playwright scripts outside `node/`** (e.g. `workspace/tinfox/smooth/shots.mjs`) can't resolve `playwright`:
+  copy them into `node/` to run, delete afterwards.
 - **Tests and `GPG_STYLE`:** don't run pytest in a shell where `GPG_STYLE` is exported (e.g. after `export
   GPG_STYLE=tinfox` for the detail renders): the tests then default to that style and ~9 fail. Use a subshell.
 - **Detail renders for Tinfox:** `ARMS=72 GPG_STYLE=tinfox REG='{...}' workspace/knight-lowpoly/detail/body.sh guard [part ...]`.
@@ -1389,8 +1409,38 @@ npm install --prefix node && npx --prefix node playwright install chromium
 Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; needs internet for three.js).
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
+## Guard-8 test (REVIEW.md A1/A2, 2026-11-19; findings only, nothing shipped changed)
+
+- **Built:** `guard-8` = the guard with five part copies `*-8` (head 12 points per ring with a flat front face and
+  the features placed on the real facets; torso/pads/boots with single chamfers (8 sides); sleeves and trousers as
+  chamfered rectangles placed after the sheet: a knee break at z 0.46, a narrower forearm and a 14 cm cuff step);
+  hair, cap, mittens and belt shipped. Refitted. `guard-8-soft` = the same in a test style with AO strength 0.5 /
+  floor 0.5.
+- **Numbers:** shipped guard 5,654 tris / 10,816 verts / 576 KB; guard-8 4,310 / 8,234 / 467 KB (−24 % / −19 %).
+  Fit score 0.705 → 0.712, IoU 0.80/0.77/0.79 → 0.80/0.79/0.79. GLB AO median 0.38 → 0.69 (soft).
+- **Shading (A2): the light, not the AO.** Olive p5…p95 under `light=game`, ¾ view: shipped `#171E01…#555710`,
+  guard-8 `#121300…#575A14`, soft `#100F00…#545812`; room light: soft lifts the darkest only a little
+  (`#1E2002` → `#2C2F03`). Sheet `#525524…#6C722F`. The spread comes from directional light on flat faces → a
+  brief for the game's figure lighting (more ambient/hemisphere) if Marcel wants the sheet's flat look; softer AO
+  alone does not get there.
+- **Pose:** clips fine; at the bent knee 8 sides show a coarser jagged wedge at the back than 14.
+- **Images** (`workspace/tinfox/guard8/`): `compare_game.png` (sheet | shipped | guard-8 | soft; front, ¾, head),
+  `compare_dark.png` (shipped vs soft, `light=dark`), `detail_guard-8.png` / `detail_guard.png` (close-ups vs the
+  sheet), `pose_test_guard-8.png`. Test spec/style/parts parked in `workspace/tinfox/guard8/temp/` (copy back to
+  `specs/`, `styles/` to rerun).
+- **Marcel (2026-11-19): broader facets yes; lighting brief yes.** Brief `~/Desktop/tinfox/FIGURE-LIGHTING.md`
+  (+ `characters/lighting/*.png`): the game's figures share the props' `HemisphereLight('#dfe8f0', '#4a443c', 1.5)`
+  + sun 1.0 (`tin-wolf/src/render/gameRenderer.ts` ~l. 220), no env map / tone mapping, then `tintModel` by the
+  baked light; the brown ground colour darkens side/under faces. Asked for darkest/brightest olive ~60–75 % (sheet
+  ~75 %); options: own figure light rig, emissive shadow floor, or Lambert. Wait for `characters/report/light-*`.
+- **Next: the facet rebuild** (plan in the start-here list).
+
 ## Log
 
+- **2026-11-19** — Guard-8 test (REVIEW.md step 1): 8-sided parts −24 % tris, fit unchanged-to-better; softer AO
+  barely visible, contrast comes from the light. Awaiting Marcel's look. 94 tests pass.
+
+- **2026-11-19** — Review of the code and the guard vs its sheet → `REVIEW.md` (findings only, no changes). 94 tests pass.
 - **2026-11-19** — Game confirmed smaller figures + Pelican (nothing to change); `~/Desktop/tinfox` handoffs and replies archived, `MISSING.md` all done.
 - **2026-11-19** — Figure GLBs 41 % smaller (5 unused clips out, static channels pruned, vertex data packed); all
   nine re-exported and sent (`FILE-SIZE.md`). 94 tests pass.
