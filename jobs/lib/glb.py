@@ -117,6 +117,188 @@ def keep_channels(path, keep):
     return removed
 
 
+def drop_animations(path, keep):
+    """Keep only the animations named in `keep` (STYLE.md §10, a style's `export_clips`).
+    Returns (dropped names, kept names missing from the file)."""
+    gltf, binary = read(path)
+    anims = gltf.get("animations", [])
+    dropped = [a["name"] for a in anims if a["name"] not in keep]
+    missing = sorted(set(keep) - {a["name"] for a in anims})
+    if dropped:
+        gltf["animations"] = [a for a in anims if a["name"] in keep]
+        gltf, binary = _repack(gltf, binary)
+        write(path, gltf, binary)
+    return dropped, missing
+
+
+_REST = {"rotation": [0.0, 0.0, 0.0, 1.0], "translation": [0.0, 0.0, 0.0], "scale": [1.0, 1.0, 1.0]}
+_WIDTH = {"SCALAR": 1, "VEC2": 2, "VEC3": 3, "VEC4": 4}
+
+
+def _floats(gltf, binary, i):
+    acc = gltf["accessors"][i]
+    if acc["componentType"] != 5126:
+        return None
+    n = _WIDTH[acc["type"]]
+    v = gltf["bufferViews"][acc["bufferView"]]
+    off = v.get("byteOffset", 0) + acc.get("byteOffset", 0)
+    stride = v.get("byteStride", 4 * n)
+    return [struct.unpack_from(f"<{n}f", binary, off + k * stride) for k in range(acc["count"])]
+
+
+def _add_floats(gltf, binary, rows, kind, minmax=False):
+    binary += b"\0" * (-len(binary) % 4)
+    data = b"".join(struct.pack(f"<{len(r)}f", *r) for r in rows)
+    gltf["bufferViews"].append({"buffer": 0, "byteOffset": len(binary), "byteLength": len(data)})
+    acc = {"bufferView": len(gltf["bufferViews"]) - 1, "componentType": 5126, "count": len(rows), "type": kind}
+    if minmax:
+        acc["min"] = [min(c) for c in zip(*rows)]
+        acc["max"] = [max(c) for c in zip(*rows)]
+    gltf["accessors"].append(acc)
+    return len(gltf["accessors"]) - 1, binary + data
+
+
+def prune_static(path, tol=1e-5):
+    """Lossless animation shrink (STYLE.md §10): (1) a node property that stays at the node's rest value in every
+    animation loses its channel everywhere (nothing ever moves it); (2) any other channel that is constant over a
+    clip keeps only its first and last key (same value, the clip keeps its length). Returns counts."""
+    gltf, binary = read(path)
+    nodes = gltf["nodes"]
+
+    def close(a, b):
+        return max(abs(x - y) for x, y in zip(a, b)) <= tol
+
+    info, moving = {}, set()
+    for ai, a in enumerate(gltf.get("animations", [])):
+        for ci, c in enumerate(a["channels"]):
+            s = a["samplers"][c["sampler"]]
+            t = c["target"]
+            pair = (t.get("node"), t["path"])
+            out = _floats(gltf, binary, s["output"]) if s.get("interpolation", "LINEAR") != "CUBICSPLINE" else None
+            if out is None or t["path"] not in _REST or t.get("node") is None:
+                moving.add(pair)
+                continue
+            const = all(close(o, out[0]) for o in out)
+            rest = nodes[t["node"]].get(t["path"], _REST[t["path"]])
+            at_rest = const and (close(out[0], rest) or (t["path"] == "rotation" and close(out[0], [-x for x in rest])))
+            info[(ai, ci)] = (const, out[0] if out else None)
+            if not at_rest:
+                moving.add(pair)
+    removed = shortened = 0
+    inputs = {}
+    for ai, a in enumerate(gltf.get("animations", [])):
+        chans, samplers = [], []
+        for ci, c in enumerate(a["channels"]):
+            t = c["target"]
+            if (t.get("node"), t["path"]) not in moving:
+                removed += 1
+                continue
+            s = dict(a["samplers"][c["sampler"]])
+            const, first = info.get((ai, ci), (False, None))
+            if const and gltf["accessors"][s["input"]]["count"] > 2:
+                acc = gltf["accessors"][s["input"]]
+                t0, t1 = acc["min"][0], acc["max"][0]
+                if (t0, t1) not in inputs:
+                    inputs[(t0, t1)], binary = _add_floats(gltf, binary, [(t0,), (t1,)], "SCALAR", minmax=True)
+                s["input"] = inputs[(t0, t1)]
+                s["output"], binary = _add_floats(gltf, binary, [first, first], gltf["accessors"][s["output"]]["type"])
+                shortened += 1
+            samplers.append(s)
+            chans.append({**c, "sampler": len(samplers) - 1})
+        a["channels"], a["samplers"] = chans, samplers
+    if removed or shortened:
+        gltf, binary = _repack(gltf, binary)
+        write(path, gltf, binary)
+    return {"channels_removed": removed, "channels_shortened": shortened}
+
+
+def _add_bytes(gltf, binary, data, stride=None):
+    binary += b"\0" * (-len(binary) % 4)
+    view = {"buffer": 0, "byteOffset": len(binary), "byteLength": len(data), "target": 34962}
+    if stride:
+        view["byteStride"] = stride
+    gltf["bufferViews"].append(view)
+    return len(gltf["bufferViews"]) - 1, binary + data
+
+
+def _weights_255(w):
+    """Float weights -> bytes summing to exactly 255 (largest remainder)."""
+    total = sum(w) or 1.0
+    scaled = [x / total * 255 for x in w]
+    q = [int(x) for x in scaled]
+    for i in sorted(range(len(w)), key=lambda i: q[i] - scaled[i])[:255 - sum(q)]:
+        q[i] += 1
+    return q
+
+
+def pack_vertices(path):
+    """Core-glTF vertex packing for skinned meshes (STYLE.md §10, `export.pack_vertex_data`): WEIGHTS_0 and
+    COLOR_0 as normalised unsigned bytes (COLOR_0 VEC3 with a 4-byte stride), TEXCOORD_0 as normalised unsigned
+    shorts. No extension; three.js reads them as normalised attributes. Returns {attribute: bytes saved}."""
+    gltf, binary = read(path)
+    skinned = {n["mesh"] for n in gltf["nodes"] if "skin" in n and "mesh" in n}
+    saved, done = {}, {}
+
+    def repoint(i, comp, data, stride=None):
+        nonlocal binary
+        acc = gltf["accessors"][i]
+        old = gltf["bufferViews"][acc["bufferView"]]["byteLength"]
+        acc["bufferView"], binary = _add_bytes(gltf, binary, data, stride)
+        acc.pop("byteOffset", None)
+        acc["componentType"], acc["normalized"] = comp, True
+        acc.pop("min", None)
+        acc.pop("max", None)
+        return old - len(data)
+
+    for mi in sorted(skinned):
+        for prim in gltf["meshes"][mi]["primitives"]:
+            at = prim["attributes"]
+            for name in ("WEIGHTS_0", "COLOR_0", "TEXCOORD_0"):
+                i = at.get(name)
+                if i is None or i in done:
+                    continue
+                rows = _floats(gltf, binary, i)
+                if rows is None:      # already packed
+                    continue
+                if name == "WEIGHTS_0":
+                    q = [_weights_255(r) for r in rows]
+                    data = b"".join(struct.pack("<4B", *r) for r in q)
+                    d = repoint(i, 5121, data)
+                    j = at.get("JOINTS_0")
+                    ja = gltf["accessors"][j] if j is not None else None
+                    if ja is not None and ja["componentType"] in (5121, 5123):
+                        # a weight that rounded to 0 must not name a joint (validator: JOINTS_USED_ZERO_WEIGHT)
+                        fmt = "<4B" if ja["componentType"] == 5121 else "<4H"
+                        v = gltf["bufferViews"][ja["bufferView"]]
+                        st = v.get("byteStride", struct.calcsize(fmt))
+                        off = v.get("byteOffset", 0) + ja.get("byteOffset", 0)
+                        buf = bytearray(binary)
+                        for k, r in enumerate(q):
+                            jt = list(struct.unpack_from(fmt, buf, off + k * st))
+                            nj = [0 if wq == 0 else x for wq, x in zip(r, jt)]
+                            if nj != jt:
+                                struct.pack_into(fmt, buf, off + k * st, *nj)
+                        binary = bytes(buf)
+                elif name == "COLOR_0":
+                    if any(not 0.0 <= x <= 1.0 for r in rows for x in r):
+                        continue
+                    n = len(rows[0])
+                    pad = b"\0" * (4 - n)
+                    data = b"".join(struct.pack(f"<{n}B", *(round(x * 255) for x in r)) + pad for r in rows)
+                    d = repoint(i, 5121, data, stride=4 if n == 3 else None)
+                else:
+                    if any(not 0.0 <= x <= 1.0 for r in rows for x in r):
+                        continue      # outside 0..1 can't be a normalised short
+                    data = b"".join(struct.pack("<2H", *(round(x * 65535) for x in r)) for r in rows)
+                    d = repoint(i, 5123, data)
+                done[i] = True
+                saved[name] = saved.get(name, 0) + d
+    if saved:
+        gltf, binary = _repack(gltf, binary)
+        write(path, gltf, binary)
+    return saved
+
+
 def nearest_samplers(path):
     """Samplers with a NEAREST magFilter get a plain NEAREST minFilter (9728): Blender writes
     NEAREST_MIPMAP_NEAREST (9984), which asks for mipmaps on a palette texture (STYLE.md §10).

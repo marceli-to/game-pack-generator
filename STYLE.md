@@ -308,6 +308,17 @@ Target is **three.js only**; the only format is **GLB**.
   - `painted`: linear filter; unlit (`KHR_materials_unlit` → `MeshBasicMaterial` in three.js) when the style sets `paint.unlit`, else `MeshStandardMaterial`; `export` fails if an unlit style's GLB has no `KHR_materials_unlit`. Blender writes the extension for a texture → **Background** shader → output (not for an Emission shader).
 - Vertex colours: `COLOR_0` only when the style bakes AO (`shading.ao`, §5); `export` fails if such a style's GLB
   has no `COLOR_0`.
+- Animations: a channel whose node property stays at the node's rest value in every clip is left out (all
+  scale channels, most translations: nothing ever moves them, so the result plays the same everywhere;
+  `export.prune_static_channels`); a channel that is constant within one clip keeps only its first and last key.
+- Skinned meshes (characters) store `WEIGHTS_0` and `COLOR_0` as normalised unsigned bytes (weights summing to
+  exactly 255; `COLOR_0` VEC3 with a 4-byte stride) and `TEXCOORD_0` as normalised unsigned shorts (only when
+  inside 0..1): core glTF, no extension, ~0.25 MB less per figure; errors ≤ 1/510 (weights, AO) and 1.5e-5 (UVs,
+  well inside a palette cell) (`export.pack_vertex_data`). Props keep float attributes (games may copy them into
+  batches as plain arrays).
+- A style may list the clips its game plays (`export_clips` in its style.json, its STYLE.md §10): the other clips are
+  built and checked as usual but left out of the GLB (`export` warns about listed clips the character lacks).
+  Without the list every clip is exported.
 - FBX/OBJ: not planned; only add if needed later
 
 - For export the mesh is unparented from the armature (skinning stays via the armature modifier/skin), because glTF wants skinned meshes at the scene root (validator: `NODE_SKINNED_MESH_NON_ROOT`).

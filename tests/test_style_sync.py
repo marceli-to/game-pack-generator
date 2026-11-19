@@ -138,3 +138,16 @@ def test_props_match():
         st = load_style(name)
         if "prop_distance" in (st["shading"].get("ao") or {}):
             assert f"Props bake over **{st['shading']['ao']['prop_distance']} m** (`prop_distance`)" in style_md(name)
+
+
+@pytest.mark.parametrize("name", STYLES_ALL)
+def test_export_clips_match(name):
+    clips = load_style(name).get("export_clips")
+    if not clips:
+        return
+    section = style_md(name).split("## 10. Export", 1)[1].split("\n## ", 1)[0]
+    listed = set(re.findall(r"`([a-z0-9_]+)`", section.split("Left out", 1)[0])) - {"export_clips", "tinfoxChar"}
+    assert listed == set(clips), (name, listed ^ set(clips))
+    known = {c["name"] for c in json.loads(CORE_JSON.read_text())["animations"]["clips"]} | {
+        c["name"] for c in json.loads(CORE_JSON.read_text())["animations"]["extra_clips"]}
+    assert set(clips) <= known, set(clips) - known

@@ -117,10 +117,22 @@ def run(args):
                 if bone and prop in G.PATHS:
                     k.setdefault(bone, set()).add(G.PATHS[prop])
     stripped = G.keep_channels(out, keep) if keep else {}
+    # the style's game plays only some clips (STYLE.md §10, `export_clips`): leave the rest out of the GLB
+    dropped, missing = [], []
+    if S.load().get("export_clips") and arm is not None:
+        dropped, missing = G.drop_animations(out, S.load()["export_clips"])
+        if missing:
+            warnings.append(f"export_clips not in this character: {missing}")
+    # channels that never move (scale, most translations) cost bytes and change nothing (STYLE.md §10)
+    pruned = G.prune_static(out) if S.load()["export"].get("prune_static_channels") else {}
+    # skinned meshes: weights, AO colours and palette UVs as normalised integers (STYLE.md §10)
+    packed = G.pack_vertices(out) if S.load()["export"].get("pack_vertex_data") else {}
     # palette textures: no mipmaps (STYLE.md §10)
     nearest = G.nearest_samplers(out) if S.load()["export"].get("texture_filter") == "NEAREST" else 0
     return {"outputs": [str(out)], "stats": {"bytes": out.stat().st_size, "fps": S.load()["animations"]["fps"],
-                                             "actions": sorted(a.name for a in bpy.data.actions),
+                                             "actions": sorted(a.name for a in bpy.data.actions if a.name not in dropped),
                                              "arms_only_channels_removed": stripped,
+                                             "clips_dropped": dropped, "static_channels": pruned,
+                                             "packed_bytes_saved": packed,
                                              "samplers_min_nearest": nearest, "pieces": pieces},
             "warnings": warnings}

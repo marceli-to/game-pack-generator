@@ -143,6 +143,15 @@ right), names and roles in the game from its `src/data/weapons.json`.
   ~8 cm forward, 7.5 cm down and 12 cm up (thumb), 3 cm to the inner side and 13 cm to the outer side: the handle
   sits on the palm side of the fist.
 
+## 10. Export → style.json
+
+`export_clips`: the GLB carries only the clips the Tin Fox game plays (`tin-wolf/src/render/modelCharacter.ts`,
+`tinfoxChar`: base clips, the 1H/2H aim layers and their crouch versions):
+`idle`, `walk`, `run`, `die`, `crouch`, `aim_1h`, `shoot_1h`, `aim_2h`, `shoot_2h`, `crouch_aim_1h`,
+`crouch_shoot_1h`, `crouch_aim_2h`, `crouch_shoot_2h`. Left out: `jump`, `attack`, `hit`, `interact`, `crouch_walk`
+(still built, so the pose test and the viewer can use them in the workspace .blend). With the static-channel pruning
+(root STYLE.md §10) the guard goes from 0.99 to 0.83 MB. Add a clip here when the game starts playing it.
+
 ## 11. Preview renders → style.json
 
 As `lowpoly`: Workbench, orthographic front/side/back + perspective ¾, 512 px per view, background `#E8E8E8`, lit

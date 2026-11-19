@@ -165,7 +165,7 @@
     "_comment_stride": "STYLE.md §8: archetypes.<name>.clip_stride re-plants walk/run feet for a ground speed; contact = how far above its lowest a foot may be and still count as planted (m)",
     "stride": { "contact": 0.03, "leg_bones": ["upperleg", "lowerleg", "foot"] }
   },
-  "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0 },
+  "export": { "format": "GLB", "y_up": true, "draco": false, "texture_filter": "NEAREST", "max_validator_errors": 0, "prune_static_channels": true, "pack_vertex_data": true },
   "skinning": {
     "_comment": "STYLE.md §9a: robes and tabards (torso part reaching > 5 cm below the hips, with or without legs) get skirt weights",
     "skirt": { "follow": 1.0, "full_at": 0.5, "centre_width": 0.12 },

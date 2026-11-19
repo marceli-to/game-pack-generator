@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
+_Last updated: 2026-11-19 — **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
 (`DUMMY.md`, `characters/glb/practice-dummy.glb`). Not yet looked at by Marcel; wait for his look and the game's
@@ -36,6 +36,11 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **guard** (fitted, in the game; see "Tinfox: guard"), the **rifle guard v1** (see "Tinfox: rifle guard"),
 the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
 
+000. **Smaller figure GLBs handed over (2026-11-19, `~/Desktop/tinfox/FILE-SIZE.md`):** all nine figures re-exported
+   (9.80 → 5.76 MB): tinfox `export_clips` (the 13 clips the game plays; `jump`/`attack`/`hit`/`interact`/`crouch_walk`
+   left out) + `export.prune_static_channels` (lossless, checked channel by channel) + `export.pack_vertex_data`
+   (skinned meshes: weights/AO bytes, UVs shorts). Wait for the game's report. Offered, not done: shared animation
+   file per body type (needs game code), `KHR_mesh_quantization` for positions/normals (~0.1 MB more each). See "Export: smaller GLBs".
 00. **Grenade launcher + refill handed over (2026-11-19, not reviewed by Marcel):** `~/Desktop/tinfox/ORB-BLASTER.md`
    (+ copy in `packs/tinfox/`), `weapons/glb/grenade-launcher.glb` (sha `d51d47c0…`), `ammo-grenade-launcher.glb`
    (`7e3f0587…`). Wait for Marcel's look and the game's report; open asks: tris (3,344 > 2,500 target), a separate
@@ -77,7 +82,6 @@ the stride fix (see "Tinfox: stride"), the **officer** (see "Tinfox: officer").
    and white cuff bands (decide: suit variant or shared). Old plan text: a `hero-f` suit (`torso-suit-hero-f`, stripe trousers) for players 2 (red 17, braid)
    and 4 (yellow 25, curls + goggles; her suit has a white centre stripe and white cuff bands). Hand over as one
    `PLAYERS.md` (or per player if Marcel wants them sooner).
-7. Later (game report): file size / shared clips (drop unused clips or one animation file per body type).
 
 **Workflow for a new Tinfox weapon** (as used for the pistol): copy the sheet to `specs/<name>/reference/sheet.png`;
 `workspace/tinfox/weapons/sheetbox.py <sheet>` (view boxes) and `grid.py` (metric grid over one view, 1 cm lines) to
@@ -1215,7 +1219,29 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - The two sheets draw different orbs (ball Ø 9.4 cm in the drum, capsule Ø 5.3 cm in the tray); asked the game
   whether it wants a separate projectile mesh.
 
+## Export: smaller GLBs (2026-11-19)
+
+- Measured on the guard (0.99 MB): animations ~27 % (121 KB binary + ~145 KB JSON for 18 clips × up to 75 channels),
+  vertex data ~0.7 MB (floats: `WEIGHTS_0` 169 KB, `COLOR_0`/`POSITION`/`NORMAL` 127 KB each), palette PNG 1 KB.
+- `jobs/lib/glb.py`: `drop_animations(path, keep)` and `prune_static(path)`: a (node, path) at the node's rest value in
+  every clip loses its channel everywhere (all scales, most translations: 46 of 75 pairs on the guard); other
+  constant channels keep two keys (first/last, so durations stay). Called by `export_glb` after the arms-only strip;
+  stats `clips_dropped`, `static_channels`. Root STYLE.md §10 ↔ core.json `export.prune_static_channels`; tinfox
+  STYLE.md §10 ↔ style.json `export_clips` (from `tin-wolf/src/render/modelCharacter.ts`). Tests
+  `tests/test_glb_prune.py`, `test_export_clips_match`.
+- `pack_vertices(path)` (core.json `export.pack_vertex_data`, root STYLE.md §10), skinned meshes only (the game's
+  `StaticBatch` copies prop attributes as arrays): `WEIGHTS_0` → normalised ubyte summing to 255 (largest remainder;
+  joints whose weight rounds to 0 set to 0, else the validator warns `ACCESSOR_JOINTS_USED_ZERO_WEIGHT`, seen on the
+  officer), `COLOR_0` → normalised ubyte VEC3 with byteStride 4, `TEXCOORD_0` → normalised ushort (only inside 0..1).
+  Guard 829 → 575 KB. Screenshot diffs can't verify it (the viewer always plays idle: same file twice differs as
+  much); checked numerically (errors ≤ 1/510, UV cells unchanged) + side-by-side render. 94 pass.
+- `workspace/player-3/character.blend` had been left un-animated (Nov 18 16:58): rebuilt with `run.py player-3 --anim`
+  (mesh identical; palette image now the current one, only the unused Snowfort cells differ).
+
 ## Decisions (with reasons)
+
+- **Leave unplayed clips out of a style's GLBs** (2026-11-19, game's report point 6): the game plays 13 of 18; the
+  other clips are still built (pose test, viewer). Static channels pruned for every style: lossless, ~10 % of a figure.
 
 - **Snowfort props built to the game's boxes and `SNOWFORT.md`, not the drawings** (2026-11-18): pine's lowest tier at
   1.0 m, a wider tower, the tractor's blade at +X; named in `SNOWFORT-KIT.md`.
@@ -1357,7 +1383,7 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 ## Commands
 
 ```sh
-.venv/bin/python -m pytest -q                       # all tests (87, ~95 s; 1 skipped: the AI end-to-end test)
+.venv/bin/python -m pytest -q                       # all tests (94, ~105 s; 1 skipped: the AI end-to-end test)
 GPG_AI_TESTS=1 .venv/bin/python -m pytest -q        # + AI end-to-end (~100 s; needs ai/.venv + cached models)
 .venv/bin/python -m server.build_library --source <KayKit_Character_Animations_1.1>
 .venv/bin/python -m server.main                     # MCP server (stdio); Claude Code uses .mcp.json
@@ -1369,6 +1395,9 @@ Viewer: `viewer/viewer.html` (drop a GLB on it, or `?model=<url>&anim=<clip>`; n
 Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/lowpoly/all/catalog.png` + `catalog.html`.
 
 ## Log
+
+- **2026-11-19** — Figure GLBs 41 % smaller (5 unused clips out, static channels pruned, vertex data packed); all
+  nine re-exported and sent (`FILE-SIZE.md`). 94 tests pass.
 
 - **2026-11-19** — `~/Desktop/tinfox` md files tidied (finished ones to `_archive/`); Snowfort kit confirmed in the game.
 - **2026-11-19** — Grenade launcher "Pelican" (0.90 m, 3,344 tris) + refill (0.19 m) built, exported, handed over

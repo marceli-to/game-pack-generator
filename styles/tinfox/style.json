@@ -223,6 +223,9 @@
       "special": 58
     }
   },
+  "_comment_export_clips": "STYLE.md §10: the clips the Tin Fox game plays (src/render/modelCharacter.ts, tinfoxChar); export leaves the others (jump, attack, hit, interact, crouch_walk) out of the GLB",
+  "export_clips": ["idle", "walk", "run", "die", "crouch", "aim_1h", "shoot_1h", "aim_2h", "shoot_2h",
+                   "crouch_aim_1h", "crouch_shoot_1h", "crouch_aim_2h", "crouch_shoot_2h"],
   "preview": {
     "engine": "BLENDER_WORKBENCH",
     "views": [
