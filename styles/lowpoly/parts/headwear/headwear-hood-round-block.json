@@ -1,0 +1,30 @@
+{
+ "part": "headwear-hood-round-block",
+ "slot": "headwear",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "abb0f61df9150870f6eb926d0e800514b694355bb4aee8b643927e2f05183eeb",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 262,
+ "verts": 133,
+ "roles": [
+  "secondary"
+ ],
+ "shells": 1,
+ "bbox": [
+  [
+   -0.3447,
+   -0.26,
+   0.745
+  ],
+  [
+   0.3447,
+   0.355,
+   1.365
+  ]
+ ],
+ "warnings": []
+}

@@ -1,0 +1,31 @@
+{
+ "part": "arms-sleeves-cuffed-chibi",
+ "slot": "arms",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "1fc4a52c567533f2830e7bf08f196d98cec107df06cdd1b1150910bac85a473a",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 344,
+ "verts": 176,
+ "roles": [
+  "dark",
+  "primary"
+ ],
+ "shells": 2,
+ "bbox": [
+  [
+   -0.516,
+   -0.0813,
+   0.6264
+  ],
+  [
+   0.516,
+   0.0813,
+   0.789
+  ]
+ ],
+ "warnings": []
+}

@@ -1,0 +1,100 @@
+{
+  "name": "archer",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 46,
+    "primary": 26,
+    "secondary": 17,
+    "dark": 5,
+    "leather": 46,
+    "accent": 25,
+    "special": 12,
+    "metal": 52
+  },
+  "parts": {
+    "head": "head-chibi-small-ears",
+    "hair": "hair-fringe-hood-block",
+    "headwear": "headwear-hood-round-block",
+    "face": null,
+    "torso": "torso-jerkin-cape-chibi",
+    "arms": "arms-sleeves-cuffed-chibi",
+    "hands": "hands-mitten-block",
+    "legs": "legs-pants-chibi",
+    "feet": "feet-boots-low-chibi",
+    "accessory_back": "accessory_back-quiver-bolts-block",
+    "accessory_waist": "accessory_waist-pouch-small-block"
+  },
+  "reference": "specs/archer/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 68.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "fit": {
+    "arms": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.0,
+        0.98,
+        1.02
+      ]
+    },
+    "hands": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        0.961,
+        1.0,
+        0.961
+      ]
+    },
+    "head": {
+      "u": [
+        1.083,
+        1.0,
+        1.02
+      ],
+      "v": [
+        0.98,
+        1.041,
+        1.02
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        1.041,
+        1.041
+      ],
+      "v": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "torso": {
+      "u": [
+        0.942,
+        0.942,
+        0.923
+      ],
+      "v": [
+        0.887,
+        0.852,
+        0.787
+      ]
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+ "part": "accessory_back-quiver-bolts-block",
+ "slot": "accessory_back",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "6c43890f37fea64aa2a00aac609e3505ddc0e181ea95df1c0cbde3d7cdb90f0e",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 224,
+ "verts": 136,
+ "roles": [
+  "dark",
+  "leather",
+  "special"
+ ],
+ "shells": 12,
+ "bbox": [
+  [
+   -0.1239,
+   0.1662,
+   0.394
+  ],
+  [
+   0.2279,
+   0.3475,
+   0.8683
+  ]
+ ],
+ "warnings": []
+}

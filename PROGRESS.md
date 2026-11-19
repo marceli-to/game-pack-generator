@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-19 — **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -33,7 +33,9 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 ## Next session: start here
 
 **Heerschar characters** (Marcel, 2026-11-19: build the missing cast from `~/Desktop/heerschar-characters`, sheets
-01–13 + README with the game's conventions). **Healer done** (see "Heerschar: healer"; Marcel OK'd after four
+01–13 + README with the game's conventions). **Archer done** (Marcel: "perfect" after two rounds: grip, ears; see "Heerschar: archer";
+images `workspace/archer/renders/compare/compare_sheet.png`, `workspace/knight-lowpoly/detail/detail_archer.png`,
+`workspace/archer/renders/crossbow_in_hand.png`). **Healer done** (see "Heerschar: healer"; Marcel OK'd after four
 hair/ear rounds, GLB `workspace/healer/export/character-healer.glb`). Next by the README's priority: **archer** (01:
 crossbow along the hand slot's +Y, tip up, ideally its own node; red hood + cape on team cell 17; tunic, trousers,
 quiver, pouch; game uses KayKit 2H ranged aim/shoot). Lessons from the healer for hair/ears: hair thin at its edge
@@ -1297,7 +1299,53 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   edge runs diagonally from the forehead (a0 36 at 1.065) to the ear (a0 72 / 90 / 78 at 0.985 / 0.94 / 0.905), so
   the temple is hair and only a cheek wedge shows in front of the ear; ear 20 % bigger, 1 cm proud of the hair.
 
+## Heerschar: archer (2026-11-19)
+
+- Sheet `~/Desktop/heerschar-characters/sheets/01-archer.png` → `specs/archer/reference/turnaround.png`. Boots 97 px
+  as on the wizard/healer sheets, but the head sits lower (chin at y 533, floor 874) → **scaled from the head** (chin →
+  0.79 m): 2.317 mm/px, `add_reference` top_y 356 / floor 874 / 1.2 m, views 232 / 590 / 971 with x ranges
+  (0–440, 440–775, 775–1160).
+- Reused: `head-chibi-small-ears`, `hands-mitten-block`, `legs-pants-chibi` (role `dark`), `feet-boots-low-chibi`,
+  `accessory_waist-pouch-small-block`. New (scripts `workspace/lib4/parts/`): `headwear-hood-round-block` (one closed
+  loft like the rogue's hood but a round roomy dome, ±0.35 at the cheeks, back 13 cm behind the head, all team red
+  inside and out so the swap covers it; 262 tris), `hair-fringe-hood-block` (hair-short cap + a thick fringe sheet of
+  nine chunky locks swept forward + side locks to the cheeks; 302), `torso-jerkin-cape-chibi` (green tunic with a short
+  slit; leather jerkin as an open `P.shell` with a green strip down the front; belt + big square gold buckle; dark
+  strap left shoulder → right hip; team-red capelet as a closed loft, higher at the front, gold clasp; 968),
+  `arms-sleeves-cuffed-chibi` (slim sleeves with a wide two-step cloth cuff; 344), `accessory_back-quiver-bolts-block`
+  (8-sided tube across the back over the cape, two leather bands, three bolts with crossed cream fins; 224).
+- Palette (lowpoly STYLE.md §4 ↔ style.json): cell 26 → moss green `#A0A254` (tunic, sleeves). Colours: skin 1, eyes
+  9, hair 46, green 26, team red 17 (`secondary`: hood + cape), dark brown 5 (`dark`: trousers, strap, quiver), leather
+  46 (jerkin, belt, boots, pouch), gold 25, cream 12 (`special`: fletching) → 9 on the body (soft); crossbow adds
+  metal 52.
+- **Crossbow as its own GLB** (README point 2; spec `specs/crossbow`, prop `crossbow-archer` in
+  `styles/lowpoly/props/`, script `workspace/lib4/props/crossbow-archer.py`): weapon prop, Blender +X forward / +Z up
+  → glTF +X forward / +Y up, grip at the origin, `muzzle` at the bolt tip (0.49, 0, 0.05 Blender). 0.74 m, 326 tris.
+  **Marcel (round 1): the hand holds it further towards the bow** → grip 15 cm in front of the gold band, the stock
+  behind the band shortened (× 0.4) so the butt stays 0.25 m behind the hand.
+  **Round 2 (Marcel: ears stand out too much, show ~half):** the hood's opening edge comes in to x 0.248 on the ear
+  rows (z 0.92, 1.0; was ~0.262), so its rim covers the outer half of each ear; the shared head stays as it is. **Axis: the slot's +X, not +Y as the README says:** KayKit's own
+  `2H_Crossbow` (measured on `heerschar/public/models/kaykit/Rogue_Hooded.glb`) lies along `handslot.r`'s +X (butt
+  −0.38, bow +1.06, limbs ±Z, +Y up), and in KayKit's `Ranged_2H_Aiming`/`Shoot` the slot's +X points forward on our
+  rig. Checked by rendering the archer in those raw clips with the crossbow on the slot
+  (`workspace/archer/renders/crossbow_in_hand.png`: level and forward). **Known:** in idle/walk the crossbow hangs
+  from the hand along the forearm like KayKit's; on the short chibi arms the bow tips reach 3–18 cm above the floor
+  and the bolt tip 7 cm below it in `idle` (was 20 cm before round 1). In KayKit's 2H aim/shoot the butt sits 5–6 cm
+  behind the right shoulder (the clip holds the hands close to the body); a full-length stock at the new grip came out
+  15 cm. Measuring script idea: scratch `butt.py`, rendering `inhand.py` (crossbow on the slot in the raw KayKit clips). New lowpoly budget row `weapon` 500 / 800
+  (STYLE.md §3 ↔ style.json); `tests/test_props.py` now checks the "no weapon budget" refusal on `clean`.
+- 3,464 tris (target 3,500), validate 0 hard. IoU 0.88/0.85/0.88 → fitted 0.89/0.87/0.88 (score 0.748 → 0.768; feet
+  excluded; head a little wider at the bottom, torso shallower towards the top, arms_down 68°; `fit` in the spec).
+  8 clips; pose-test findings are the robe/tunic categories (boots through the tunic back in walk/run/jump 5–7 cm,
+  hood vs cape in `die` 5 cm). Export ok (399 KB; crossbow 24 KB).
+- Not handed to the game yet (brief for the Heerschar agent once Marcel OKs: the crossbow axis, the idle floor
+  clip, team red on cell 17 incl. the hood inside).
+
 ## Decisions (with reasons)
+
+- **Heerschar crossbow along the hand slot's +X, as its own GLB** (2026-11-19): KayKit's crossbow and its 2H ranged
+  clips use +X forward; the README's +Y rule fits melee weapons and staffs. A separate node lets the game swap or hide
+  it (README point 2).
 
 - **Heerschar team colour = lowpoly cell 17 `#A8322A`** (2026-11-19): the README asks for team areas on a fixed
   cell so one model serves both sides; only cell 17 holds it.
@@ -1520,6 +1568,11 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-19** — Heerschar archer v1: 5 new parts (round hood, fringe, jerkin + capelet, cuffed sleeves, quiver),
+  crossbow as its own prop GLB (slot +X like KayKit's; round 1: held further towards the bow; round 2: hood covers half the ears), lowpoly cell 26 moss green, `weapon` budget. Fitted IoU
+  ~0.88, 8 clips, exported. 95 tests pass. Rounds: grip further towards the bow, hood covers half the ears.
+  Marcel: "perfect".
 
 - **2026-11-19** — Healer OK'd by Marcel (side gap closed: thin hair edge, diagonal hairline, flush ears); committed `fff234a`. Next: archer.
 

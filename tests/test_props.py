@@ -27,8 +27,8 @@ def test_prop_names_and_types():
         T_parts.build_prop("Toy Gun", GUN, "weapon", style="tinfox")
     with pytest.raises(T_parts.PartError):
         T_parts.build_prop("toygun", GUN, "rocket", style="tinfox")
-    with pytest.raises(T_parts.PartError):   # lowpoly has no weapon budget
-        T_parts.build_prop("toygun", GUN, "weapon", style="lowpoly")
+    with pytest.raises(T_parts.PartError):   # clean has no weapon budget
+        T_parts.build_prop("toygun", GUN, "weapon", style="clean")
 
 
 @needs_blender

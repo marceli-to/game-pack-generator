@@ -1,0 +1,36 @@
+{
+ "part": "torso-jerkin-cape-chibi",
+ "slot": "torso",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "7ef436e8ce72138d11c07e32045f0b2310a71f64767b94f6bad89067cd794092",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 968,
+ "verts": 496,
+ "roles": [
+  "accent",
+  "dark",
+  "leather",
+  "primary",
+  "secondary"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.355,
+   -0.262,
+   0.245
+  ],
+  [
+   0.355,
+   0.262,
+   0.815
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 71 of 496 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

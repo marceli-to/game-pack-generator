@@ -65,6 +65,7 @@ Headwear may add at most 60 % of body height on top (the wizard hat: ≈ 0.35 m 
 | Hand-held accessory (weapon, tool) | ≤ 300 | 500 |
 | Back accessory (cape, backpack) | ≤ 300 | 500 |
 | Prop (later) | ≤ 1,000 | 1,600 |
+| Weapon (held prop, its own GLB; root STYLE.md §9b) | ≤ 500 | 800 |
 
 Raised from 2,500 / 3,000 (Marcel, 2026-11-16): the knight next to the wizard in-game read as unfinished; the detail
 that makes it read finished (bevelled trims, buckle frame, slit tabard, chevron brow band, crest) costs ~4,000 tris.
@@ -86,7 +87,8 @@ Surface mode **`palette`**, as in `clean`: every face resolves its role (root ST
   villager's dress, from her sheet) instead of a raspberry, and cell 12: a cream `#EFE3C8` (the healer's robe) instead
   of a mid grey, and cell 17: the Heerschar **team red** `#A8322A` (exactly the game's player-team colour) instead of
   a dark red. Cell 17 is reserved for team-coloured areas (e.g. the healer's stole), so the game can swap that one
-  cell per team (enemy blue `#35557D`).
+  cell per team (enemy blue `#35557D`), and cell 26: a moss green `#A0A254` (the archer's tunic
+  and sleeves, from his sheet) instead of a lime green.
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals

@@ -1,0 +1,32 @@
+{
+ "part": "hair-fringe-hood-block",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "60157ae26920c9112395ca41db2df9d2e9ba3f977ec16ce65206efe85d477f98",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 302,
+ "verts": 159,
+ "roles": [
+  "hair"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.2215,
+   -0.2569,
+   0.87
+  ],
+  [
+   0.232,
+   0.1781,
+   1.23
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 36 of 159 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}

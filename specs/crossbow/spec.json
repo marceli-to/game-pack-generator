@@ -1,0 +1,8 @@
+{
+  "colors": { "accent": 25, "leather": 46, "metal": 52, "special": 12 },
+  "kind": "prop",
+  "name": "crossbow",
+  "part": "crossbow-archer",
+  "style": "lowpoly",
+  "type": "weapon"
+}

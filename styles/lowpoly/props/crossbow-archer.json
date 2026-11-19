@@ -1,0 +1,42 @@
+{
+ "prop": "crossbow-archer",
+ "type": "weapon",
+ "style": "lowpoly",
+ "script_sha256": "e1b69bdab82e61cd7b5eb033f1694fa55c6f6db624cc5f7e9e9b41d7ea60b0ad",
+ "built": "2026-11-19",
+ "blender": "5.2.4",
+ "tris": 326,
+ "verts": 185,
+ "roles": [
+  "accent",
+  "leather",
+  "metal",
+  "special"
+ ],
+ "shells": 11,
+ "bbox": [
+  [
+   -0.25,
+   -0.31,
+   -0.085
+  ],
+  [
+   0.49,
+   0.31,
+   0.09
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "muzzle": [
+   0.49,
+   0.0,
+   0.05
+  ]
+ },
+ "warnings": []
+}
