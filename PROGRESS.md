@@ -32,15 +32,19 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 
 ## Next session: start here
 
-**Heerschar characters** (Marcel, 2026-11-19: build the missing cast from `~/Desktop/heerschar-characters`, sheets
-01–13 + README with the game's conventions). **Archer done** (Marcel: "perfect" after two rounds: grip, ears; see "Heerschar: archer";
-images `workspace/archer/renders/compare/compare_sheet.png`, `workspace/knight-lowpoly/detail/detail_archer.png`,
-`workspace/archer/renders/crossbow_in_hand.png`). **Healer done** (see "Heerschar: healer"; Marcel OK'd after four
-hair/ear rounds, GLB `workspace/healer/export/character-healer.glb`). Next by the README's priority: **archer** (01:
-crossbow along the hand slot's +Y, tip up, ideally its own node; red hood + cape on team cell 17; tunic, trousers,
-quiver, pouch; game uses KayKit 2H ranged aim/shoot). Lessons from the healer for hair/ears: hair thin at its edge
-round the face and bulging only behind the ears; ears as flat plates against the head, a hint from the front. Then
-shieldbearer / berserker / shaman (enemy blue), bosses, skeletons. Not handed to the game yet (brief for the Heerschar agent once Marcel OKs).
+**Heerschar characters** (Marcel, 2026-11-19: build the missing cast from
+`~/Desktop/kimiyu-lab/heerschar-characters` (moved there 2026-11-20), sheets 01–13 + README with the game's
+conventions). Done and handed over: healer, archer (+ crossbow), shieldbearer (+ sword, tower shield), knight and
+wizard on team cell 17. Waiting for `KNIGHT-AND-WIZARD-TEAM-REPLY.md` and `SHIELDBEARER-REPLY.md` (read them first).
+**Next session: the berserker** (sheet 04, `prompts/04-berserker.md`, enemy, two axes, the game plays
+`Dualwield_Melee_Attack_Chop`). Marcel: build him from the sheet (not the dwarf + second axe). Plan: copy the sheet to
+`specs/berserker/reference/turnaround.png`; scale from the head (chin → 0.79 m; `workspace/lib4/measure_sheet.py`);
+team areas on cell 17; body from the shieldbearer/archer parts where they fit; the axes as `melee` props (one model
+for both hands if KayKit's `handslot.l` frame in the dual-wield clip allows: measure on `Knight.glb`/`Barbarian.glb`
+first, as for the sword); in-hand check with the raw KayKit clips (scratch `inhand2.py` idea in "Heerschar:
+shieldbearer"). Then the shaman (05), bosses (built at normal height), skeletons. Lessons: hair thin at its edge
+round the face; ears as flat plates; helmets/hoods cover the ears (`P.covers`); keep under 4,000 tris (trim columns
+of shells first).
 
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
