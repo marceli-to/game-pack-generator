@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-20 — **Shieldbearer done and handed over** (Marcel: "looks good"; `SHIELDBEARER.md` + body, sword and tower shield GLBs; new prop types `melee`/`shield` in KayKit's hand-slot frame); next: berserker (sheet 04), then shaman. Before: **Knight + wizard on team cell 17, handed over** (`~/Desktop/kimiyu-lab/heerschar-characters/KNIGHT-AND-WIZARD-TEAM.md`; the folder moved under `kimiyu-lab/`); game confirmed the healer + archer (`HEALER-AND-ARCHER-REPLY.md`, nothing to change). Before: **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-20 — **All Heerschar handoffs confirmed by the game, nothing open; next: the shaman (sheet 05)**. Before: **Knight update handed over** (`KNIGHT-UPDATE.md`: crest on team cell 17, sword + round shield as their own GLBs, hero marked in code by the game) after the knight/wizard and shieldbearer replies (both fine). Before: **Berserker done and handed over** (Marcel: OK; `BERSERKER.md` + body and right/left axe GLBs); next: the shaman (05). Built: 5 new parts (mane, fierce grin head, braided beard, bare chest + team kilt + fur mantle, bare arms with bracers, fur-cuffed boots), two axe GLBs (right/left: KayKit's offhand axe has its blade the other way), fitted IoU ~0.88, 8 clips, exported; not handed over yet. Before: **Shieldbearer done and handed over** (Marcel: "looks good"; `SHIELDBEARER.md` + body, sword and tower shield GLBs; new prop types `melee`/`shield` in KayKit's hand-slot frame); next: berserker (sheet 04), then shaman. Before: **Knight + wizard on team cell 17, handed over** (`~/Desktop/kimiyu-lab/heerschar-characters/KNIGHT-AND-WIZARD-TEAM.md`; the folder moved under `kimiyu-lab/`); game confirmed the healer + archer (`HEALER-AND-ARCHER-REPLY.md`, nothing to change). Before: **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -35,16 +35,24 @@ report. Lowpoly Phase 4 items below still wait for Marcel._
 **Heerschar characters** (Marcel, 2026-11-19: build the missing cast from
 `~/Desktop/kimiyu-lab/heerschar-characters` (moved there 2026-11-20), sheets 01–13 + README with the game's
 conventions). Done and handed over: healer, archer (+ crossbow), shieldbearer (+ sword, tower shield), knight and
-wizard on team cell 17. Waiting for `KNIGHT-AND-WIZARD-TEAM-REPLY.md` and `SHIELDBEARER-REPLY.md` (read them first).
-**Next session: the berserker** (sheet 04, `prompts/04-berserker.md`, enemy, two axes, the game plays
-`Dualwield_Melee_Attack_Chop`). Marcel: build him from the sheet (not the dwarf + second axe). Plan: copy the sheet to
-`specs/berserker/reference/turnaround.png`; scale from the head (chin → 0.79 m; `workspace/lib4/measure_sheet.py`);
-team areas on cell 17; body from the shieldbearer/archer parts where they fit; the axes as `melee` props (one model
-for both hands if KayKit's `handslot.l` frame in the dual-wield clip allows: measure on `Knight.glb`/`Barbarian.glb`
-first, as for the sword); in-hand check with the raw KayKit clips (scratch `inhand2.py` idea in "Heerschar:
-shieldbearer"). Then the shaman (05), bosses (built at normal height), skeletons. Lessons: hair thin at its edge
-round the face; ears as flat plates; helmets/hoods cover the ears (`P.covers`); keep under 4,000 tris (trim columns
-of shells first).
+wizard on team cell 17; replies read (2026-11-20): knight/wizard and shieldbearer drop in on both teams, swing
+trail hooked to `tip`, shield clears the floor (0.25–0.32 m). Knight update handed over (`KNIGHT-UPDATE.md`, see
+"Heerschar: knight update"). Berserker confirmed by the game (`BERSERKER-REPLY.md`: kilt + paint blue, axes in
+the right hands, edges lead, trail from the right axe's `tip`, axes ≥ 0.40 m above the floor); its note that the
+mane outshouts the blue kilt at game distance: **Marcel: leave as is**. Knight update confirmed
+(`KNIGHT-UPDATE-REPLY.md`: crest blue on the enemy, sword/shield attached with no transform, swing trail back from
+`tip`, hero ring in code). **Nothing open from the game.**
+Folder tidied (2026-11-20): finished briefs and replies are in `_archive/` there; only `README.md`, `all-prompts.md`
+and open handoffs stay at the top.
+Handoff notes give **full** sha256 now (the shieldbearer note's short hash was wrong).
+**Berserker done and handed over** (Marcel OK'd, `BERSERKER.md` + `glb/character-berserker.glb` (`fb0a8724…`),
+`prop-axe-berserker-r.glb` (`0d2c4a37…`), `prop-axe-berserker-l.glb` (`fca4fb95…`) + previews), confirmed.
+**Next session: the shaman (05)** (staff: `Spellcast_*`, `Taunt`/`Cheer`; the staff as its own `melee`-frame GLB with
+a `tip` node for spell origins, checked with KayKit's raw clips via `workspace/berserker/inhand/inhandcheck.mjs`),
+then bosses (built at normal height), skeletons. Lessons: hair thin at its edge round the face; ears as flat plates;
+helmets/hoods cover the ears (`P.covers`); keep under 4,000 tris (trim columns of shells first); when the chin is
+hidden, scale from the eyes (eye centre z 0.965); every weapon gets `grip` + `tip`/`muzzle` nodes (the game uses
+them).
 
 
 **Tinfox** (Marcel, 2026-11-17: replace the Kenney pack in his shooter with his own sheets; order of work in
@@ -1386,7 +1394,60 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   (`e1ff13b5…`), `prop-shield-tower.glb` (`3ad40814…`) + previews. Possible polish: back panel a bit narrower (sheet
   shows more dark grey at the sides from behind).
 
+## Heerschar: berserker (2026-11-20)
+
+- Sheet 04 → `specs/berserker/reference/turnaround.png`. Chin hidden by the beard → **scaled from the eyes** (eye
+  centre z 0.965 on the chibi head, row 444; floor 887): 2.178 mm/px (≈ the wizard's), `add_reference` top_y 336 /
+  floor 887 / 1.2 m, views 232 / 575 / 940 (x ranges 0–440, 440–745, 745–1135; side centre on the body, not the bbox).
+- New parts (`workspace/lib4/parts/`): `head-chibi-grin-fierce` (flat-mouth head + angry hair-colour brows, open dark
+  D grin with a white top row and two fangs, two war-paint stripes per cheek on team cell 17 running onto the cheek
+  facet; 540), `hair-mane-wild-block` (core cap thin at the front, low at the nape + 27 broad flat 4-sided tufts
+  flowing up/back, sides flaring out, a widow's-peak V; 548), `face-beard-braid-block` (shell framing the grin down to
+  a point at 0.685, moustache strap, steel ring + braided tuft; ~330), `torso-bare-kilt-chibi` (bare chest with pec
+  slabs, crossed straps front and back, steel ring, belt + G buckle, pouches with flaps, team kilt with a pleat-point
+  hem, fur mantle with a jagged edge), `arms-bare-bracers-chibi` (bare arms, leather bracer + steel plate on the
+  outside, fur tuft over each shoulder), `feet-boots-fur-chibi` (low-boot foot, 12-sided cream fur cuff with a jagged
+  edge). Reused: `hands-mitten-block`, `legs-pants-chibi`.
+- Palette: lowpoly cell 6 → grey-brown fur `#9A806C` (STYLE.md §4 ↔ style.json). Colours: skin 1, eyes 9, hair 20,
+  team 17 (kilt + war paint), fur 6, cream 12 (teeth, boot fur), leather 46, dark brown 5 (straps, belt, trousers),
+  steel 51 → 9 (soft, like the wizard/archer).
+- 3,984 tris (hard 4,000; trimmed from 4,380: 4-point strap profile, plain pouch flaps, fewer kilt/cuff/arm rings,
+  12-column mantle); head group 1,360 (soft > 1,000, hard 1,400). IoU fitted 0.89 / 0.86 / 0.88 (torso 0.85 narrower,
+  head/mane 1.1 deeper, arms_down 68°; `fit` in the spec). 8 clips; pose findings = the robe category (fur cuff
+  through the kilt when a leg kicks back in walk/run/jump; kilt hem raised 1.5 cm and cuff lowered 1 cm for the
+  sheet's gap). Export ok.
+- **Axes** (`axe-berserker-r`, `axe-berserker-l`, `melee`, `workspace/lib4/props/`): 0.67 m (0.8 × the sheet, like the
+  sword), 300 tris each, grip below the leather wraps, `tip` at the blade's edge. **Measured on KayKit's
+  `Barbarian.glb`:** `1H_Axe` on `handslot.r` and `1H_Axe_Offhand` on `handslot.l` both run along the slot's +Y,
+  but the right blade points to the slot's +X and the offhand blade to −X → two files (left = right turned 180° about
+  the haft; `SIDE` in the script). Checked in three.js with KayKit's raw `Idle_A` and `Melee_Dualwield_Attack_Chop`
+  (hips × 0.7085): `workspace/berserker/inhand/dualcheck.mjs` (copy into `node/` to run; three.js strips dots from
+  node names: `handslotr`).
+
+## Heerschar: knight update (2026-11-20)
+
+- Game's reply to the team cell (`KNIGHT-AND-WIZARD-TEAM-REPLY.md`): both drop in on both teams; asked about the red
+  crest on the blue knight, a hero mark, and the knight's in-mesh sword (no swing trail).
+- **Marcel:** crest → team cell (knight `secondary` 16 → 17; the crest is the only `secondary` face); hero marked in
+  code by the game (no hero cell); sword + shield as separate props. Knight spec: hand slots empty, `hide_slots` [];
+  3,490 tris, re-animated, exported.
+- Props `sword-knight` (melee, 214 tris) and `shield-round-knight` (shield, 260, board on cell 17) in
+  `workspace/lib4/props/`: the old part scripts' geometry with the chibi hand-slot position hard-coded (props get no
+  landmarks) and one transform of all faces into the slot frame (sword: 180° about X; shield: T-pose face +Z → −Y,
+  forearm X → +Z). Checked with KayKit's raw `Idle_A`, `Melee_1H_Attack_Chop`, `Melee_Block_Attack`
+  (`workspace/berserker/inhand/inhandcheck.mjs`, `PLAN` env = clips and times; copy into `node/` to run):
+  `workspace/knight-lowpoly/inhand/props_in_kaykit_clips.png`.
+
 ## Decisions (with reasons)
+
+- **Berserker's mane stays orange** (Marcel, 2026-11-20): a wild red-haired berserker is the point; he reads by
+  silhouette, as on the sheet.
+- **Hero marked by the game, not a palette cell** (Marcel, 2026-11-20): a third swappable cell would mean rebuilding
+  and re-handing every gpg figure; a ring/banner in code works for all of them.
+- **Knight crest on the team cell** (Marcel, 2026-11-20): it was the one red spot on the blue enemy knight.
+
+- **Dual-wield axes as a right and a left GLB** (2026-11-20): KayKit's offhand axe has its blade on the slot's −X,
+  the right one on +X; a single-bladed axe attached with no transform needs one file per hand.
 
 - **Melee weapons and shields as their own GLBs in KayKit's hand-slot frame** (2026-11-20): the game already
   attaches KayKit's items that way (no transform); the crossbow's +X frame stays for ranged weapons.
@@ -1619,6 +1680,12 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-20** — Game confirmed the knight update; all Heerschar handoffs archived, nothing open.
+- **2026-11-20** — Game confirmed the berserker; mane colour left as is (Marcel).
+- **2026-11-20** — Read the knight/wizard + shieldbearer replies; knight crest on cell 17, sword + round shield as own GLBs, handed over (`KNIGHT-UPDATE.md`).
+- **2026-11-20** — Berserker OK'd by Marcel, handed over (`BERSERKER.md`).
+- **2026-11-20** — Heerschar berserker v1 (5 new parts + reused hands/legs, two axe GLBs, lowpoly cell 6 fur), fitted IoU ~0.88, 8 clips, exported; checked in KayKit's dual-wield chop. 95 tests pass. Awaiting Marcel's look.
 
 - **2026-11-20** — Heerschar shieldbearer (5 new parts, sword + tower shield as `melee`/`shield` props), fitted IoU ~0.9, handed over.
 

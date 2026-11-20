@@ -1,0 +1,41 @@
+{
+ "prop": "axe-berserker-l",
+ "type": "melee",
+ "style": "lowpoly",
+ "script_sha256": "f40ccdc722a47367a5c715792c5477f67e62e35306a86b32de47a516b040b125",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 300,
+ "verts": 166,
+ "roles": [
+  "accent",
+  "leather",
+  "metal"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.1568,
+   -0.0388,
+   -0.223
+  ],
+  [
+   0.0592,
+   0.0388,
+   0.4512
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.0,
+   0.0,
+   0.0
+  ],
+  "tip": [
+   -0.1568,
+   0.0,
+   0.3484
+  ]
+ },
+ "warnings": []
+}

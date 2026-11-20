@@ -1,0 +1,31 @@
+{
+ "part": "feet-boots-fur-chibi",
+ "slot": "feet",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "ebe7c34a5a3e8366918444e406cbf7f4fc1dd84a2c7f21496612ace0b10d1116",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 344,
+ "verts": 184,
+ "roles": [
+  "accent",
+  "leather"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.2717,
+   -0.1718,
+   0.0
+  ],
+  [
+   0.2717,
+   0.1595,
+   0.182
+  ]
+ ],
+ "warnings": []
+}

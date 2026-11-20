@@ -1,0 +1,30 @@
+{
+ "part": "hair-mane-wild-block",
+ "slot": "hair",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "5ab6f747cb4bde43355f0b5f530930141c386cec4c2605c01b5f37bdc6defb47",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 506,
+ "verts": 307,
+ "roles": [
+  "hair"
+ ],
+ "shells": 27,
+ "bbox": [
+  [
+   -0.3508,
+   -0.2153,
+   0.7949
+  ],
+  [
+   0.3508,
+   0.3484,
+   1.3395
+  ]
+ ],
+ "warnings": []
+}

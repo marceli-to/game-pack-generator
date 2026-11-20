@@ -1,0 +1,31 @@
+{
+ "part": "face-beard-braid-block",
+ "slot": "face",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "ccd27f051185346550e825d539edc838857263f29a539e59f14c8aa49fa69fde",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 314,
+ "verts": 165,
+ "roles": [
+  "hair",
+  "metal"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.226,
+   -0.26,
+   0.565
+  ],
+  [
+   0.226,
+   0.0281,
+   0.992
+  ]
+ ],
+ "warnings": []
+}

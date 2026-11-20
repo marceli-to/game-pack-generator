@@ -88,7 +88,8 @@ Surface mode **`palette`**, as in `clean`: every face resolves its role (root ST
   of a mid grey, and cell 17: the Heerschar **team red** `#A8322A` (exactly the game's player-team colour) instead of
   a dark red. Cell 17 is reserved for team-coloured areas (e.g. the healer's stole), so the game can swap that one
   cell per team (enemy blue `#35557D`), and cell 26: a moss green `#A0A254` (the archer's tunic
-  and sleeves, from his sheet) instead of a lime green.
+  and sleeves, from his sheet) instead of a lime green, and cell 6: a grey-brown fur `#9A806C` (the berserker's
+  mantle, from his sheet) instead of a mid grey.
 - Max. **8 different colours** per character, counted as distinct palette indices actually used on faces.
 
 ## 5. Shading & normals

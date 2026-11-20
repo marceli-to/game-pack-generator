@@ -1,0 +1,8 @@
+{
+  "colors": { "accent": 42, "leather": 46, "metal": 51, "primary": 17 },
+  "kind": "prop",
+  "name": "shield-round-knight",
+  "part": "shield-round-knight",
+  "style": "lowpoly",
+  "type": "shield"
+}

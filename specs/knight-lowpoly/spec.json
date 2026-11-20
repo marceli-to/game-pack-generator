@@ -9,7 +9,7 @@
     "primary": 17,
     "accent": 42,
     "leather": 46,
-    "secondary": 16,
+    "secondary": 17,
     "dark": 53
   },
   "parts": {
@@ -22,15 +22,12 @@
     "hands": "hands-gauntlet-block",
     "legs": "legs-pants-chibi",
     "feet": "feet-boots-low-chibi",
-    "accessory_hand_r": "accessory_hand_r-sword-block",
-    "accessory_hand_l": "accessory_hand_l-shield-round-block"
+    "accessory_hand_r": null,
+    "accessory_hand_l": null
   },
   "reference": "specs/knight-lowpoly/reference/turnaround.png",
   "compare": {
     "arms_down_deg": 62,
-    "hide_slots": [
-      "accessory_hand_r",
-      "accessory_hand_l"
-    ]
+    "hide_slots": []
   }
 }

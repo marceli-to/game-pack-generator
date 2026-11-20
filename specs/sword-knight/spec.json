@@ -1,0 +1,8 @@
+{
+  "colors": { "accent": 42, "leather": 46, "metal": 51 },
+  "kind": "prop",
+  "name": "sword-knight",
+  "part": "sword-knight",
+  "style": "lowpoly",
+  "type": "melee"
+}

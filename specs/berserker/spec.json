@@ -1,0 +1,97 @@
+{
+  "name": "berserker",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "hair": 20,
+    "primary": 17,
+    "secondary": 6,
+    "accent": 12,
+    "leather": 46,
+    "dark": 5,
+    "metal": 51
+  },
+  "parts": {
+    "head": "head-chibi-grin-fierce",
+    "hair": "hair-mane-wild-block",
+    "headwear": null,
+    "face": "face-beard-braid-block",
+    "torso": "torso-bare-kilt-chibi",
+    "arms": "arms-bare-bracers-chibi",
+    "hands": "hands-mitten-block",
+    "legs": "legs-pants-chibi",
+    "feet": "feet-boots-fur-chibi"
+  },
+  "reference": "specs/berserker/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 68.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "fit": {
+    "arms": {
+      "u": [
+        1.0,
+        1.0,
+        0.98
+      ],
+      "v": [
+        0.869,
+        0.852,
+        0.905
+      ]
+    },
+    "hands": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        0.98,
+        0.98,
+        0.98
+      ]
+    },
+    "head": {
+      "u": [
+        1.083,
+        1.0,
+        0.961
+      ],
+      "v": [
+        1.062,
+        1.127,
+        1.105
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        1.041,
+        1.083
+      ],
+      "v": [
+        1.0,
+        1.02,
+        1.02
+      ]
+    },
+    "torso": {
+      "u": [
+        0.852,
+        0.852,
+        0.835
+      ],
+      "v": [
+        0.942,
+        1.02,
+        1.105
+      ]
+    }
+  }
+}

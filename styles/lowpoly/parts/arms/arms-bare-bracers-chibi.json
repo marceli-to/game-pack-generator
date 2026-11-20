@@ -1,0 +1,33 @@
+{
+ "part": "arms-bare-bracers-chibi",
+ "slot": "arms",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "411b1371a7d9537f72cf2c993bc35530102a149029d38b694bf0b9477583f887",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 672,
+ "verts": 352,
+ "roles": [
+  "leather",
+  "metal",
+  "secondary",
+  "skin"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.51,
+   -0.1411,
+   0.6246
+  ],
+  [
+   0.51,
+   0.1411,
+   0.8647
+  ]
+ ],
+ "warnings": []
+}

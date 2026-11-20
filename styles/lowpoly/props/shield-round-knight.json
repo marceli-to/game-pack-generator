@@ -1,0 +1,37 @@
+{
+ "prop": "shield-round-knight",
+ "type": "shield",
+ "style": "lowpoly",
+ "script_sha256": "9e8bbf52f22a44c49c554921f6fcd4d5d8120cc15ffa77c94ccf1e34df3248fc",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 260,
+ "verts": 138,
+ "roles": [
+  "accent",
+  "leather",
+  "metal",
+  "primary"
+ ],
+ "shells": 4,
+ "bbox": [
+  [
+   -0.2048,
+   -0.2103,
+   -0.2148
+  ],
+  [
+   0.2048,
+   0.01,
+   0.1948
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "warnings": []
+}

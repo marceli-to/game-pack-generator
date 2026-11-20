@@ -1,0 +1,37 @@
+{
+ "part": "torso-bare-kilt-chibi",
+ "slot": "torso",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "5b4c6d25b3a4766bfd9d86a94db1446551e41545ff7867302694ee5333d75576",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 960,
+ "verts": 508,
+ "roles": [
+  "dark",
+  "leather",
+  "metal",
+  "primary",
+  "secondary",
+  "skin"
+ ],
+ "shells": 16,
+ "bbox": [
+  [
+   -0.2564,
+   -0.2056,
+   0.22
+  ],
+  [
+   0.2564,
+   0.22,
+   0.815
+  ]
+ ],
+ "warnings": [
+  "asymmetric: 108 of 508 vertices have no X-mirror partner (base parts are symmetric)"
+ ]
+}
