@@ -1,0 +1,36 @@
+{
+ "prop": "shield-tower-shieldbearer",
+ "type": "shield",
+ "style": "lowpoly",
+ "script_sha256": "2f54e99438e99b953d49af20783248d151d703b590519f8e772eadfad34d9d06",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 476,
+ "verts": 272,
+ "roles": [
+  "leather",
+  "metal",
+  "primary"
+ ],
+ "shells": 18,
+ "bbox": [
+  [
+   -0.2192,
+   -0.143,
+   -0.3893
+  ],
+  [
+   0.2192,
+   0.006,
+   0.3875
+  ]
+ ],
+ "anchors": {
+  "grip": [
+   0.0,
+   0.0,
+   0.0
+  ]
+ },
+ "warnings": []
+}

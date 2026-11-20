@@ -1,0 +1,31 @@
+{
+ "part": "head-chibi-flat-mouth",
+ "slot": "head",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "d132e3cf23c557de34cb202f3ef84b66e61dba7ccf99ee241e309a9bc5c35d9f",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 320,
+ "verts": 172,
+ "roles": [
+  "eyes",
+  "skin"
+ ],
+ "shells": 6,
+ "bbox": [
+  [
+   -0.232,
+   -0.187,
+   0.79
+  ],
+  [
+   0.232,
+   0.165,
+   1.2
+  ]
+ ],
+ "warnings": []
+}

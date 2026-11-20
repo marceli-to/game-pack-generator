@@ -560,6 +560,8 @@ def check_prop(obj, ptype, unset_roles, anchors, pieces=None, anchor_pieces=None
         hard.append(f"missing anchors {missing} for a {ptype} (P.anchor(name, point))")
     if "grip" in anchors and "muzzle" in anchors and anchors["muzzle"][0] <= anchors["grip"][0]:
         hard.append("muzzle must lie in front of the grip (+X: held items are modelled along +X, top +Z)")
+    if "grip" in anchors and "tip" in anchors and anchors["tip"][2] <= anchors["grip"][2]:
+        hard.append("tip must lie above the grip (+Z: melee items and shields stand upright in the hand slot's frame)")
     if obj.vertex_groups:
         hard.append("props carry no bone weights")
     pieces = pieces or {}

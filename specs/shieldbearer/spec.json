@@ -1,0 +1,94 @@
+{
+  "name": "shieldbearer",
+  "style": "lowpoly",
+  "archetype": "chibi",
+  "colors": {
+    "skin": 1,
+    "eyes": 9,
+    "metal": 51,
+    "primary": 17,
+    "dark": 53,
+    "leather": 5
+  },
+  "parts": {
+    "head": "head-chibi-flat-mouth",
+    "hair": null,
+    "headwear": "headwear-helmet-sallet-block",
+    "face": null,
+    "torso": "torso-tabard-panels-chibi",
+    "arms": "arms-pauldrons-layered-chibi",
+    "hands": "hands-mitten-block",
+    "legs": "legs-pants-chibi",
+    "feet": "feet-boots-greaves-chibi"
+  },
+  "reference": "specs/shieldbearer/reference/turnaround.png",
+  "compare": {
+    "arms_down_deg": 62.0,
+    "hide_slots": [],
+    "fit_exclude": [
+      "feet"
+    ]
+  },
+  "fit": {
+    "arms": {
+      "u": [
+        1.221,
+        1.197,
+        1.174
+      ],
+      "v": [
+        0.819,
+        0.852,
+        0.961
+      ]
+    },
+    "hands": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.083,
+        1.041,
+        1.0
+      ]
+    },
+    "head": {
+      "u": [
+        0.887,
+        0.923,
+        0.961
+      ],
+      "v": [
+        0.923,
+        0.961,
+        0.887
+      ]
+    },
+    "legs": {
+      "u": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "v": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    "torso": {
+      "u": [
+        1.105,
+        1.083,
+        1.083
+      ],
+      "v": [
+        0.961,
+        0.942,
+        0.942
+      ]
+    }
+  }
+}

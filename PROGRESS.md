@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-20 — **Knight + wizard on team cell 17, handed over** (`~/Desktop/kimiyu-lab/heerschar-characters/KNIGHT-AND-WIZARD-TEAM.md`; the folder moved under `kimiyu-lab/`); game confirmed the healer + archer (`HEALER-AND-ARCHER-REPLY.md`, nothing to change). Next: the shieldbearer (sheet 03). Before: **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-20 — **Shieldbearer done and handed over** (Marcel: "looks good"; `SHIELDBEARER.md` + body, sword and tower shield GLBs; new prop types `melee`/`shield` in KayKit's hand-slot frame); next: berserker (sheet 04), then shaman. Before: **Knight + wizard on team cell 17, handed over** (`~/Desktop/kimiyu-lab/heerschar-characters/KNIGHT-AND-WIZARD-TEAM.md`; the folder moved under `kimiyu-lab/`); game confirmed the healer + archer (`HEALER-AND-ARCHER-REPLY.md`, nothing to change). Before: **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -1358,7 +1358,34 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
 - Handed over: `KNIGHT-AND-WIZARD-TEAM.md` + `glb/character-knight-lowpoly.glb` (`16c1dabb…`), `glb/character-wizard.glb`
   (`974629bc…`), `knight-team.png`, `wizard-team.png`. Wait for its reply.
 
+## Heerschar: shieldbearer (2026-11-20)
+
+- Sheet 03 → `specs/shieldbearer/reference/turnaround.png`; scaled from the head (chin y 540 → 0.79 m): 2.365 mm/px,
+  `add_reference` top_y 367 / floor 874 / 1.2 m, views 222 / 534 / 857 (x ranges 0–415, 415–660, 660–1055).
+- New parts (`workspace/lib4/parts/`): `head-chibi-flat-mouth` (small-ears head, short straight mouth),
+  `headwear-helmet-sallet-block` (knight dome + cheek/neck guard, no gold/crest, ridge over the top, V brow lip, side
+  discs; covers ears), `torso-tabard-panels-chibi` (dark padded body continuing as a skirt; team tabard as front and
+  back `P.shell` panels ±62° with dark edges, front split below the belt; brown belt, square steel buckle),
+  `arms-pauldrons-layered-chibi` (dark sleeves, steel bracer, two-plate pauldron), `feet-boots-greaves-chibi`.
+  Reused: `hands-mitten-block`, `legs-pants-chibi`. Colours (6): skin 1, eyes 9, metal 51, team 17, dark 53, brown 5.
+- 3,784 tris (target 3,500; head group 1,064). IoU fitted 0.905 / 0.88 / 0.904 (arms 1.2× thicker, torso 1.1×
+  wider, head 0.9 narrower at the bottom; feet excluded; `fit` in the spec). 8 clips; pose findings = the robe
+  category (boots through the tabard back in walk/run). Export 420 KB, validator 0/0.
+- **Props in the hand slot's frame:** new prop types `melee` (`grip`, `tip`; tip above the grip) and `shield`
+  (`grip`), root STYLE.md §9b ↔ core.json: modelled upright (+Z = glTF +Y), face −Y (glTF +Z), KayKit's convention
+  measured on `Knight.glb` (`1H_Sword` along `handslot.r` +Y, `Rectangle_Shield` along `handslot.l` +Y facing +Z).
+  `sword-shieldbearer` (0.64 m, 154 tris), `shield-tower-shieldbearer` (0.44 × 0.78 m, 476 tris, board on team cell
+  17); both 0.8 × the sheet. Prop dev loop for lowpoly: `workspace/lib4/props/run.py <spec> [--build] [--export]`.
+  In-hand check in KayKit's Idle / Walking_A / 1H_Melee_Attack_Chop / Block_Attack (scratch `inhand2.py` idea:
+  props placed on the slot bones' matrices): shield outward in idle, in front in block, sword upright in the chop.
+- Handed over: `SHIELDBEARER.md` + `glb/character-shieldbearer.glb` (`e4a0108b…`), `prop-sword-shieldbearer.glb`
+  (`e1ff13b5…`), `prop-shield-tower.glb` (`3ad40814…`) + previews. Possible polish: back panel a bit narrower (sheet
+  shows more dark grey at the sides from behind).
+
 ## Decisions (with reasons)
+
+- **Melee weapons and shields as their own GLBs in KayKit's hand-slot frame** (2026-11-20): the game already
+  attaches KayKit's items that way (no transform); the crossbow's +X frame stays for ranged weapons.
 
 - **Wizard robe + hat on the team cell** (Marcel, 2026-11-20): the game's enemy mage reuses the model; a trim-only
   team colour wouldn't read at game distance. The approved wizard is now red for the player.
@@ -1588,6 +1615,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-20** — Heerschar shieldbearer (5 new parts, sword + tower shield as `melee`/`shield` props), fitted IoU ~0.9, handed over.
 
 - **2026-11-20** — Knight + wizard on team cell 17 (wizard re-approved, insides grey), handed to the Heerschar agent.
 

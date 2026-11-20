@@ -564,6 +564,8 @@ def prop_violations(m, spec):
             H("origin", f"bounding box {m['bbox']}: a pickup stands on z 0 with its footprint centred on the origin")
     if "muzzle" in anchors and "grip" in anchors and anchors["muzzle"][0] <= anchors["grip"][0]:
         H("muzzle", "muzzle must lie in front of the grip along +X")
+    if "tip" in anchors and "grip" in anchors and anchors["tip"][2] <= anchors["grip"][2]:
+        H("tip", "a melee tip must lie above the grip (+Z: melee items stand upright)")
     if len(m["objects"]) != 1 or m["objects"][0] != spec.get("name"):
         W("objects", f"expected one mesh object {spec.get('name')!r}, found {m['objects']}")
     if not m["transforms_applied"]:

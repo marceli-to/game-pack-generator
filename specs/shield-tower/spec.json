@@ -1,0 +1,8 @@
+{
+  "colors": { "leather": 5, "metal": 51, "primary": 17 },
+  "kind": "prop",
+  "name": "shield-tower",
+  "part": "shield-tower-shieldbearer",
+  "style": "lowpoly",
+  "type": "shield"
+}

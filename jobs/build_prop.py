@@ -1,6 +1,6 @@
 """Build one prop from an agent-written script (STYLE.md §9b): same builder `P` as parts, no template.
 
-args: { prop: "<name>", type: "weapon" | "thrown" | "pickup", script: "<python>", out_dir, save: bool }
+args: { prop: "<name>", type: one of core.json props.types (weapon, thrown, melee, shield, pickup, world, target), script: "<python>", out_dir, save: bool }
 The script runs with P (PartBuilder), Vector, Matrix, math, bmesh, bpy (lm, bones, guides empty) and names its
 anchors with P.anchor(name, point). Hard problems -> ok=false and nothing is saved (the preview is still rendered).
 """

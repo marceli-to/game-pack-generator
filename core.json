@@ -193,6 +193,8 @@
     "types": {
       "weapon": { "anchors": ["grip", "muzzle"], "origin": "grip", "budget": "weapon" },
       "thrown": { "anchors": ["grip"], "origin": "grip", "budget": "weapon" },
+      "melee": { "anchors": ["grip", "tip"], "origin": "grip", "budget": "weapon" },
+      "shield": { "anchors": ["grip"], "origin": "grip", "budget": "weapon" },
       "pickup": { "anchors": [], "origin": "floor", "budget": "prop" },
       "world": { "anchors": [], "origin": "floor", "budget": "prop" },
       "target": { "anchors": ["hinge", "board_centre"], "pieces": ["board"], "origin": "floor", "budget": "prop" }

@@ -1,0 +1,8 @@
+{
+  "colors": { "leather": 5, "metal": 51 },
+  "kind": "prop",
+  "name": "sword-shieldbearer",
+  "part": "sword-shieldbearer",
+  "style": "lowpoly",
+  "type": "melee"
+}

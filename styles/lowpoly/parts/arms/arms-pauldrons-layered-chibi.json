@@ -1,0 +1,31 @@
+{
+ "part": "arms-pauldrons-layered-chibi",
+ "slot": "arms",
+ "style": "lowpoly",
+ "archetypes": [
+  "chibi"
+ ],
+ "script_sha256": "47e90b840dbb17a88e5c6a56979b76b12a17a7521b1d18971d46846b09e95d55",
+ "built": "2026-11-20",
+ "blender": "5.2.4",
+ "tris": 744,
+ "verts": 388,
+ "roles": [
+  "dark",
+  "metal"
+ ],
+ "shells": 8,
+ "bbox": [
+  [
+   -0.51,
+   -0.1831,
+   0.6209
+  ],
+  [
+   0.51,
+   0.1831,
+   0.8975
+  ]
+ ],
+ "warnings": []
+}

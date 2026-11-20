@@ -258,10 +258,19 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
 |---|---|---|---|---|
 | `weapon` | `grip`, `muzzle` | — | `grip` | `weapon` |
 | `thrown` | `grip` | — | `grip` | `weapon` |
+| `melee` | `grip`, `tip` | — | `grip` | `weapon` |
+| `shield` | `grip` | — | `grip` | `weapon` |
 | `pickup` | — | — | `floor` | `prop` |
 | `world` | — | — | `floor` | `prop` |
 | `target` | `hinge`, `board_centre` | `board` | `floor` | `prop` |
 
+  `melee` and `shield`: one-handed items held in the **hand slot's frame**, the KayKit convention for melee weapons
+  and shields (measured on KayKit's `Knight.glb`: `1H_Sword` along `handslot.r`'s +Y, `Rectangle_Shield` along
+  `handslot.l`'s +Y with its face towards the slot's +Z), so the game parents the GLB to the slot without a
+  rotation. Modelled **standing upright**: blade or shield's top towards +Z (glTF +Y), the item's face towards −Y
+  (glTF +Z), its width across X. `melee`: `grip` on the handle where the fist closes, `tip` at the blade's point
+  (the swing trail's outer end; must lie above the grip, z > 0). `shield`: `grip` at the fist behind the shield,
+  the shield standing in front of it (towards −Y).
   `world`: props that stand in the level (barrels, boxes). `target`: a board on a post that the game tips back
   about `hinge` (on the board's bottom edge); `board_centre` is the centre of the board's face and moves with it.
 - **Pieces:** a prop is one mesh, unless the game moves part of it on its own. `P.piece(name, parent=<anchor>)`
@@ -286,7 +295,7 @@ Same style, palette, roles and shading as the characters; no rig, no animation, 
 - **validate** (§12 rules for roles, colours, surface, topology, shading, vertex colours) and for props: hard: tris
   over the type's hard limit, a required anchor missing, origin wrong (held items: `grip` not at 0, 0, 0 within
   `props.origin_tolerance` = 1 mm; pickups: bottom not at z 0 or footprint not centred), `muzzle` not in front of
-  the grip (x ≤ 0); soft: tris above the type's target. No height, skeleton, weight or symmetry rules.
+  the grip (x ≤ 0), a `melee` `tip` not above the grip (z ≤ 0); soft: tris above the type's target. No height, skeleton, weight or symmetry rules.
 - **Export:** `export/prop-<name>.glb`: §10 rules (palette sampler, `COLOR_0` for AO styles, glTF validator, test
   load without a clip); no skin, no animations; nodes: the mesh and the anchor empties, all at the scene root.
 - **Views** (`props.views`, used by `render_preview` and `compare_reference` on props) named like the sheets:
