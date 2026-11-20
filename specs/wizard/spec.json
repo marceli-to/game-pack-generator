@@ -1,7 +1,7 @@
 {
   "approval": {
     "by": "marcel",
-    "date": "2026-11-16",
+    "date": "2026-11-20",
     "parts": {
       "accessory_hand_r-staff-crystal-block": "sha256:19b8d768efcf99838881c4e255c23aa3777b7eac52507e80370dbfcc4a53cb68",
       "accessory_waist-pouch-block": "sha256:a9273a2ab005e7a3ec486f6b0fd3033dde7e9b4cca47d861954f53bd91a51569",
@@ -14,16 +14,16 @@
       "headwear-wizard-hat-block": "sha256:6872f0fcdc678d462b31ffa061b3bd25231dec22eacf61863de93385d61d59b3",
       "torso-robe-chibi": "sha256:b204398a9b82d884c1e11663d38b362578eade184807fd3b04f552a3704f5a1f"
     },
-    "spec_hash": "sha256:4d1be9698945d7265e7a6a342daa032eb2458363c10e2c066f4afa3cb4c2ce66"
+    "spec_hash": "sha256:15f772969e2951888fdd1840e697bef7a1e05bd2196b6509d626e0462b179177"
   },
   "archetype": "chibi",
   "colors": {
     "accent": 42,
-    "dark": 37,
+    "dark": 53,
     "eyes": 9,
     "hair": 13,
     "leather": 46,
-    "primary": 38,
+    "primary": 17,
     "secondary": 45,
     "skin": 1,
     "special": 58

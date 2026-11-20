@@ -3,7 +3,7 @@
 Living status of the project. **Read this first in every session; update it before ending one**
 (what changed, decisions, next step). Keep it short: details belong in PLAN.md / STYLE.md / git history.
 
-_Last updated: 2026-11-19 — **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
+_Last updated: 2026-11-20 — **Knight + wizard on team cell 17, handed over** (`~/Desktop/kimiyu-lab/heerschar-characters/KNIGHT-AND-WIZARD-TEAM.md`; the folder moved under `kimiyu-lab/`); game confirmed the healer + archer (`HEALER-AND-ARCHER-REPLY.md`, nothing to change). Next: the shieldbearer (sheet 03). Before: **Healer + archer handed to the Heerschar agent** (`~/Desktop/heerschar-characters/HEALER-AND-ARCHER.md` + `glb/`); wait for its reply. Before: **Heerschar archer done (Marcel: "perfect"; body + crossbow as its own GLB)** (see "Heerschar: archer"). Before: **Heerschar healer done (Marcel: "can live with that", committed `fff234a`); next: the archer.** Before: **Game confirmed the facet rebuild and did the figure lighting on its side (both replies archived): nothing to change, nothing open from the game.** Before: **Facet rebuild of all nine Tinfox figures done and handed over (`FIGURES-FACETS.md`): −23 % tris, −19 % bytes, single-sided material, current palette.** Before: **Guard-8 test done (see "Guard-8 test"): awaiting Marcel's look at
 `workspace/tinfox/guard8/compare_game.png`.** Before: **Code review written (`REVIEW.md`, nothing changed yet): how to get closer to the sheets + optimisation; first step is a cheap test on the guard (8-sided rings, softer AO).** Before: **Game confirmed the smaller figures and the Pelican; nothing missing** (`~/Desktop/tinfox` md files archived). Before: **Figures 41 % smaller** (`FILE-SIZE.md`: 5 unused clips out, static channels pruned, vertex data packed; all nine re-sent, wait for the game). Before: **Grenade launcher "Pelican" (orb blaster, 07) + refill (08) built and handed over** (`ORB-BLASTER.md`); wait for the game's report. Players and practice dummy are in the game; Marcel decided against first-person arms. Before that: 2026-11-18 (evening) — **Tinfox** (Marcel's FPS, sheets in `~/Desktop/tinfox`, handoff `GENERATOR.md`
 there). **Everything in `MISSING.md` now has a model:** guard, rifle guard, officer, worker, four players, all seven
 weapons, props 01–32, and today the **Snowfort kit 33–39** (`SNOWFORT-KIT.md`) and the **practice dummy**
@@ -1345,7 +1345,23 @@ sheets `summary_full.png`, `summary_head.png`, details `cmp_*.png` / `paint_*.pn
   wizard's in-mesh staff) rolls the crossbow onto its side: the brief asks to apply it to the wizard only. Also
   noted: `recolor.ts` assumes KayKit's 8 × 4 atlas; the gpg palette's cell 17 is `[1, 2]` with 8 rows.
 
+## Heerschar: team colour on the knight and wizard (2026-11-20)
+
+- Game reply (`HEALER-AND-ARCHER-REPLY.md`, branch `test/gpg-squad`): healer and archer in for both teams, cell
+  `[1, 2]` swap with `rows: 8` works, crossbow on `handslot.r` level in aim (the shoot clip turns it ~40° right: the
+  clip, KayKit's archer does the same), smoke from `muzzle`, `GPG_PROP_AXIS` only for `PROP_TURNED` (the wizard).
+  Asked for the team cell on the wizard and the knight.
+- **Knight:** `primary` 33 → 17 (tabard + shield face); crest stays red 16. **Wizard (Marcel: option A, robe + hat):**
+  `primary` 38 → 17, `dark` 37 → 53 (insides dark grey, fits red and blue); re-approved by Marcel (new spec hash,
+  part hashes unchanged). Option B (gold trim only) was too small to tell the teams apart. Options sheet
+  `workspace/_team/team_options.png`, `wizard_team.png`.
+- Handed over: `KNIGHT-AND-WIZARD-TEAM.md` + `glb/character-knight-lowpoly.glb` (`16c1dabb…`), `glb/character-wizard.glb`
+  (`974629bc…`), `knight-team.png`, `wizard-team.png`. Wait for its reply.
+
 ## Decisions (with reasons)
+
+- **Wizard robe + hat on the team cell** (Marcel, 2026-11-20): the game's enemy mage reuses the model; a trim-only
+  team colour wouldn't read at game distance. The approved wizard is now red for the player.
 
 - **Heerschar crossbow along the hand slot's +X, as its own GLB** (2026-11-19): KayKit's crossbow and its 2H ranged
   clips use +X forward; the README's +Y rule fits melee weapons and staffs. A separate node lets the game swap or hide
@@ -1572,6 +1588,8 @@ Parts catalog: `render_parts_catalog(style="lowpoly")` → `workspace/_catalog/l
   `_archive/facets-before/`. Dummy also in `packs/tinfox/`.
 
 ## Log
+
+- **2026-11-20** — Knight + wizard on team cell 17 (wizard re-approved, insides grey), handed to the Heerschar agent.
 
 - **2026-11-19** — Healer + archer handed to the Heerschar agent (`HEALER-AND-ARCHER.md`); crossbow checked in three.js
   with the game's clips.
